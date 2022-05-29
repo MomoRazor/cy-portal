@@ -1,8 +1,9 @@
-import type { Component } from 'solid-js'
 import { Gateway, Loader } from './components'
 import { endpoints } from './nav'
+import '@fontsource/roboto'
+import './App.module.css'
 
-export const App: Component = () => (
+export const App = () => (
     <Loader>
         <Gateway endpoints={endpoints} />
     </Loader>
