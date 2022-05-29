@@ -1,11 +1,11 @@
-import type {Component} from 'solid-js'
-import {FirebaseProvider, Gateway} from './components'
-import {endpoints} from './nav'
+import type { Component } from 'solid-js'
+import { Gateway, Loader } from './components'
+import { endpoints } from './nav'
 
 export const App: Component = () => (
-	<FirebaseProvider>
-		<Gateway endpoints={endpoints} />
-	</FirebaseProvider>
+    <Loader>
+        <Gateway endpoints={endpoints} />
+    </Loader>
 )
 
 export default App

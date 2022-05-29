@@ -1,3 +1,5 @@
 export * from './Container'
-export * from './contexts'
+export * from './providers'
 export * from './Gateway'
+export * from './QuadSpinner'
+export * from './Typography'
