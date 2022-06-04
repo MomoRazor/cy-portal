@@ -7,8 +7,6 @@ export const RGBToHex = (r: number, g: number, b: number) => {
     if (gString.length == 1) gString = '0' + gString
     if (bString.length == 1) bString = '0' + bString
 
-    console.log('#' + rString + gString + bString)
-
     return '#' + rString + gString + bString
 }
 
@@ -33,12 +31,6 @@ export const hexToRGB = (h: string) => {
     const rInt = parseInt(r, 16)
     const gInt = parseInt(g, 16)
     const bInt = parseInt(b, 16)
-
-    console.log({
-        r: rInt,
-        g: gInt,
-        b: bInt
-    })
 
     return {
         r: rInt,
@@ -144,4 +136,44 @@ export const HSLAToRGBA = (h: number, s: number, l: number, a?: number) => {
         b,
         a
     }
+}
+
+export const hexToHSLA = (h: string) => {
+    const rgb = hexToRGB(h)
+
+    return RGBAToHSLA(rgb.r, rgb.g, rgb.b)
+}
+
+export const shadeColor = (col: string, percent: number) => {
+    let usePound = false
+
+    if (col[0] == '#') {
+        col = col.slice(1)
+        usePound = true
+    }
+
+    let R = parseInt(col.substring(0, 2), 16)
+    let G = parseInt(col.substring(2, 4), 16)
+    let B = parseInt(col.substring(4, 6), 16)
+
+    // to make the colour less bright than the input
+    // change the following three "+" symbols to "-"
+    R = R + percent
+    G = G + percent
+    B = B + percent
+
+    if (R > 255) R = 255
+    else if (R < 0) R = 0
+
+    if (G > 255) G = 255
+    else if (G < 0) G = 0
+
+    if (B > 255) B = 255
+    else if (B < 0) B = 0
+
+    const RR = R.toString(16).length == 1 ? '0' + R.toString(16) : R.toString(16)
+    const GG = G.toString(16).length == 1 ? '0' + G.toString(16) : G.toString(16)
+    const BB = B.toString(16).length == 1 ? '0' + B.toString(16) : B.toString(16)
+
+    return (usePound ? '#' : '') + RR + GG + BB
 }

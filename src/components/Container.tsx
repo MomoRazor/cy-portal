@@ -1,6 +1,7 @@
 import { styled } from 'solid-styled-components'
-import { JSX } from 'solid-js'
-import { hexToRGB, RGBToHex } from '../utils'
+import { createSignal, JSX } from 'solid-js'
+import { generateNeumorphismCss, Impression } from '../utils'
+import { baseColor, lightSource } from '../style'
 
 export interface IContainer {
     direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse'
@@ -20,10 +21,8 @@ export interface IContainer {
         | 'space-evenly'
     width?: string
     height?: string
-    backgroundColor?: string
     children: JSX.Element
-    elevated?: boolean
-    depressed?: boolean
+    impression?: Impression
     rounded?: boolean
     padding?: string
 }
@@ -31,44 +30,35 @@ export interface IContainer {
 export const Container = (props: IContainer) => {
     let ref: HTMLDivElement | undefined
 
-    RGBToHex(12, 45, 123)
-    hexToRGB('#0c2d7b')
-    // const generateElevatedShadow = (width: number, colorHex: string) => {
-    //     const hsl = hexToHSL(colorHex)
+    const [width, setWidth] = createSignal(0)
+    const [height, setHeight] = createSignal(0)
 
-    //     return `${Math.floor(width / 10)}px ${Math.floor(width / 10)}px ${Math.floor(
-    //         (width * 2) / 10
-    //     )}px ${colorHex} -${Math.floor(width / 10)}px -${Math.floor(width / 10)}px ${Math.floor(
-    //         (width * 2) / 10
-    //     )}px hsl(${hsl.h},${hsl.s + 10}, ${hsl.l}`
-    // }
+    setTimeout(() => {
+        setWidth(ref?.clientWidth || 0)
+        setHeight(ref?.clientHeight || 0)
+    }, 100)
 
-    // const generatedDepressedShadow = (width: number, colorHex: string) => {
-    //     const hsl = hexToHSL(colorHex)
+    const StyledDiv = styled.div(() => {
+        const neuMorphic = generateNeumorphismCss(
+            width(),
+            height(),
+            baseColor,
+            props.impression || 'elevated',
+            lightSource
+        )
 
-    //     return `inset ${Math.floor(width / 10)}px ${Math.floor(width / 10)}px ${Math.floor(
-    //         (width * 2) / 10
-    //     )}px ${colorHex} inset -${Math.floor(width / 10)}px -${Math.floor(
-    //         width / 10
-    //     )}px ${Math.floor((width * 2) / 10)}px hsl(${hsl.h},${hsl.s + 10}, ${hsl.l}`
-    // }
-
-    const StyledDiv = styled.div(() => ({
-        display: 'flex',
-        justifyContent: props.crossAxis,
-        alignItems: props.mainAxis,
-        flexDirection: props.direction || 'column',
-        width: props.width,
-        height: props.height,
-        backgroundColor: props.backgroundColor,
-        // boxShadow: props.elevated
-        //     ? generateElevatedShadow(ref?.getBoundingClientRect().width || 0, '#ffff')
-        //     : props.depressed
-        //     ? generatedDepressedShadow(ref?.getBoundingClientRect().width || 0, '#ffff')
-        //     : undefined,
-        borderRadius: props.rounded ? '50px' : undefined,
-        padding: props.padding
-    }))
+        return {
+            display: 'flex',
+            justifyContent: props.crossAxis,
+            alignItems: props.mainAxis,
+            flexDirection: props.direction || 'column',
+            width: props.width,
+            height: props.height,
+            borderRadius: props.rounded ? '50px' : undefined,
+            padding: props.padding,
+            ...neuMorphic
+        }
+    })
 
     return <StyledDiv ref={ref}>{props.children}</StyledDiv>
 }

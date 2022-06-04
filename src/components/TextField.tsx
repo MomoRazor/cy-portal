@@ -1,6 +1,7 @@
-import { JSX } from 'solid-js'
+import { createSignal, JSX } from 'solid-js'
 import { styled } from 'solid-styled-components'
-import { Container } from './Container'
+import { baseColor, lightSource } from '../style'
+import { generateNeumorphismCss } from '../utils'
 
 export interface ITextField {
     value: string
@@ -8,20 +9,41 @@ export interface ITextField {
 }
 
 export const TextField = (props: ITextField) => {
-    const StyledInput = styled.input(() => ({
-        display: 'flex',
-        fontFamily: 'Roboto',
-        outline: 'none',
-        border: 'none',
-        boxShadow: 'inset 20px 20px 60px #d9d9d9, inset -20px -20px 60px #ffffff',
-        borderRadius: '50px',
-        padding: '10px',
-        backgroundColor: 'transparent'
-    }))
+    let ref: HTMLInputElement | undefined
+
+    const [width, setWidth] = createSignal(0)
+    const [height, setHeight] = createSignal(0)
+
+    setTimeout(() => {
+        setWidth(ref?.clientWidth || 0)
+        setHeight(ref?.clientHeight || 0)
+    }, 100)
+
+    const StyledInput = styled.input(() => {
+        const neuMorphic = generateNeumorphismCss(
+            width(),
+            height(),
+            baseColor,
+            'concave',
+            lightSource
+        )
+
+        return {
+            display: 'flex',
+            fontFamily: 'Roboto',
+            outline: 'none',
+            border: 'none',
+            borderRadius: '50px',
+            padding: '10px',
+            backgroundColor: 'transparent',
+            width: '50%',
+            ...neuMorphic
+        }
+    })
 
     const onInput: JSX.EventHandlerUnion<HTMLInputElement, Event> = (e) => {
         props.setValue(e.currentTarget.value)
     }
 
-    return <StyledInput value={props.value} onInput={onInput} type="text" />
+    return <StyledInput ref={ref} value={props.value} onInput={onInput} type="text" />
 }
