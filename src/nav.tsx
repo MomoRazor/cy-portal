@@ -1,5 +1,4 @@
 import { INavType } from '@sector-eleven-ltd/se-react-toolkit'
-import { BiUserCircle } from 'react-icons/bi'
 import { CgUser, CgCommunity, CgList } from 'react-icons/cg'
 import { AiOutlineTeam } from 'react-icons/ai'
 import React from 'react'
@@ -35,8 +34,13 @@ export const sidebarNav: INavType[] = [
         permission: [UserTypes.admin]
     },
     {
-        title: 'My Communities',
-        link: '/myCommunities',
+        title: 'My Community',
+        link: '/myCommunity',
+        icon: <CgCommunity size={20} />
+    },
+    {
+        title: 'Guiding Communities',
+        link: '/guideCommunities',
         icon: <CgCommunity size={20} />
     },
     {
@@ -52,15 +56,5 @@ export const sidebarNav: INavType[] = [
         title: 'My Teams',
         link: '/myTeams',
         icon: <AiOutlineTeam size={20} />
-    },
-    {
-        title: 'System',
-        permission: UserTypes.admin
-    },
-    {
-        title: 'Administrators',
-        link: '/administrators',
-        icon: <BiUserCircle size={20} />,
-        permission: UserTypes.admin
     }
 ]

@@ -3,7 +3,6 @@ import {
     AuthContext,
     AuthPage,
     ExtraDataHandler,
-    ForbiddenPage,
     IUrlData,
     SetExtraDataHandler
 } from '@sector-eleven-ltd/se-react-toolkit'
@@ -14,14 +13,11 @@ import { getAuth } from 'firebase/auth'
 
 export interface ICYPage {
     loginRequired?: boolean
-    admin?: ReactNode
-    club?: ReactNode
-    musician?: ReactNode
     breadCrumb?: IUrlData[]
     title?: string
     loadExtraDetail?: ExtraDataHandler
     setExtraData?: SetExtraDataHandler
-    children?: ReactNode
+    children: ReactNode
 }
 
 export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
@@ -29,29 +25,14 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
     const router = useRouter()
 
     const handleRenderSelection = () => {
-        if (props.children) {
-            return props.children
-        } else {
-            const portalType = getPortalType()
-            if (portalType === PortalTypes.admin) {
-                return props.admin || <ForbiddenPage />
-            } else if (portalType === PortalTypes.manager) {
-                return props.club || <ForbiddenPage />
-            } else if (portalType === PortalTypes.musician) {
-                return props.musician || <ForbiddenPage />
-            } else {
-                return <ForbiddenPage />
-            }
-        }
+        return props.children
     }
 
     const apiCall = useCallback(async () => {
         const firebaseAuth = getAuth()
         const user = firebaseAuth.currentUser
 
-        const portalType = getPortalType()
-
-        const result = await hydrateDate(portalType, user)
+        const result = await hydrateDate(user)
 
         if (result.result === APICallResult.success) {
             login && login(result.data)
@@ -67,7 +48,6 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
                 try {
                     await firebaseAuth.signOut()
                     logout && logout()
-                    clearLocalData()
                     router.push('/')
                 } catch (e) {
                     console.error(e)

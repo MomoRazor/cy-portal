@@ -1,10 +1,10 @@
 import React from 'react'
-import { EnemedPage, Login } from '../src'
+import { CYPage, Login } from '../src'
 
 const Index = () => (
-    <EnemedPage title="Login">
+    <CYPage title="Login">
         <Login />
-    </EnemedPage>
+    </CYPage>
 )
 
 export default Index
