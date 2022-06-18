@@ -14,6 +14,12 @@ export const getTeams = async () => {
     return result.data.data
 }
 
+export const getUserTeams = async (userId: string) => {
+    const result = await axios11.get<{ data: ITeam[] }>(`/teams/member/${userId}`)
+
+    return result.data.data
+}
+
 export const getTeam = async (id: string) => {
     const result = await axios11.get<{ data: ITeam }>(`/teams/${id}`)
 
