@@ -12,22 +12,22 @@ import {
     useEnterSubmit
 } from '@sector-eleven-ltd/se-react-toolkit'
 import React, { useContext, useEffect, useState } from 'react'
-import { createUser, ICreateUser, IUser, updateUser } from '../../restAPI'
-import { UserFormSection } from './UserFormSection'
+import { createCommunity, ICreateCommunity, ICommunity, updateCommunity } from '../../restAPI'
+import { CommunityFormSection } from './CommunityFormSection'
 
-export interface IUserOverlay {
+export interface ICommunityOverlay {
     show: boolean
-    data?: IUser
+    data?: ICommunity
     secondaryPanel?: boolean
     covered?: boolean
     zIndex?: number
     onClose: EmptyFunctionHandler
-    onSave: (newData?: IUser) => void
+    onSave: (newData?: ICommunity) => void
     isOverlay?: boolean
     setIsOverlay?: (newOverlay: boolean) => void
 }
 
-export const UserOverlay = (props: IUserOverlay) => {
+export const CommunityOverlay = (props: ICommunityOverlay) => {
     const { addData } = useContext(SnackbarContext)
 
     const [showConfirm, setShowConfirm] = useState(false)
@@ -36,35 +36,23 @@ export const UserOverlay = (props: IUserOverlay) => {
 
     const [name, setName] = useState('')
     const [errorName, setErrorName] = useState('')
-    const [surname, setSurname] = useState('')
-    const [errorSurname, setErrorSurname] = useState('')
-    const [email, setEmail] = useState('')
-    const [errorEmail, setErrorEmail] = useState('')
 
     useEffect(() => {
-        setErrorEmail('')
         setErrorName('')
-        setErrorSurname('')
 
         setName(props.data?.name || '')
-        setSurname(props.data?.surname || '')
-        setEmail(props.data?.email || '')
     }, [props.data, props.show])
 
     const closingUserOverlay = () => {
         if (!props.data) {
-            if (name !== '' || email !== '' || surname !== '') {
+            if (name !== '') {
                 setShowConfirm(true)
             } else {
                 props.onClose()
                 props.setIsOverlay && props.setIsOverlay(false)
             }
         } else {
-            if (
-                name !== props.data.name ||
-                email !== props.data.email ||
-                surname !== props.data.surname
-            ) {
+            if (name !== props.data.name) {
                 setShowConfirm(true)
             } else {
                 props.onClose()
@@ -85,50 +73,34 @@ export const UserOverlay = (props: IUserOverlay) => {
                 setErrorName('')
             }
 
-            if (surname === '') {
-                error = true
-                setErrorSurname('This is required')
-            } else {
-                setErrorSurname('')
-            }
-
-            if (email === '') {
-                error = true
-                setErrorEmail('This is required')
-            } else {
-                setErrorEmail('')
-            }
-
             if (!error) {
                 try {
                     let result: any
 
                     if (props.data) {
-                        const data: Partial<ICreateUser> = {
-                            name,
-                            surname,
-                            email
+                        const data: Partial<ICreateCommunity> = {
+                            name
                         }
 
-                        result = await updateUser(props.data?.id, data)
+                        result = await updateCommunity(props.data?.id, data)
                     } else {
-                        let data: ICreateUser = {
-                            name,
-                            surname,
-                            email
+                        let data: ICreateCommunity = {
+                            name
                         }
 
-                        result = await createUser(data)
+                        result = await createCommunity(data)
                     }
 
                     displaySnackbar(
-                        props.data ? 'User Edited Successfully' : 'User Created Successfully',
+                        props.data
+                            ? 'Community Edited Successfully'
+                            : 'Community Created Successfully',
                         SnackbarType.success,
                         addData
                     )
                     props.onSave(result)
                 } catch (e) {
-                    displaySnackbar('Failed to save User', SnackbarType.error, addData)
+                    displaySnackbar('Failed to save Community', SnackbarType.error, addData)
                 }
             }
             setCreateButtonLoad(false)
@@ -152,27 +124,17 @@ export const UserOverlay = (props: IUserOverlay) => {
             >
                 <PanelForm
                     titleSection={{
-                        title: props.data ? 'Edit User' : 'Add New User',
+                        title: props.data ? 'Edit Community' : 'Add New Community',
                         close: closingUserOverlay
                     }}
                     saveSection={{
-                        buttonText: props.data ? 'Edit User' : 'Save User',
+                        buttonText: props.data ? 'Edit Community' : 'Save Community',
                         discardOnClick: closingUserOverlay,
                         primaryOnClick: handleUserSave,
                         primaryButtonLoading: createButtonLoad
                     }}
                 >
-                    <UserFormSection
-                        name={name}
-                        setName={setName}
-                        errorName={errorName}
-                        email={email}
-                        setEmail={setEmail}
-                        errorEmail={errorEmail}
-                        surname={surname}
-                        setSurname={setSurname}
-                        errorSurname={errorSurname}
-                    />
+                    <CommunityFormSection name={name} setName={setName} errorName={errorName} />
                 </PanelForm>
             </Overlay>
 

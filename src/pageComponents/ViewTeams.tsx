@@ -7,8 +7,6 @@ import {
     FloatingPosH,
     IconButton,
     Linker,
-    PillContainer,
-    PointerEvents,
     Spacer,
     Table,
     TextVariants,
@@ -16,59 +14,26 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import React, { ReactNode, useCallback, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import { UserOverlay } from '../projectComponents'
-import { getUsers, IUser } from '../restAPI'
+import { TeamOverlay } from '../projectComponents'
+import { getTeams, ITeam } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 
-interface UserRow extends IUser {
+interface TeamRow extends ITeam {
     actions: ReactNode
-    communityMember: ReactNode
-    communityGuide: ReactNode
-    teamMember: ReactNode
-    admin: ReactNode
 }
 
-export const ViewUsers = () => {
+export const ViewTeams = () => {
     const [showAddNew, setShowNew] = useState(false)
-    const [editUser, setEditUser] = useState<IUser>()
+    const [editTeam, setEditTeam] = useState<ITeam>()
 
     const [isOverlay, setIsOverlay] = useState(false)
 
-    const parseData = (data: IUser[]) => {
-        let array: UserRow[] = []
+    const parseData = (data: ITeam[]) => {
+        let array: TeamRow[] = []
 
         data.map((data) => {
             return array.push({
                 ...data,
-                communityMember: (
-                    <Linker to={`/communities/${data.communityMemberOfId}/`}>
-                        <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                            {data.communityMemberOf?.name || ''}
-                        </Typography>
-                    </Linker>
-                ),
-                communityGuide:
-                    data.communityGuideOf?.map((community) => (
-                        <Linker key={community.id} to={`/communities/${community.id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {community.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
-                teamMember:
-                    data.teamMemberOf?.map((team) => (
-                        <Linker key={team.id} to={`/teams/${team.id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {team.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
-                admin: (
-                    <PillContainer
-                        text={data.isAdmin ? 'Yes' : 'No'}
-                        color={data.isAdmin ? Colors.success : Colors.error}
-                    />
-                ),
                 actions: actionsRow(data)
             })
         })
@@ -76,16 +41,16 @@ export const ViewUsers = () => {
     }
 
     const actionsRow = useCallback(
-        (data: IUser) => (
+        (data: ITeam) => (
             <Container direction={Direction.row} padding="0">
-                <Linker to={`/users/${data.id}/`} width="auto">
+                <Linker to={`/teams/${data.id}/`} width="auto">
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
                 </Linker>
                 <IconButton
                     onClick={() => {
-                        setEditUser(data)
+                        setEditTeam(data)
                         setShowNew(true)
                         setIsOverlay(true)
                     }}
@@ -99,12 +64,12 @@ export const ViewUsers = () => {
 
     const handleDiscard = () => {
         setShowNew(false)
-        setEditUser(undefined)
+        setEditTeam(undefined)
         setIsOverlay(false)
     }
 
     const saveDrawer = () => {
-        setEditUser(undefined)
+        setEditTeam(undefined)
         setShowNew(false)
         setIsOverlay(false)
     }
@@ -114,22 +79,16 @@ export const ViewUsers = () => {
             <SidebarPage>
                 <Container width="100%">
                     <Typography variant={TextVariants.h4} color={Colors.title}>
-                        Users
+                        Teams
                     </Typography>
                     <Spacer height="20px" />
 
                     <Card>
                         <Table
-                            apiCall={getUsers}
+                            apiCall={getTeams}
                             parseRows={parseData}
                             headers={[
                                 { id: 'name', title: 'Name' },
-                                { id: 'surname', title: 'Surname' },
-                                { id: 'email', title: 'Email' },
-                                { id: 'communityMember', title: 'Community' },
-                                { id: 'communityGuide', title: 'Guide Of' },
-                                { id: 'teamMember', title: 'Team' },
-                                { id: 'admin', title: 'Is an Admin' },
                                 { id: 'actions', title: 'Actions' }
                             ]}
                             keyName="id"
@@ -149,14 +108,14 @@ export const ViewUsers = () => {
                 }}
                 zIndex={5}
             >
-                <Typography color={Colors.textOnPrimary}>Add User</Typography>
+                <Typography color={Colors.textOnPrimary}>Add Team</Typography>
             </FloatingIconButton>
-            <UserOverlay
+            <TeamOverlay
                 covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showAddNew}
-                data={editUser}
+                data={editTeam}
                 isOverlay={isOverlay}
                 setIsOverlay={setIsOverlay}
             />

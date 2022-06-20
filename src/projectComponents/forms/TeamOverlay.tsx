@@ -12,22 +12,22 @@ import {
     useEnterSubmit
 } from '@sector-eleven-ltd/se-react-toolkit'
 import React, { useContext, useEffect, useState } from 'react'
-import { createUser, ICreateUser, IUser, updateUser } from '../../restAPI'
-import { UserFormSection } from './UserFormSection'
+import { createTeam, ICreateTeam, ITeam, updateTeam } from '../../restAPI'
+import { TeamFormSection } from './TeamFormSection'
 
-export interface IUserOverlay {
+export interface ITeamOverlay {
     show: boolean
-    data?: IUser
+    data?: ITeam
     secondaryPanel?: boolean
     covered?: boolean
     zIndex?: number
     onClose: EmptyFunctionHandler
-    onSave: (newData?: IUser) => void
+    onSave: (newData?: ITeam) => void
     isOverlay?: boolean
     setIsOverlay?: (newOverlay: boolean) => void
 }
 
-export const UserOverlay = (props: IUserOverlay) => {
+export const TeamOverlay = (props: ITeamOverlay) => {
     const { addData } = useContext(SnackbarContext)
 
     const [showConfirm, setShowConfirm] = useState(false)
@@ -36,35 +36,23 @@ export const UserOverlay = (props: IUserOverlay) => {
 
     const [name, setName] = useState('')
     const [errorName, setErrorName] = useState('')
-    const [surname, setSurname] = useState('')
-    const [errorSurname, setErrorSurname] = useState('')
-    const [email, setEmail] = useState('')
-    const [errorEmail, setErrorEmail] = useState('')
 
     useEffect(() => {
-        setErrorEmail('')
         setErrorName('')
-        setErrorSurname('')
 
         setName(props.data?.name || '')
-        setSurname(props.data?.surname || '')
-        setEmail(props.data?.email || '')
     }, [props.data, props.show])
 
     const closingUserOverlay = () => {
         if (!props.data) {
-            if (name !== '' || email !== '' || surname !== '') {
+            if (name !== '') {
                 setShowConfirm(true)
             } else {
                 props.onClose()
                 props.setIsOverlay && props.setIsOverlay(false)
             }
         } else {
-            if (
-                name !== props.data.name ||
-                email !== props.data.email ||
-                surname !== props.data.surname
-            ) {
+            if (name !== props.data.name) {
                 setShowConfirm(true)
             } else {
                 props.onClose()
@@ -85,50 +73,32 @@ export const UserOverlay = (props: IUserOverlay) => {
                 setErrorName('')
             }
 
-            if (surname === '') {
-                error = true
-                setErrorSurname('This is required')
-            } else {
-                setErrorSurname('')
-            }
-
-            if (email === '') {
-                error = true
-                setErrorEmail('This is required')
-            } else {
-                setErrorEmail('')
-            }
-
             if (!error) {
                 try {
                     let result: any
 
                     if (props.data) {
-                        const data: Partial<ICreateUser> = {
-                            name,
-                            surname,
-                            email
+                        const data: Partial<ICreateTeam> = {
+                            name
                         }
 
-                        result = await updateUser(props.data?.id, data)
+                        result = await updateTeam(props.data?.id, data)
                     } else {
-                        let data: ICreateUser = {
-                            name,
-                            surname,
-                            email
+                        let data: ICreateTeam = {
+                            name
                         }
 
-                        result = await createUser(data)
+                        result = await createTeam(data)
                     }
 
                     displaySnackbar(
-                        props.data ? 'User Edited Successfully' : 'User Created Successfully',
+                        props.data ? 'Team Edited Successfully' : 'Team Created Successfully',
                         SnackbarType.success,
                         addData
                     )
                     props.onSave(result)
                 } catch (e) {
-                    displaySnackbar('Failed to save User', SnackbarType.error, addData)
+                    displaySnackbar('Failed to save Team', SnackbarType.error, addData)
                 }
             }
             setCreateButtonLoad(false)
@@ -152,27 +122,17 @@ export const UserOverlay = (props: IUserOverlay) => {
             >
                 <PanelForm
                     titleSection={{
-                        title: props.data ? 'Edit User' : 'Add New User',
+                        title: props.data ? 'Edit Team' : 'Add New Team',
                         close: closingUserOverlay
                     }}
                     saveSection={{
-                        buttonText: props.data ? 'Edit User' : 'Save User',
+                        buttonText: props.data ? 'Edit Team' : 'Save Team',
                         discardOnClick: closingUserOverlay,
                         primaryOnClick: handleUserSave,
                         primaryButtonLoading: createButtonLoad
                     }}
                 >
-                    <UserFormSection
-                        name={name}
-                        setName={setName}
-                        errorName={errorName}
-                        email={email}
-                        setEmail={setEmail}
-                        errorEmail={errorEmail}
-                        surname={surname}
-                        setSurname={setSurname}
-                        errorSurname={errorSurname}
-                    />
+                    <TeamFormSection name={name} setName={setName} errorName={errorName} />
                 </PanelForm>
             </Overlay>
 

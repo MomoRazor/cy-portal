@@ -14,7 +14,7 @@ export interface IUserFormSection {
 }
 
 export const UserFormSection = (props: IUserFormSection) => (
-    <PanelFormSection title={'User Basic information'}>
+    <PanelFormSection title="User Basic information">
         <TextField
             value={props.name}
             onChange={(e: ChangeEvent<HTMLInputElement>) => props.setName(e.target.value)}

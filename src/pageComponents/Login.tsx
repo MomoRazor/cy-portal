@@ -7,18 +7,15 @@ import {
     LoginPage,
     parseError,
     SnackbarContext,
-    SnackbarType,
-    ThemeContext
+    SnackbarType
 } from '@sector-eleven-ltd/se-react-toolkit'
-import darkLogo from '../../public/LogoDarkTheme.png'
-import whiteLogo from '../../public/LogoLightTheme.png'
+import darkLogo from '../../public/logo_color_600px-no-bg.png'
 import Image from 'next/image'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { hydrateDate } from '../auth'
 
 export const Login = () => {
     const { addData } = useContext(SnackbarContext)
-    const theme = useContext(ThemeContext)
     const auth = useContext(AuthContext)
 
     const router = useRouter()
@@ -58,13 +55,8 @@ export const Login = () => {
 
     return (
         <LoginPage
-            title="Welcome to CAM Youths Portal"
-            image={
-                <Image
-                    src={theme.selectedThemeNumber == 0 ? whiteLogo : darkLogo}
-                    alt="Login Logo"
-                />
-            }
+            title="Welcome to the CAM Youths Portal"
+            image={<Image src={darkLogo} alt="Login Logo" />}
             onSignIn={handleEmailSignIn}
             forgotPassword={() => router.push('/forgotPassword')}
             onAutoLogin={() => router.push('/' + loggedInPage)}

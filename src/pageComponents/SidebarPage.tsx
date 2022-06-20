@@ -62,7 +62,7 @@ export const SidebarPage = (props: ISidebarPage) => {
     const getOptions = () => {
         let options = []
 
-        if (auth.user.communityMemberOf) {
+        if (auth.user?.communityMemberOf) {
             options.push({
                 name: 'View My Community',
                 icon: <AiOutlineHome />,
@@ -70,7 +70,7 @@ export const SidebarPage = (props: ISidebarPage) => {
             })
         }
 
-        if (auth.user.communityGuideOf) {
+        if (auth.user?.communityGuideOf) {
             options.push({
                 name: 'View Guiding Community',
                 icon: <AiOutlineHome />,
@@ -78,7 +78,7 @@ export const SidebarPage = (props: ISidebarPage) => {
             })
         }
 
-        if (auth.user.teamMemberOf) {
+        if (auth.user?.teamMemberOf) {
             options.push({
                 name: 'View My Teams',
                 icon: <AiOutlineHome />,
@@ -104,7 +104,7 @@ export const SidebarPage = (props: ISidebarPage) => {
 
     const permissionCheck = (permissionRequired: UserTypes[]) => {
         if (permissionRequired.includes(UserTypes.admin)) {
-            if (auth.user.isAdmin) {
+            if (auth.user?.isAdmin) {
                 return true
             } else {
                 return false
