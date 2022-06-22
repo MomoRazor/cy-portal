@@ -3,6 +3,7 @@ import {
     AuthContext,
     AuthPage,
     ExtraDataHandler,
+    ForbiddenPage,
     IUrlData,
     SetExtraDataHandler
 } from '@sector-eleven-ltd/se-react-toolkit'
@@ -17,15 +18,24 @@ export interface ICYPage {
     title?: string
     loadExtraDetail?: ExtraDataHandler
     setExtraData?: SetExtraDataHandler
+    adminOnly?: boolean
     children: ReactNode
 }
 
 export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
-    const { login, logout } = useContext(AuthContext)
+    const { login, logout, user } = useContext(AuthContext)
     const router = useRouter()
 
     const handleRenderSelection = () => {
-        return props.children
+        if (props.adminOnly) {
+            if (user?.isAdmin) {
+                return props.children
+            } else {
+                return <ForbiddenPage />
+            }
+        } else {
+            return props.children
+        }
     }
 
     const apiCall = useCallback(async () => {

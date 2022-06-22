@@ -35,12 +35,12 @@ export const sidebarNav: INavType[] = [
     },
     {
         title: 'My Community',
-        link: '/myCommunity',
+        link: '/my-community',
         icon: <CgCommunity size={20} />
     },
     {
         title: 'Guiding Communities',
-        link: '/guideCommunities',
+        link: '/guide-communities',
         icon: <CgCommunity size={20} />
     },
     {
@@ -54,7 +54,7 @@ export const sidebarNav: INavType[] = [
     },
     {
         title: 'My Teams',
-        link: '/myTeams',
+        link: '/my-teams',
         icon: <AiOutlineTeam size={20} />
     }
 ]

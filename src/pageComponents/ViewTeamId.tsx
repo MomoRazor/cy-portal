@@ -1,4 +1,5 @@
 import {
+    AuthContext,
     Colors,
     Container,
     FloatingIconButton,
@@ -8,11 +9,11 @@ import {
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { ITeam } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
-import { TeamOverlay, ViewTeamData } from '../projectComponents'
+import { TeamOverlay, ViewTeamData, ViewTeamMembers } from '../projectComponents'
 
 export interface IViewTeamId {
     team?: ITeam
@@ -21,6 +22,9 @@ export interface IViewTeamId {
 
 export const ViewTeamId = (props: IViewTeamId) => {
     const router = useRouter()
+
+    const auth = useContext(AuthContext)
+
     const [showEditTeam, setEditTeam] = useState(false)
 
     const checkActive = (section: ISideMenuSection) => {
@@ -87,18 +91,22 @@ export const ViewTeamId = (props: IViewTeamId) => {
                     )}
                 </Container>
             </SidebarPage>
-            <FloatingIconButton
-                horizontalPos={FloatingPosH.right}
-                width="auto"
-                right="40px"
-                bottom="30px"
-                onClick={() => {
-                    setEditTeam(true)
-                }}
-                zIndex={5}
-            >
-                <Typography color={Colors.textOnPrimary}>Edit Team</Typography>
-            </FloatingIconButton>
+            {auth.user.isAdmin ? (
+                <FloatingIconButton
+                    horizontalPos={FloatingPosH.right}
+                    width="auto"
+                    right="40px"
+                    bottom="30px"
+                    onClick={() => {
+                        setEditTeam(true)
+                    }}
+                    zIndex={5}
+                >
+                    <Typography color={Colors.textOnPrimary}>Edit Team</Typography>
+                </FloatingIconButton>
+            ) : (
+                <></>
+            )}
             <TeamOverlay
                 covered
                 onClose={handleDiscard}

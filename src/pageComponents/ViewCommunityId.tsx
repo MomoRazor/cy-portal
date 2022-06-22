@@ -1,4 +1,5 @@
 import {
+    AuthContext,
     Colors,
     Container,
     FloatingIconButton,
@@ -8,11 +9,16 @@ import {
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { ICommunity } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
-import { CommunityOverlay, ViewCommunityData } from '../projectComponents'
+import {
+    CommunityOverlay,
+    ViewCommunityData,
+    ViewCommunityGuides,
+    ViewCommunityMembers
+} from '../projectComponents'
 
 export interface IViewCommunityId {
     community?: ICommunity
@@ -21,6 +27,9 @@ export interface IViewCommunityId {
 
 export const ViewCommunityId = (props: IViewCommunityId) => {
     const router = useRouter()
+
+    const auth = useContext(AuthContext)
+
     const [showEditCommunity, setEditCommunity] = useState(false)
 
     const checkActive = (section: ISideMenuSection) => {
@@ -91,18 +100,22 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                     )}
                 </Container>
             </SidebarPage>
-            <FloatingIconButton
-                horizontalPos={FloatingPosH.right}
-                width="auto"
-                right="40px"
-                bottom="30px"
-                onClick={() => {
-                    setEditCommunity(true)
-                }}
-                zIndex={5}
-            >
-                <Typography color={Colors.textOnPrimary}>Edit Community</Typography>
-            </FloatingIconButton>
+            {auth.user.isAdmin ? (
+                <FloatingIconButton
+                    horizontalPos={FloatingPosH.right}
+                    width="auto"
+                    right="40px"
+                    bottom="30px"
+                    onClick={() => {
+                        setEditCommunity(true)
+                    }}
+                    zIndex={5}
+                >
+                    <Typography color={Colors.textOnPrimary}>Edit Community</Typography>
+                </FloatingIconButton>
+            ) : (
+                <></>
+            )}
             <CommunityOverlay
                 covered
                 onClose={handleDiscard}

@@ -1,18 +1,21 @@
 import {
+    AuthContext,
     Colors,
     Container,
-    FloatingIconButton,
+    Direction,
+    FloatingIconButtonList,
     FloatingPosH,
     IAdditionalData,
+    IFloatingIconButton,
     ISideMenuSection,
     PillContainer,
     QuadSpinner,
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
-import { IUser } from '../restAPI'
+import { IUser, setUserAdmin, unsetUserAdmin } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 import { UserOverlay, ViewUserData } from '../projectComponents'
 
@@ -24,6 +27,15 @@ export interface IViewUserId {
 export const ViewUserId = (props: IViewUserId) => {
     const router = useRouter()
     const [showEditUser, setEditUser] = useState(false)
+
+    const [showAssignCommunity, setShowAssignCommunity] = useState(false)
+    const [showGuidesCommunities, setShowGuidesCommunities] = useState(false)
+    const [showAssignTeams, setShowAssignTeams] = useState(false)
+
+    const auth = useContext(AuthContext)
+
+    const [adminUnassignLoading, setAdminUnassignLoading] = useState(false)
+    const [adminAssignLoading, setAdminAssignLoading] = useState(false)
 
     const checkActive = (section: ISideMenuSection) => {
         if (router.query.section == section.link) {
@@ -84,6 +96,79 @@ export const ViewUserId = (props: IViewUserId) => {
         ]
     }
 
+    const getFloatingButtons = useCallback(() => {
+        const buttons: IFloatingIconButton[] = []
+
+        if (props.user?.id === auth.user.id || auth.user.isAdmin) {
+            buttons.push({
+                width: 'auto',
+                onClick: () => {
+                    setEditUser(true)
+                },
+                children: <Typography color={Colors.textOnPrimary}>Edit User</Typography>
+            })
+        }
+
+        if (auth.user.isAdmin) {
+            if (props.user?.isAdmin) {
+                buttons.push({
+                    width: 'auto',
+                    onClick: async () => {
+                        setAdminUnassignLoading(true)
+                        await unsetUserAdmin(props.user?.id || '')
+                        setAdminUnassignLoading(false)
+                    },
+                    loading: adminUnassignLoading,
+                    children: <Typography color={Colors.textOnPrimary}>Unset as Admin</Typography>
+                })
+            } else {
+                buttons.push({
+                    width: 'auto',
+                    onClick: async () => {
+                        setAdminAssignLoading(true)
+                        await setUserAdmin(props.user?.id || '')
+                        setAdminAssignLoading(false)
+                    },
+                    loading: adminAssignLoading,
+                    children: <Typography color={Colors.textOnPrimary}>Set as Admin</Typography>
+                })
+            }
+
+            buttons.push({
+                width: 'auto',
+                onClick: async () => {
+                    setShowAssignCommunity(true)
+                },
+                children: <Typography color={Colors.textOnPrimary}>Community Membership</Typography>
+            })
+
+            buttons.push({
+                width: 'auto',
+                onClick: async () => {
+                    setShowGuidesCommunities(true)
+                },
+                children: <Typography color={Colors.textOnPrimary}>Community Guide</Typography>
+            })
+
+            buttons.push({
+                width: 'auto',
+                onClick: async () => {
+                    setShowAssignTeams(true)
+                },
+                children: <Typography color={Colors.textOnPrimary}>Team Membership</Typography>
+            })
+        }
+
+        return buttons
+    }, [
+        adminAssignLoading,
+        adminUnassignLoading,
+        auth.user.id,
+        auth.user.isAdmin,
+        props.user?.id,
+        props.user?.isAdmin
+    ])
+
     return (
         <>
             <SidebarPage>
@@ -97,25 +182,21 @@ export const ViewUserId = (props: IViewUserId) => {
                             checkActive={checkActive}
                             navFunc={navFunc}
                             title={props.user.name + ' ' + props.user.surname}
-                            subtitle="Administrator"
+                            subtitle={props.user.isAdmin ? 'Administrator' : ''}
                             description={`ID: ${props.user.id}`}
                             sections={getSections(props.user)}
                         />
                     )}
                 </Container>
             </SidebarPage>
-            <FloatingIconButton
+            <FloatingIconButtonList
+                direction={Direction.rowReverse}
                 horizontalPos={FloatingPosH.right}
-                width="auto"
                 right="40px"
                 bottom="30px"
-                onClick={() => {
-                    setEditUser(true)
-                }}
                 zIndex={5}
-            >
-                <Typography color={Colors.textOnPrimary}>Edit User</Typography>
-            </FloatingIconButton>
+                buttons={getFloatingButtons()}
+            />
             <UserOverlay
                 covered
                 onClose={handleDiscard}

@@ -25,6 +25,24 @@ export const getUsers = async () => {
     return result.data.data
 }
 
+export const getUserMembersOfTeam = async (teamId: string) => {
+    const result = await axios11.get<{ data: IUser[] }>(`/users/members/team/${teamId}`)
+
+    return result.data.data
+}
+
+export const getUserMembersOfCommunity = async (communityId: string) => {
+    const result = await axios11.get<{ data: IUser[] }>(`/users/members/community/${communityId}`)
+
+    return result.data.data
+}
+
+export const getUserGuidesOfCommunity = async (communityId: string) => {
+    const result = await axios11.get<{ data: IUser[] }>(`/users/guides/community/${communityId}`)
+
+    return result.data.data
+}
+
 export const getUser = async (id: string) => {
     const result = await axios11.get<{ data: IUser }>(`/users/${id}`)
 
