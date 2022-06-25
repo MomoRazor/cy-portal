@@ -28,9 +28,9 @@ export const ViewUserId = (props: IViewUserId) => {
     const router = useRouter()
     const [showEditUser, setEditUser] = useState(false)
 
-    const [showAssignCommunity, setShowAssignCommunity] = useState(false)
-    const [showGuidesCommunities, setShowGuidesCommunities] = useState(false)
-    const [showAssignTeams, setShowAssignTeams] = useState(false)
+    // const [showAssignCommunity, setShowAssignCommunity] = useState(false)
+    // const [showGuidesCommunities, setShowGuidesCommunities] = useState(false)
+    // const [showAssignTeams, setShowAssignTeams] = useState(false)
 
     const auth = useContext(AuthContext)
 
@@ -137,7 +137,7 @@ export const ViewUserId = (props: IViewUserId) => {
             buttons.push({
                 width: 'auto',
                 onClick: async () => {
-                    setShowAssignCommunity(true)
+                    // setShowAssignCommunity(true)
                 },
                 children: <Typography color={Colors.textOnPrimary}>Community Membership</Typography>
             })
@@ -145,7 +145,7 @@ export const ViewUserId = (props: IViewUserId) => {
             buttons.push({
                 width: 'auto',
                 onClick: async () => {
-                    setShowGuidesCommunities(true)
+                    // setShowGuidesCommunities(true)
                 },
                 children: <Typography color={Colors.textOnPrimary}>Community Guide</Typography>
             })
@@ -153,7 +153,7 @@ export const ViewUserId = (props: IViewUserId) => {
             buttons.push({
                 width: 'auto',
                 onClick: async () => {
-                    setShowAssignTeams(true)
+                    // setShowAssignTeams(true)
                 },
                 children: <Typography color={Colors.textOnPrimary}>Team Membership</Typography>
             })
