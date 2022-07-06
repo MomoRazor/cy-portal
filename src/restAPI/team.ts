@@ -1,3 +1,4 @@
+import { mockTeam, mockTeamList } from '../mock'
 import { axios11 } from './config'
 
 export interface ITeam extends ICreateTeam {
@@ -9,21 +10,29 @@ export interface ICreateTeam {
 }
 
 export const getTeams = async () => {
-    const result = await axios11.get<{ data: ITeam[] }>(`/teams`)
+    // const result = await axios11.get<{ data: ITeam[] }>(`/teams`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    return mockTeamList
 }
 
 export const getUserTeams = async (userId: string) => {
-    const result = await axios11.get<{ data: ITeam[] }>(`/teams/member/${userId}`)
+    // const result = await axios11.get<{ data: ITeam[] }>(`/teams/member/${userId}`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    console.log(userId)
+    return mockTeamList
 }
 
 export const getTeam = async (id: string) => {
-    const result = await axios11.get<{ data: ITeam }>(`/teams/${id}`)
+    // const result = await axios11.get<{ data: ITeam }>(`/teams/${id}`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    console.log(id)
+    return mockTeam
 }
 
 export const createTeam = async (createTeam: ICreateTeam) => {

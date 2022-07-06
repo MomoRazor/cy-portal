@@ -14,7 +14,7 @@ import {
     TextVariants,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
 import { UserOverlay } from '../projectComponents'
 import { getUsers, IUser } from '../restAPI'

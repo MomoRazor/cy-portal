@@ -1,4 +1,5 @@
 import {
+    AuthContext,
     Card,
     Colors,
     Container,
@@ -12,17 +13,23 @@ import {
     TextVariants,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
 import { TeamOverlay } from '../projectComponents'
-import { getTeams, ITeam } from '../restAPI'
+import { getTeams, getUserTeams, ITeam } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 
 interface TeamRow extends ITeam {
     actions: ReactNode
 }
 
-export const ViewTeams = () => {
+export interface IViewTeams {
+    myTeams?: boolean
+}
+
+export const ViewTeams = (props: IViewTeams) => {
+    const auth = useContext(AuthContext)
+
     const [showAddNew, setShowNew] = useState(false)
     const [editTeam, setEditTeam] = useState<ITeam>()
 
@@ -79,13 +86,13 @@ export const ViewTeams = () => {
             <SidebarPage>
                 <Container width="100%">
                     <Typography variant={TextVariants.h4} color={Colors.title}>
-                        Teams
+                        {props.myTeams ? 'My Teams' : 'Teams'}
                     </Typography>
                     <Spacer height="20px" />
 
                     <Card>
                         <Table
-                            apiCall={getTeams}
+                            apiCall={props.myTeams ? () => getUserTeams(auth.user.id) : getTeams}
                             parseRows={parseData}
                             headers={[
                                 { id: 'name', title: 'Name' },

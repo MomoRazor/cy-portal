@@ -1,4 +1,5 @@
 import {
+    AuthContext,
     Card,
     Colors,
     Container,
@@ -12,17 +13,23 @@ import {
     TextVariants,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
 import { CommunityOverlay } from '../projectComponents'
-import { getCommunities, ICommunity } from '../restAPI'
+import { getCommunities, getGuideCommunities, ICommunity } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 
 interface CommunityRow extends ICommunity {
     actions: ReactNode
 }
 
-export const ViewCommunities = () => {
+export interface IViewCommunities {
+    guidingCommunity?: boolean
+}
+
+export const ViewCommunities = (props: IViewCommunities) => {
+    const auth = useContext(AuthContext)
+
     const [showAddNew, setShowNew] = useState(false)
     const [editCommunity, setEditCommunity] = useState<ICommunity>()
 
@@ -79,13 +86,17 @@ export const ViewCommunities = () => {
             <SidebarPage>
                 <Container width="100%">
                     <Typography variant={TextVariants.h4} color={Colors.title}>
-                        Communities
+                        {props.guidingCommunity ? 'Guiding Communities' : 'Communities'}
                     </Typography>
                     <Spacer height="20px" />
 
                     <Card>
                         <Table
-                            apiCall={getCommunities}
+                            apiCall={
+                                props.guidingCommunity
+                                    ? () => getGuideCommunities(auth.user.id)
+                                    : getCommunities
+                            }
                             parseRows={parseData}
                             headers={[
                                 { id: 'name', title: 'Name' },

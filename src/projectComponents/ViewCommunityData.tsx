@@ -10,7 +10,7 @@ import {
     TitledRow,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { BiInfoCircle } from 'react-icons/bi'
 import { ICommunity } from '../restAPI'
 

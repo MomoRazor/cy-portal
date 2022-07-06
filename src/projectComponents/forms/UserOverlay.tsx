@@ -11,7 +11,7 @@ import {
     SnackbarType,
     useEnterSubmit
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { createUser, ICreateUser, IUser, updateUser } from '../../restAPI'
 import { UserFormSection } from './UserFormSection'
 

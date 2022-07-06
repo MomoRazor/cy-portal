@@ -9,12 +9,13 @@ import {
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
-import { ICommunity } from '../restAPI'
+import { ICommunity, IUser } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 import {
     CommunityOverlay,
+    UserOverlay,
     ViewCommunityData,
     ViewCommunityGuides,
     ViewCommunityMembers
@@ -31,6 +32,11 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
     const auth = useContext(AuthContext)
 
     const [showEditCommunity, setEditCommunity] = useState(false)
+
+    const [showAddNew, setShowNew] = useState(false)
+    const [editUser, setEditUser] = useState<IUser>()
+
+    const [isOverlay, setIsOverlay] = useState(false)
 
     const checkActive = (section: ISideMenuSection) => {
         if (router.query.section == section.link) {
@@ -65,6 +71,18 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
         setEditCommunity(false)
     }
 
+    const handleDiscardUser = () => {
+        setShowNew(false)
+        setEditUser(undefined)
+        setIsOverlay(false)
+    }
+
+    const saveDrawerUser = () => {
+        setEditUser(undefined)
+        setShowNew(false)
+        setIsOverlay(false)
+    }
+
     const getSections = (community: ICommunity) => {
         return [
             {
@@ -73,11 +91,25 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
             },
             {
                 link: 'Guides',
-                children: <ViewCommunityGuides community={community} />
+                children: (
+                    <ViewCommunityGuides
+                        community={community}
+                        setShowNew={setShowNew}
+                        setEditUser={setEditUser}
+                        setIsOverlay={setIsOverlay}
+                    />
+                )
             },
             {
                 link: 'Members',
-                children: <ViewCommunityMembers community={community} />
+                children: (
+                    <ViewCommunityMembers
+                        community={community}
+                        setShowNew={setShowNew}
+                        setEditUser={setEditUser}
+                        setIsOverlay={setIsOverlay}
+                    />
+                )
             }
         ]
     }
@@ -122,6 +154,15 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                 onSave={saveDrawer}
                 show={showEditCommunity}
                 data={props.community}
+            />
+            <UserOverlay
+                covered
+                onClose={handleDiscardUser}
+                onSave={saveDrawerUser}
+                show={showAddNew}
+                data={editUser}
+                isOverlay={isOverlay}
+                setIsOverlay={setIsOverlay}
             />
         </>
     )

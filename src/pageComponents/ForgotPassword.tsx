@@ -6,7 +6,7 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth'
 import { useRouter } from 'next/router'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 export const ForgotPassword = () => {
     const { addData } = useContext(SnackbarContext)

@@ -1,7 +1,8 @@
 import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CYPage, getUser, IUser, ViewUserId } from '../../src'
+import { mockUser } from '../../src/mock'
 
 const View = () => {
     const router = useRouter()
@@ -33,7 +34,8 @@ const View = () => {
             adminOnly
             // loginRequired
         >
-            <ViewUserId user={userData} setUser={setUserData} />
+            {/* TODO remove mock Data */}
+            <ViewUserId user={userData || mockUser} setUser={setUserData} />
         </CYPage>
     )
 }

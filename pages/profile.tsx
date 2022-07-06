@@ -1,7 +1,8 @@
 import { AuthContext, LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { CYPage, getUser, IUser, ViewUserId } from '../src'
+import { mockUser } from '../src/mock'
 
 const View = () => {
     const router = useRouter()
@@ -16,8 +17,9 @@ const View = () => {
     }, [router.isReady])
 
     const getUserData = async () => {
-        if (auth.user?._id) {
-            setUserData(await getUser(auth.user?._id))
+        if (auth.user?.id) {
+            const data = await getUser(auth.user?.id)
+            setUserData(data)
         } else {
             return
         }
@@ -33,7 +35,8 @@ const View = () => {
             setExtraData={setUserData}
             // loginRequired
         >
-            <ViewUserId user={userData} setUser={setUserData} />
+            {/* TODO remove mock Data */}
+            <ViewUserId user={userData || mockUser} setUser={setUserData} />
         </CYPage>
     )
 }

@@ -1,3 +1,4 @@
+import { mockUser, mockUserList } from '../mock'
 import { ICommunity } from './community'
 import { axios11 } from './config'
 import { ITeam } from './team'
@@ -20,33 +21,47 @@ export interface ICreateUser {
 }
 
 export const getUsers = async () => {
-    const result = await axios11.get<{ data: IUser[] }>(`/users`)
+    // const result = await axios11.get<{ data: IUser[] }>(`/users`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove mock data
+    return mockUserList
 }
 
 export const getUserMembersOfTeam = async (teamId: string) => {
-    const result = await axios11.get<{ data: IUser[] }>(`/users/members/team/${teamId}`)
+    // const result = await axios11.get<{ data: IUser[] }>(`/users/members/team/${teamId}`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    console.log(teamId)
+    return mockUserList
 }
 
 export const getUserMembersOfCommunity = async (communityId: string) => {
-    const result = await axios11.get<{ data: IUser[] }>(`/users/members/community/${communityId}`)
+    // const result = await axios11.get<{ data: IUser[] }>(`/users/members/community/${communityId}`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    console.log(communityId)
+    return mockUserList
 }
 
 export const getUserGuidesOfCommunity = async (communityId: string) => {
-    const result = await axios11.get<{ data: IUser[] }>(`/users/guides/community/${communityId}`)
+    // const result = await axios11.get<{ data: IUser[] }>(`/users/guides/community/${communityId}`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    console.log(communityId)
+    return mockUserList
 }
 
 export const getUser = async (id: string) => {
-    const result = await axios11.get<{ data: IUser }>(`/users/${id}`)
+    // const result = await axios11.get<{ data: IUser }>(`/users/${id}`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    console.log(id)
+    return mockUser
 }
 
 export const createUser = async (createUser: ICreateUser) => {
