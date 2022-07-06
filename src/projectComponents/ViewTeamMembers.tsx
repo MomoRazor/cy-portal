@@ -1,5 +1,5 @@
 import {
-    Card,
+    AuthContext,
     Colors,
     Container,
     Direction,
@@ -12,13 +12,15 @@ import {
     TextVariants,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useContext } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
 import { getUserMembersOfTeam, ITeam, IUser } from '../restAPI'
-import { UserOverlay } from './forms'
 
 export interface IViewTeamMembers {
     team: ITeam
+    setShowNew: (newShow: boolean) => void
+    setEditUser: (newUser: IUser) => void
+    setIsOverlay: (newOverlay: boolean) => void
 }
 
 interface UserRow extends IUser {
@@ -28,12 +30,13 @@ interface UserRow extends IUser {
     admin: ReactNode
 }
 
-export const ViewTeamMembers = (props: IViewTeamMembers) => {
-    const [showAddNew, setShowNew] = useState(false)
-    const [editUser, setEditUser] = useState<IUser>()
-
-    const [isOverlay, setIsOverlay] = useState(false)
-
+export const ViewTeamMembers = ({
+    setEditUser,
+    setShowNew,
+    setIsOverlay,
+    ...props
+}: IViewTeamMembers) => {
+    const auth = useContext(AuthContext)
     const parseData = (data: IUser[]) => {
         let array: UserRow[] = []
 
@@ -68,78 +71,56 @@ export const ViewTeamMembers = (props: IViewTeamMembers) => {
     }
 
     const actionsRow = useCallback(
-        (data: IUser) => (
-            <Container direction={Direction.row} padding="0">
-                <Linker to={`/users/${data.id}/`} width="auto">
-                    <IconButton>
-                        <BiShowAlt />
+        (data: IUser) =>
+            auth.user.isAdmin || auth.user.id === data.id ? (
+                <Container direction={Direction.row} padding="0">
+                    <Linker to={`/users/${data.id}/`} width="auto">
+                        <IconButton>
+                            <BiShowAlt />
+                        </IconButton>
+                    </Linker>
+                    <IconButton
+                        onClick={() => {
+                            setEditUser(data)
+                            setShowNew(true)
+                            setIsOverlay(true)
+                        }}
+                    >
+                        <BiEditAlt />
                     </IconButton>
-                </Linker>
-                <IconButton
-                    onClick={() => {
-                        setEditUser(data)
-                        setShowNew(true)
-                        setIsOverlay(true)
-                    }}
-                >
-                    <BiEditAlt />
-                </IconButton>
-            </Container>
-        ),
-        []
+                </Container>
+            ) : (
+                <></>
+            ),
+        [auth.user.id, auth.user.isAdmin, setEditUser, setIsOverlay, setShowNew]
     )
 
-    const handleDiscard = () => {
-        setShowNew(false)
-        setEditUser(undefined)
-        setIsOverlay(false)
-    }
-
-    const saveDrawer = () => {
-        setEditUser(undefined)
-        setShowNew(false)
-        setIsOverlay(false)
-    }
-
-    const apiCall = async () => {
+    const apiCall = useCallback(async () => {
         return await getUserMembersOfTeam(props.team.id)
-    }
+    }, [props.team.id])
 
     return (
-        <>
-            <Container padding="0">
-                <Typography variant={TextVariants.h4} color={Colors.title}>
-                    Team Members
-                </Typography>
-                <Spacer height="20px" />
+        <Container padding="0">
+            <Typography variant={TextVariants.h4} color={Colors.title}>
+                Team Members
+            </Typography>
+            <Spacer height="20px" />
 
-                <Card>
-                    <Table
-                        apiCall={apiCall}
-                        parseRows={parseData}
-                        headers={[
-                            { id: 'name', title: 'Name' },
-                            { id: 'surname', title: 'Surname' },
-                            { id: 'email', title: 'Email' },
-                            { id: 'communityMember', title: 'Community' },
-                            { id: 'communityGuide', title: 'Guide Of' },
-                            { id: 'admin', title: 'Is an Admin' },
-                            { id: 'actions', title: 'Actions' }
-                        ]}
-                        keyName="id"
-                        pagination={false}
-                    />
-                </Card>
-            </Container>
-            <UserOverlay
-                covered
-                onClose={handleDiscard}
-                onSave={saveDrawer}
-                show={showAddNew}
-                data={editUser}
-                isOverlay={isOverlay}
-                setIsOverlay={setIsOverlay}
+            <Table
+                apiCall={apiCall}
+                parseRows={parseData}
+                headers={[
+                    { id: 'name', title: 'Name' },
+                    { id: 'surname', title: 'Surname' },
+                    { id: 'email', title: 'Email' },
+                    { id: 'communityMember', title: 'Community' },
+                    { id: 'communityGuide', title: 'Guide Of' },
+                    { id: 'admin', title: 'Is an Admin' },
+                    { id: 'actions', title: 'Actions' }
+                ]}
+                keyName="id"
+                pagination={false}
             />
-        </>
+        </Container>
     )
 }

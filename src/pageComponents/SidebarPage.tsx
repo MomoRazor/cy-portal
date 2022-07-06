@@ -12,11 +12,10 @@ import {
     Topbar
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import React, { ReactNode, useContext } from 'react'
+import { ReactNode, useContext } from 'react'
 import { AiOutlineUser, AiOutlineLogout, AiOutlineHome } from 'react-icons/ai'
-import { sidebarNav, UserTypes } from '../nav'
+import { sidebarNavBuilder, UserTypes } from '../nav'
 import Image from 'next/image'
-import { getAuth } from 'firebase/auth'
 import logo from '../../public/logo_color_600px-no-bg.png'
 
 export interface ISidebarPage {
@@ -33,24 +32,19 @@ export const SidebarPage = (props: ISidebarPage) => {
     }
 
     const handleLogOutClick = async () => {
-        const firebaseAuth = getAuth()
-        if (auth) {
-            try {
-                await firebaseAuth.signOut()
-                auth.logout && auth.logout()
-                router.push('/')
-            } catch (e) {
-                console.error(e)
-            }
-        }
+        router.push('/logout')
     }
 
     const handleCommunityClick = () => {
-        router.push('/myCommunity')
+        router.push('/my-community')
     }
 
     const handleGuideCommunityClick = () => {
-        router.push('/guideCommunity')
+        router.push('/guide-community')
+    }
+
+    const handleTeamClinic = () => {
+        router.push('/my-teams')
     }
 
     const getName = () => {
@@ -82,7 +76,7 @@ export const SidebarPage = (props: ISidebarPage) => {
             options.push({
                 name: 'View My Teams',
                 icon: <AiOutlineHome />,
-                onClick: handleGuideCommunityClick
+                onClick: handleTeamClinic
             })
         }
 
@@ -115,7 +109,7 @@ export const SidebarPage = (props: ISidebarPage) => {
 
     return (
         <Sidebar
-            nav={sidebarNav}
+            nav={sidebarNavBuilder(auth.user)}
             permissionCheck={permissionCheck}
             logo={
                 <Container width="80%">

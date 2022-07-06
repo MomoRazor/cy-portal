@@ -1,3 +1,4 @@
+import { mockCommunity, mockCommunityList } from '../mock'
 import { axios11 } from './config'
 
 export interface ICommunity extends ICreateCommunity {
@@ -9,21 +10,29 @@ export interface ICreateCommunity {
 }
 
 export const getCommunities = async () => {
-    const result = await axios11.get<{ data: ICommunity[] }>(`/communities`)
+    // const result = await axios11.get<{ data: ICommunity[] }>(`/communities`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    return mockCommunityList
 }
 
 export const getGuideCommunities = async (userId: string) => {
-    const result = await axios11.get<{ data: ICommunity[] }>(`/communities/guide/${userId}`)
+    // const result = await axios11.get<{ data: ICommunity[] }>(`/communities/guide/${userId}`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    console.log(userId)
+    return mockCommunityList
 }
 
 export const getCommunity = async (id: string) => {
-    const result = await axios11.get<{ data: ICommunity }>(`/communities/${id}`)
+    // const result = await axios11.get<{ data: ICommunity }>(`/communities/${id}`)
+    // return result.data.data
 
-    return result.data.data
+    //TODO remove
+    console.log(id)
+    return mockCommunity
 }
 
 export const createCommunity = async (createCommunity: ICreateCommunity) => {

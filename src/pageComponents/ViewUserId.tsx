@@ -13,7 +13,7 @@ import {
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { IUser, setUserAdmin, unsetUserAdmin } from '../restAPI'
 import { SidebarPage } from './SidebarPage'

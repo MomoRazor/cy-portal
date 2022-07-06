@@ -5,13 +5,14 @@ import {
     Direction,
     Icon,
     Linker,
+    PointerEvents,
     SizeContext,
     Spacer,
     TextVariants,
     TitledRow,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { BiInfoCircle } from 'react-icons/bi'
 import { IUser } from '../restAPI'
 
@@ -70,7 +71,12 @@ export const ViewUserData = (props: IViewUserData) => {
                                     to={`/communities/${props.user.communityMemberOf.id}/`}
                                     width="auto"
                                 >
-                                    <Typography>{props.user.communityMemberOf.name}</Typography>
+                                    <Typography
+                                        color={Colors.primary}
+                                        pointerEvents={PointerEvents.none}
+                                    >
+                                        {props.user.communityMemberOf.name}
+                                    </Typography>
                                 </Linker>
                             }
                         />
@@ -86,7 +92,12 @@ export const ViewUserData = (props: IViewUserData) => {
                                     to={`/communities/${community.id}/`}
                                     width="auto"
                                 >
-                                    <Typography>{community.name}</Typography>
+                                    <Typography
+                                        color={Colors.primary}
+                                        pointerEvents={PointerEvents.none}
+                                    >
+                                        {community.name}
+                                    </Typography>
                                 </Linker>
                             ))}
                         />
@@ -95,10 +106,15 @@ export const ViewUserData = (props: IViewUserData) => {
                     )}
                     {props.user.teamMemberOf ? (
                         <TitledRow
-                            label="Guide Of"
+                            label="Team Member Of"
                             data={props.user.teamMemberOf.map((team) => (
                                 <Linker key={team.id} to={`/teams/${team.id}/`} width="auto">
-                                    <Typography>{team.name}</Typography>
+                                    <Typography
+                                        color={Colors.primary}
+                                        pointerEvents={PointerEvents.none}
+                                    >
+                                        {team.name}
+                                    </Typography>
                                 </Linker>
                             ))}
                         />

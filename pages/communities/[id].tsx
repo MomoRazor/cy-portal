@@ -1,7 +1,8 @@
 import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CYPage, getCommunity, ICommunity, ViewCommunityId } from '../../src'
+import { mockCommunity } from '../../src/mock'
 
 const View = () => {
     const router = useRouter()
@@ -36,7 +37,11 @@ const View = () => {
             adminOnly
             // loginRequired
         >
-            <ViewCommunityId community={communityData} setCommunity={setCommunityData} />
+            {/* TODO remove mock Data */}
+            <ViewCommunityId
+                community={communityData || mockCommunity}
+                setCommunity={setCommunityData}
+            />
         </CYPage>
     )
 }

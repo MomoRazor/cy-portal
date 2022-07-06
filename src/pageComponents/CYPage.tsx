@@ -8,7 +8,7 @@ import {
     SetExtraDataHandler
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import React, { ReactNode, useCallback, useContext } from 'react'
+import { ReactNode, useCallback, useContext } from 'react'
 import { firebaseConfig, hydrateDate } from '../auth'
 import { getAuth } from 'firebase/auth'
 
@@ -23,7 +23,7 @@ export interface ICYPage {
 }
 
 export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
-    const { login, logout, user } = useContext(AuthContext)
+    const { login, user } = useContext(AuthContext)
     const router = useRouter()
 
     const handleRenderSelection = () => {
@@ -54,14 +54,7 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
     return (
         <AuthPage
             logout={async () => {
-                const firebaseAuth = getAuth()
-                try {
-                    await firebaseAuth.signOut()
-                    logout && logout()
-                    router.push('/')
-                } catch (e) {
-                    console.error(e)
-                }
+                router.push('/logout')
             }}
             title={props.title}
             loginRequired={props.loginRequired}

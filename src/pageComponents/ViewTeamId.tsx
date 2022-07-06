@@ -9,11 +9,11 @@ import {
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
-import { ITeam } from '../restAPI'
+import { ITeam, IUser } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
-import { TeamOverlay, ViewTeamData, ViewTeamMembers } from '../projectComponents'
+import { TeamOverlay, UserOverlay, ViewTeamData, ViewTeamMembers } from '../projectComponents'
 
 export interface IViewTeamId {
     team?: ITeam
@@ -26,6 +26,11 @@ export const ViewTeamId = (props: IViewTeamId) => {
     const auth = useContext(AuthContext)
 
     const [showEditTeam, setEditTeam] = useState(false)
+
+    const [showAddNew, setShowNew] = useState(false)
+    const [editUser, setEditUser] = useState<IUser>()
+
+    const [isOverlay, setIsOverlay] = useState(false)
 
     const checkActive = (section: ISideMenuSection) => {
         if (router.query.section == section.link) {
@@ -60,6 +65,18 @@ export const ViewTeamId = (props: IViewTeamId) => {
         setEditTeam(false)
     }
 
+    const handleDiscardUser = () => {
+        setShowNew(false)
+        setEditUser(undefined)
+        setIsOverlay(false)
+    }
+
+    const saveDrawerUser = () => {
+        setEditUser(undefined)
+        setShowNew(false)
+        setIsOverlay(false)
+    }
+
     const getSections = (team: ITeam) => {
         return [
             {
@@ -68,7 +85,14 @@ export const ViewTeamId = (props: IViewTeamId) => {
             },
             {
                 link: 'Members',
-                children: <ViewTeamMembers team={team} />
+                children: (
+                    <ViewTeamMembers
+                        team={team}
+                        setShowNew={setShowNew}
+                        setEditUser={setEditUser}
+                        setIsOverlay={setIsOverlay}
+                    />
+                )
             }
         ]
     }
@@ -113,6 +137,15 @@ export const ViewTeamId = (props: IViewTeamId) => {
                 onSave={saveDrawer}
                 show={showEditTeam}
                 data={props.team}
+            />
+            <UserOverlay
+                covered
+                onClose={handleDiscardUser}
+                onSave={saveDrawerUser}
+                show={showAddNew}
+                data={editUser}
+                isOverlay={isOverlay}
+                setIsOverlay={setIsOverlay}
             />
         </>
     )
