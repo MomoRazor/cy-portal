@@ -12,7 +12,7 @@ import {
     Topbar
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import { ReactNode, useContext } from 'react'
+import { ReactNode, useCallback, useContext, useMemo } from 'react'
 import { AiOutlineUser, AiOutlineLogout, AiOutlineHome } from 'react-icons/ai'
 import { sidebarNavBuilder, UserTypes } from '../nav'
 import Image from 'next/image'
@@ -47,11 +47,11 @@ export const SidebarPage = (props: ISidebarPage) => {
         router.push('/my-teams')
     }
 
-    const getName = () => {
+    const getName = useCallback(() => {
         if (auth.user) {
             return auth.user.name
         }
-    }
+    }, [auth.user])
 
     const getOptions = () => {
         let options = []
@@ -107,30 +107,17 @@ export const SidebarPage = (props: ISidebarPage) => {
         return true
     }
 
+    const nav = useMemo(() => sidebarNavBuilder(auth.user), [auth.user])
+
     return (
         <Sidebar
-            nav={sidebarNavBuilder(auth.user)}
+            nav={nav}
             permissionCheck={permissionCheck}
             logo={
                 <Container width="80%">
                     <Image src={logo} alt="Logo" />
                 </Container>
             }
-            // favicon={
-            //     <>
-            //         <Spacer />
-            //         <Image src={iconLogo} alt="Logo" />
-            //     </>
-            // }
-            // footer={
-            //     <Container padding="20px 0" width="100%" crossAxis={Alignment.center}>
-            //         <Container padding="0" width="75%">
-            //             <Image src={imgFooter1} alt="Footer img 1" />
-            //             <Spacer />
-            //             <Image src={imgFooter2} alt="Footer img 2" />
-            //         </Container>
-            //     </Container>
-            // }
         >
             <Topbar
                 showBreadCrumb
