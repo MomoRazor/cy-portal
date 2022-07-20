@@ -2,7 +2,7 @@ import { AuthContext, LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import { CYPage, getCommunity, ICommunity, ViewCommunityId } from '../src'
-import { mockCommunity } from '../src/mock'
+// import { mockCommunity } from '../src/mock'
 
 const View = () => {
     const router = useRouter()
@@ -35,11 +35,15 @@ const View = () => {
             ]}
             loadExtraDetail={getCommunityData}
             setExtraData={setCommunityData}
+            //TODO Enable
             // loginRequired
         >
             {/* TODO remove mock Data */}
             <ViewCommunityId
-                community={communityData || mockCommunity}
+                community={
+                    communityData
+                    // || mockCommunity
+                }
                 setCommunity={setCommunityData}
             />
         </CYPage>

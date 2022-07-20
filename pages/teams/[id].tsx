@@ -32,6 +32,7 @@ const View = () => {
             loadExtraDetail={getTeamData}
             setExtraData={setTeamData}
             adminOnly
+            //TODO Enable
             // loginRequired
         >
             {/* TODO remove mock Data */}

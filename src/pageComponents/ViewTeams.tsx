@@ -81,6 +81,11 @@ export const ViewTeams = (props: IViewTeams) => {
         setIsOverlay(false)
     }
 
+    const onAddTeam = () => {
+        setShowNew(true)
+        setIsOverlay(true)
+    }
+
     return (
         <>
             <SidebarPage>
@@ -109,16 +114,12 @@ export const ViewTeams = (props: IViewTeams) => {
                 right="40px"
                 bottom="30px"
                 width="auto"
-                onClick={() => {
-                    setShowNew(true)
-                    setIsOverlay(true)
-                }}
+                onClick={onAddTeam}
                 zIndex={5}
             >
                 <Typography color={Colors.textOnPrimary}>Add Team</Typography>
             </FloatingIconButton>
             <TeamOverlay
-                covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showAddNew}

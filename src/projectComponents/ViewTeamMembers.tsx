@@ -14,10 +14,12 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback, useContext } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import { getUserMembersOfTeam, ITeam, IUser } from '../restAPI'
+import { getUserMembersOfTeam, ITeam, IUser, unassignUserFromTeam } from '../restAPI'
 
 export interface IViewTeamMembers {
     team: ITeam
+    dirtyTable: boolean
+    setDirtyTable: (newDirty: boolean) => void
     setShowNew: (newShow: boolean) => void
     setEditUser: (newUser: IUser) => void
     setIsOverlay: (newOverlay: boolean) => void
@@ -88,11 +90,22 @@ export const ViewTeamMembers = ({
                     >
                         <BiEditAlt />
                     </IconButton>
+                    {auth.user.isAdmin ? (
+                        <IconButton
+                            onClick={async () => {
+                                await unassignUserFromTeam(data.id, props.team.id)
+                            }}
+                        >
+                            <BiEditAlt />
+                        </IconButton>
+                    ) : (
+                        <></>
+                    )}
                 </Container>
             ) : (
                 <></>
             ),
-        [auth.user.id, auth.user.isAdmin, setEditUser, setIsOverlay, setShowNew]
+        [auth.user.id, auth.user.isAdmin, props.team.id, setEditUser, setIsOverlay, setShowNew]
     )
 
     const apiCall = useCallback(async () => {
@@ -119,6 +132,8 @@ export const ViewTeamMembers = ({
                     { id: 'actions', title: 'Actions' }
                 ]}
                 keyName="id"
+                dirty={props.dirtyTable}
+                setDirty={props.setDirtyTable}
                 pagination={false}
             />
         </Container>

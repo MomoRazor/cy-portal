@@ -18,9 +18,6 @@ import { UserFormSection } from './UserFormSection'
 export interface IUserOverlay {
     show: boolean
     data?: IUser
-    secondaryPanel?: boolean
-    covered?: boolean
-    zIndex?: number
     onClose: EmptyFunctionHandler
     onSave: (newData?: IUser) => void
     isOverlay?: boolean
@@ -140,11 +137,10 @@ export const UserOverlay = (props: IUserOverlay) => {
     return (
         <>
             <Overlay
-                zIndex={props.zIndex}
-                covered={props.covered}
+                covered
                 show={props.show}
                 direction={OverlayDirection.right}
-                openSize={props.secondaryPanel ? '480px' : '500px'}
+                openSize="500px"
                 dismissable
                 shadow={Colors.shadow}
                 shadowDim={Settings.shadowDimensions}

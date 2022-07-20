@@ -6,6 +6,7 @@ const ViewTeamsPage = () => (
         title="Teams"
         breadCrumb={[{ display: 'Home', id: '/profile' }, { display: 'Teams' }]}
         adminOnly
+        //TODO Enable
         // loginRequired
     >
         <ViewTeams />

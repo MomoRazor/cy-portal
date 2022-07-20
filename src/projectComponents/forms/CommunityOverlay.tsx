@@ -18,9 +18,6 @@ import { CommunityFormSection } from './CommunityFormSection'
 export interface ICommunityOverlay {
     show: boolean
     data?: ICommunity
-    secondaryPanel?: boolean
-    covered?: boolean
-    zIndex?: number
     onClose: EmptyFunctionHandler
     onSave: (newData?: ICommunity) => void
     isOverlay?: boolean
@@ -112,11 +109,10 @@ export const CommunityOverlay = (props: ICommunityOverlay) => {
     return (
         <>
             <Overlay
-                zIndex={props.zIndex}
-                covered={props.covered}
+                covered
                 show={props.show}
                 direction={OverlayDirection.right}
-                openSize={props.secondaryPanel ? '480px' : '500px'}
+                openSize="500px"
                 dismissable
                 shadow={Colors.shadow}
                 shadowDim={Settings.shadowDimensions}

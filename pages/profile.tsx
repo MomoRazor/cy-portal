@@ -2,7 +2,7 @@ import { AuthContext, LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import { CYPage, getUser, IUser, ViewUserId } from '../src'
-import { mockUser } from '../src/mock'
+// import { mockUser } from '../src/mock'
 
 const View = () => {
     const router = useRouter()
@@ -33,10 +33,17 @@ const View = () => {
             breadCrumb={[{ display: 'Profile' }]}
             loadExtraDetail={getUserData}
             setExtraData={setUserData}
+            //TODO Enable
             // loginRequired
         >
             {/* TODO remove mock Data */}
-            <ViewUserId user={userData || mockUser} setUser={setUserData} />
+            <ViewUserId
+                user={
+                    userData
+                    // || mockUser
+                }
+                setUser={setUserData}
+            />
         </CYPage>
     )
 }

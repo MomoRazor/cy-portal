@@ -134,29 +134,29 @@ export const ViewUserId = (props: IViewUserId) => {
                 })
             }
 
-            buttons.push({
-                width: 'auto',
-                onClick: async () => {
-                    // setShowAssignCommunity(true)
-                },
-                children: <Typography color={Colors.textOnPrimary}>Community Membership</Typography>
-            })
+            // buttons.push({
+            //     width: 'auto',
+            //     onClick: async () => {
+            //         // setShowAssignCommunity(true)
+            //     },
+            //     children: <Typography color={Colors.textOnPrimary}>Community Membership</Typography>
+            // })
 
-            buttons.push({
-                width: 'auto',
-                onClick: async () => {
-                    // setShowGuidesCommunities(true)
-                },
-                children: <Typography color={Colors.textOnPrimary}>Community Guide</Typography>
-            })
+            // buttons.push({
+            //     width: 'auto',
+            //     onClick: async () => {
+            //         // setShowGuidesCommunities(true)
+            //     },
+            //     children: <Typography color={Colors.textOnPrimary}>Community Guide</Typography>
+            // })
 
-            buttons.push({
-                width: 'auto',
-                onClick: async () => {
-                    // setShowAssignTeams(true)
-                },
-                children: <Typography color={Colors.textOnPrimary}>Team Membership</Typography>
-            })
+            // buttons.push({
+            //     width: 'auto',
+            //     onClick: async () => {
+            //         // setShowAssignTeams(true)
+            //     },
+            //     children: <Typography color={Colors.textOnPrimary}>Team Membership</Typography>
+            // })
         }
 
         return buttons
@@ -198,7 +198,6 @@ export const ViewUserId = (props: IViewUserId) => {
                 buttons={getFloatingButtons()}
             />
             <UserOverlay
-                covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showEditUser}

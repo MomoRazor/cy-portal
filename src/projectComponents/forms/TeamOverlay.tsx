@@ -18,9 +18,6 @@ import { TeamFormSection } from './TeamFormSection'
 export interface ITeamOverlay {
     show: boolean
     data?: ITeam
-    secondaryPanel?: boolean
-    covered?: boolean
-    zIndex?: number
     onClose: EmptyFunctionHandler
     onSave: (newData?: ITeam) => void
     isOverlay?: boolean
@@ -110,11 +107,10 @@ export const TeamOverlay = (props: ITeamOverlay) => {
     return (
         <>
             <Overlay
-                zIndex={props.zIndex}
-                covered={props.covered}
+                covered
                 show={props.show}
                 direction={OverlayDirection.right}
-                openSize={props.secondaryPanel ? '480px' : '500px'}
+                openSize="500px"
                 dismissable
                 shadow={Colors.shadow}
                 shadowDim={Settings.shadowDimensions}

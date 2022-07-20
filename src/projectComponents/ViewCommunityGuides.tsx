@@ -14,7 +14,12 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback, useContext, useMemo } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import { getUserGuidesOfCommunity, ICommunity, IUser } from '../restAPI'
+import {
+    getUserGuidesOfCommunity,
+    ICommunity,
+    IUser,
+    unassignUserFromCommunityAsGuide
+} from '../restAPI'
 
 export interface IViewCommunityGuides {
     community: ICommunity
@@ -88,11 +93,22 @@ export const ViewCommunityGuides = ({
                     >
                         <BiEditAlt />
                     </IconButton>
+                    {auth.user.isAdmin ? (
+                        <IconButton
+                            onClick={async () => {
+                                await unassignUserFromCommunityAsGuide(data.id, props.community.id)
+                            }}
+                        >
+                            <BiEditAlt />
+                        </IconButton>
+                    ) : (
+                        <></>
+                    )}
                 </Container>
             ) : (
                 <></>
             ),
-        [auth.user.id, auth.user.isAdmin, setEditUser, setIsOverlay, setShowNew]
+        [auth.user.id, auth.user.isAdmin, props.community.id, setEditUser, setIsOverlay, setShowNew]
     )
 
     const apiCall = useCallback(async () => {
