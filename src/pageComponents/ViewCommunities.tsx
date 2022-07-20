@@ -122,7 +122,6 @@ export const ViewCommunities = (props: IViewCommunities) => {
                 <Typography color={Colors.textOnPrimary}>Add Community</Typography>
             </FloatingIconButton>
             <CommunityOverlay
-                covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showAddNew}
