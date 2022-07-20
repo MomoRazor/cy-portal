@@ -152,7 +152,6 @@ export const ViewUsers = () => {
                 <Typography color={Colors.textOnPrimary}>Add User</Typography>
             </FloatingIconButton>
             <UserOverlay
-                covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showAddNew}

@@ -149,14 +149,12 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                 <></>
             )}
             <CommunityOverlay
-                covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showEditCommunity}
                 data={props.community}
             />
             <UserOverlay
-                covered
                 onClose={handleDiscardUser}
                 onSave={saveDrawerUser}
                 show={showAddNew}
