@@ -10,14 +10,14 @@
         "npm-check": "npx npm-check -u -E"
     },
     "dependencies": {
-        "@sector-eleven-ltd/se-react-toolkit": "1.9.56",
+        "@sector-eleven-ltd/se-react-toolkit": "1.9.58",
         "dotenv": "16.0.1",
         "next": "12.2.5",
         "react": "17.0.2",
         "react-dom": "17.0.2"
     },
     "devDependencies": {
-        "@types/node": "18.7.3",
+        "@types/node": "18.7.6",
         "@types/react": "17.0.2",
         "@types/react-dom": "17.0.2",
         "eslint": "8.22.0",
