@@ -6,7 +6,7 @@ const ViewCommunitiesPage = () => (
         title="Communities"
         breadCrumb={[{ display: 'Home', id: '/profile' }, { display: 'Communities' }]}
         adminOnly
-        // loginRequired
+        loginRequired
     >
         <ViewCommunities />
     </CYPage>

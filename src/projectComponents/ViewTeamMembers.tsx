@@ -14,10 +14,12 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback, useContext } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import { getUserMembersOfTeam, ITeam, IUser } from '../restAPI'
+import { getUserMembersOfTeam, ITeam, IUser, unassignUserFromTeam } from '../restAPI'
 
 export interface IViewTeamMembers {
     team: ITeam
+    dirtyTable: boolean
+    setDirtyTable: (newDirty: boolean) => void
     setShowNew: (newShow: boolean) => void
     setEditUser: (newUser: IUser) => void
     setIsOverlay: (newOverlay: boolean) => void
@@ -51,8 +53,8 @@ export const ViewTeamMembers = ({
                     </Linker>
                 ),
                 communityGuide:
-                    data.communityGuideOf?.map((community) => (
-                        <Linker key={community.id} to={`/communities/${community.id}/`}>
+                    data.communitiesGuideOf?.map((community) => (
+                        <Linker key={community._id} to={`/communities/${community._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {community.name || ''}
                             </Typography>
@@ -72,9 +74,9 @@ export const ViewTeamMembers = ({
 
     const actionsRow = useCallback(
         (data: IUser) =>
-            auth.user.isAdmin || auth.user.id === data.id ? (
+            auth.user.isAdmin || auth.user._id === data._id ? (
                 <Container direction={Direction.row} padding="0">
-                    <Linker to={`/users/${data.id}/`} width="auto">
+                    <Linker to={`/users/${data._id}/`} width="auto">
                         <IconButton>
                             <BiShowAlt />
                         </IconButton>
@@ -88,16 +90,27 @@ export const ViewTeamMembers = ({
                     >
                         <BiEditAlt />
                     </IconButton>
+                    {auth.user.isAdmin ? (
+                        <IconButton
+                            onClick={async () => {
+                                await unassignUserFromTeam(data._id, props.team._id)
+                            }}
+                        >
+                            <BiEditAlt />
+                        </IconButton>
+                    ) : (
+                        <></>
+                    )}
                 </Container>
             ) : (
                 <></>
             ),
-        [auth.user.id, auth.user.isAdmin, setEditUser, setIsOverlay, setShowNew]
+        [auth.user._id, auth.user.isAdmin, props.team._id, setEditUser, setIsOverlay, setShowNew]
     )
 
     const apiCall = useCallback(async () => {
-        return await getUserMembersOfTeam(props.team.id)
-    }, [props.team.id])
+        return await getUserMembersOfTeam(props.team._id)
+    }, [props.team._id])
 
     return (
         <Container padding="0">
@@ -119,6 +132,8 @@ export const ViewTeamMembers = ({
                     { id: 'actions', title: 'Actions' }
                 ]}
                 keyName="id"
+                dirty={props.dirtyTable}
+                setDirty={props.setDirtyTable}
                 pagination={false}
             />
         </Container>

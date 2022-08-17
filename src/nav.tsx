@@ -45,7 +45,7 @@ export const sidebarNavBuilder = (user: IUser) => {
         })
     }
 
-    if (user.communityGuideOf) {
+    if (user.communitiesGuideOf && user.communitiesGuideOf.length > 0) {
         sidebarNav.push({
             title: 'Guiding Communities',
             link: '/guide-communities',
@@ -64,7 +64,7 @@ export const sidebarNavBuilder = (user: IUser) => {
         permission: [UserTypes.admin]
     })
 
-    if (user.teamMemberOf) {
+    if (user.teamMemberOf && user.teamMemberOf.length > 0) {
         sidebarNav.push({
             title: 'My Teams',
             link: '/my-teams',

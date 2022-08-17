@@ -2,7 +2,7 @@ import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { CYPage, getUser, IUser, ViewUserId } from '../../src'
-import { mockUser } from '../../src/mock'
+// import { mockUser } from '../../src/mock'
 
 const View = () => {
     const router = useRouter()
@@ -16,26 +16,24 @@ const View = () => {
     }, [router.isReady])
 
     const getUserData = async () => {
-        if (router.query.id) {
-            setUserData(await getUser(router.query.id.toString()))
-        } else {
-            return
-        }
+        return await getUser(router.query._id ? router.query._id.toString() : '')
     }
 
     return isLoading ? (
         <LoadingPage />
     ) : (
         <CYPage
-            title={userData?.name}
-            breadCrumb={[{ display: 'Home', id: '/profile' }, { display: userData?.name || '' }]}
+            title={userData?.displayName}
+            breadCrumb={[
+                { display: 'Home', id: '/profile' },
+                { display: userData?.displayName || '' }
+            ]}
             loadExtraDetail={getUserData}
             setExtraData={setUserData}
             adminOnly
-            // loginRequired
+            loginRequired
         >
-            {/* TODO remove mock Data */}
-            <ViewUserId user={userData || mockUser} setUser={setUserData} />
+            <ViewUserId user={userData} setUser={setUserData} />
         </CYPage>
     )
 }

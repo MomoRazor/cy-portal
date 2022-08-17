@@ -7,23 +7,23 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "npm-check": "npx npm-check -u"
+        "npm-check": "npx npm-check -u -E"
     },
     "dependencies": {
-        "@sector-eleven-ltd/se-react-toolkit": "^1.9.30",
-        "dotenv": "^16.0.1",
-        "next": "12.1.6",
+        "@sector-eleven-ltd/se-react-toolkit": "1.9.58",
+        "dotenv": "16.0.1",
+        "next": "12.2.5",
         "react": "17.0.2",
         "react-dom": "17.0.2"
     },
     "devDependencies": {
-        "@types/node": "^18.0.0",
-        "@types/react": "^18.0.14",
-        "@types/react-dom": "18.0.5",
-        "eslint": "^8.18.0",
-        "eslint-config-next": "12.1.6",
-        "npm-check": "^5.9.2",
-        "typescript": "^4.7.4"
+        "@types/node": "18.7.6",
+        "@types/react": "17.0.2",
+        "@types/react-dom": "17.0.2",
+        "eslint": "8.22.0",
+        "eslint-config-next": "12.2.5",
+        "npm-check": "6.0.1",
+        "typescript": "4.7.4"
     },
     "engines": {
         "node": "16.x"

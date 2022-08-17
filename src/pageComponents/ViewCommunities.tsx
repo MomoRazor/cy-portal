@@ -32,13 +32,12 @@ export const ViewCommunities = (props: IViewCommunities) => {
 
     const [showAddNew, setShowNew] = useState(false)
     const [editCommunity, setEditCommunity] = useState<ICommunity>()
+    const [dirty, setDirty] = useState(false)
 
-    const [isOverlay, setIsOverlay] = useState(false)
-
-    const parseData = (data: ICommunity[]) => {
+    const parseData = (args: { data: ICommunity[] }) => {
         let array: CommunityRow[] = []
 
-        data.map((data) => {
+        args.data.map((data) => {
             return array.push({
                 ...data,
                 actions: actionsRow(data)
@@ -50,7 +49,7 @@ export const ViewCommunities = (props: IViewCommunities) => {
     const actionsRow = useCallback(
         (data: ICommunity) => (
             <Container direction={Direction.row} padding="0">
-                <Linker to={`/communities/${data.id}/`} width="auto">
+                <Linker to={`/communities/${data._id}/`} width="auto">
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
@@ -59,7 +58,6 @@ export const ViewCommunities = (props: IViewCommunities) => {
                     onClick={() => {
                         setEditCommunity(data)
                         setShowNew(true)
-                        setIsOverlay(true)
                     }}
                 >
                     <BiEditAlt />
@@ -72,13 +70,12 @@ export const ViewCommunities = (props: IViewCommunities) => {
     const handleDiscard = () => {
         setShowNew(false)
         setEditCommunity(undefined)
-        setIsOverlay(false)
     }
 
     const saveDrawer = () => {
         setEditCommunity(undefined)
         setShowNew(false)
-        setIsOverlay(false)
+        setDirty(true)
     }
 
     return (
@@ -92,9 +89,11 @@ export const ViewCommunities = (props: IViewCommunities) => {
 
                     <Card>
                         <Table
+                            dirty={dirty}
+                            setDirty={setDirty}
                             apiCall={
                                 props.guidingCommunity
-                                    ? () => getGuideCommunities(auth.user.id)
+                                    ? () => getGuideCommunities(auth.user._id)
                                     : getCommunities
                             }
                             parseRows={parseData}
@@ -115,20 +114,16 @@ export const ViewCommunities = (props: IViewCommunities) => {
                 width="auto"
                 onClick={() => {
                     setShowNew(true)
-                    setIsOverlay(true)
                 }}
                 zIndex={5}
             >
                 <Typography color={Colors.textOnPrimary}>Add Community</Typography>
             </FloatingIconButton>
             <CommunityOverlay
-                covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showAddNew}
                 data={editCommunity}
-                isOverlay={isOverlay}
-                setIsOverlay={setIsOverlay}
             />
         </>
     )

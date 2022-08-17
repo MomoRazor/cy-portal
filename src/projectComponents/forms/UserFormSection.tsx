@@ -2,12 +2,9 @@ import { PanelFormSection, TextField } from '@sector-eleven-ltd/se-react-toolkit
 import { ChangeEvent } from 'react'
 
 export interface IUserFormSection {
-    name: string
-    setName: (data: string) => void
-    errorName: string
-    surname: string
-    setSurname: (data: string) => void
-    errorSurname: string
+    displayName: string
+    setDisplayName: (data: string) => void
+    errorDisplayName: string
     email: string
     setEmail: (data: string) => void
     errorEmail: string
@@ -16,18 +13,11 @@ export interface IUserFormSection {
 export const UserFormSection = (props: IUserFormSection) => (
     <PanelFormSection title="User Basic information">
         <TextField
-            value={props.name}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => props.setName(e.target.value)}
+            value={props.displayName}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => props.setDisplayName(e.target.value)}
             width="100%"
             label="Name"
-            error={props.errorName}
-        />
-        <TextField
-            value={props.name}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => props.setSurname(e.target.value)}
-            width="100%"
-            label="Surname"
-            error={props.errorSurname}
+            error={props.errorDisplayName}
         />
         <TextField
             value={props.email}

@@ -54,9 +54,13 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                 shallow: true
             })
         } else {
-            router.push(`/communities/${props.community?.id}?section=` + section?.link, undefined, {
-                shallow: true
-            })
+            router.push(
+                `/communities/${props.community?._id}?section=` + section?.link,
+                undefined,
+                {
+                    shallow: true
+                }
+            )
         }
     }
 
@@ -126,7 +130,7 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                             checkActive={checkActive}
                             navFunc={navFunc}
                             title={props.community.name}
-                            description={`ID: ${props.community.id}`}
+                            description={`ID: ${props.community._id}`}
                             sections={getSections(props.community)}
                         />
                     )}
@@ -149,14 +153,12 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                 <></>
             )}
             <CommunityOverlay
-                covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showEditCommunity}
                 data={props.community}
             />
             <UserOverlay
-                covered
                 onClose={handleDiscardUser}
                 onSave={saveDrawerUser}
                 show={showAddNew}

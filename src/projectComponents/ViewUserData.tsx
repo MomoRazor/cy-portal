@@ -40,10 +40,9 @@ export const ViewUserData = (props: IViewUserData) => {
                 mainAxis={Alignment.spaceBetween}
             >
                 <Container width={size.mobile ? '100%' : '50%'} padding="0">
-                    <TitledRow label="Name" data={<Typography>{props.user.name}</Typography>} />
                     <TitledRow
-                        label="Surname"
-                        data={<Typography>{props.user.surname}</Typography>}
+                        label="Display name"
+                        data={<Typography>{props.user.displayName}</Typography>}
                     />
                     <TitledRow label="Email" data={<Typography>{props.user.email}</Typography>} />
                 </Container>
@@ -68,7 +67,7 @@ export const ViewUserData = (props: IViewUserData) => {
                             label="Member Of"
                             data={
                                 <Linker
-                                    to={`/communities/${props.user.communityMemberOf.id}/`}
+                                    to={`/communities/${props.user.communityMemberOf._id}/`}
                                     width="auto"
                                 >
                                     <Typography
@@ -83,13 +82,13 @@ export const ViewUserData = (props: IViewUserData) => {
                     ) : (
                         <></>
                     )}
-                    {props.user.communityGuideOf ? (
+                    {props.user.communitiesGuideOf ? (
                         <TitledRow
                             label="Guide Of"
-                            data={props.user.communityGuideOf.map((community) => (
+                            data={props.user.communitiesGuideOf.map((community) => (
                                 <Linker
-                                    key={community.id}
-                                    to={`/communities/${community.id}/`}
+                                    key={community._id}
+                                    to={`/communities/${community._id}/`}
                                     width="auto"
                                 >
                                     <Typography
@@ -108,7 +107,7 @@ export const ViewUserData = (props: IViewUserData) => {
                         <TitledRow
                             label="Team Member Of"
                             data={props.user.teamMemberOf.map((team) => (
-                                <Linker key={team.id} to={`/teams/${team.id}/`} width="auto">
+                                <Linker key={team._id} to={`/teams/${team._id}/`} width="auto">
                                     <Typography
                                         color={Colors.primary}
                                         pointerEvents={PointerEvents.none}

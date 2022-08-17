@@ -11,10 +11,8 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import darkLogo from '../../public/logo_color_600px-no-bg.png'
 import Image from 'next/image'
-//TODO renable this
-// import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-// import { hydrateDate } from '../auth'
-import { mockUser } from '../mock'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { hydrateDate } from '../auth'
 
 export const Login = () => {
     const { addData } = useContext(SnackbarContext)
@@ -25,8 +23,7 @@ export const Login = () => {
     const loggedInPage = 'profile'
 
     const handleEmailSignIn = async (email: string, password: string) => {
-        //TODO renable this
-        // const firebaseAuth = getAuth()
+        const firebaseAuth = getAuth()
 
         if (email === '') {
             displaySnackbar('Email is required', SnackbarType.error, addData)
@@ -39,13 +36,8 @@ export const Login = () => {
         }
 
         try {
-            //TODO renable this
-            // const firebaseUser = await signInWithEmailAndPassword(firebaseAuth, email, password)
-            // const result = await hydrateDate(firebaseUser.user)
-            const result = {
-                result: APICallResult.success,
-                data: mockUser
-            }
+            const firebaseUser = await signInWithEmailAndPassword(firebaseAuth, email, password)
+            const result = await hydrateDate(firebaseUser.user)
 
             if (result.result === APICallResult.success) {
                 auth.login && auth.login(result.data)

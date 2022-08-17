@@ -33,12 +33,12 @@ export const ViewTeams = (props: IViewTeams) => {
     const [showAddNew, setShowNew] = useState(false)
     const [editTeam, setEditTeam] = useState<ITeam>()
 
-    const [isOverlay, setIsOverlay] = useState(false)
+    const [dirty, setDirty] = useState(false)
 
-    const parseData = (data: ITeam[]) => {
+    const parseData = (args: { data: ITeam[] }) => {
         let array: TeamRow[] = []
 
-        data.map((data) => {
+        args.data.map((data) => {
             return array.push({
                 ...data,
                 actions: actionsRow(data)
@@ -50,7 +50,7 @@ export const ViewTeams = (props: IViewTeams) => {
     const actionsRow = useCallback(
         (data: ITeam) => (
             <Container direction={Direction.row} padding="0">
-                <Linker to={`/teams/${data.id}/`} width="auto">
+                <Linker to={`/teams/${data._id}/`} width="auto">
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
@@ -59,7 +59,6 @@ export const ViewTeams = (props: IViewTeams) => {
                     onClick={() => {
                         setEditTeam(data)
                         setShowNew(true)
-                        setIsOverlay(true)
                     }}
                 >
                     <BiEditAlt />
@@ -72,13 +71,16 @@ export const ViewTeams = (props: IViewTeams) => {
     const handleDiscard = () => {
         setShowNew(false)
         setEditTeam(undefined)
-        setIsOverlay(false)
     }
 
     const saveDrawer = () => {
         setEditTeam(undefined)
         setShowNew(false)
-        setIsOverlay(false)
+        setDirty(true)
+    }
+
+    const onAddTeam = () => {
+        setShowNew(true)
     }
 
     return (
@@ -92,7 +94,9 @@ export const ViewTeams = (props: IViewTeams) => {
 
                     <Card>
                         <Table
-                            apiCall={props.myTeams ? () => getUserTeams(auth.user.id) : getTeams}
+                            dirty={dirty}
+                            setDirty={setDirty}
+                            apiCall={props.myTeams ? () => getUserTeams(auth.user._id) : getTeams}
                             parseRows={parseData}
                             headers={[
                                 { id: 'name', title: 'Name' },
@@ -109,22 +113,16 @@ export const ViewTeams = (props: IViewTeams) => {
                 right="40px"
                 bottom="30px"
                 width="auto"
-                onClick={() => {
-                    setShowNew(true)
-                    setIsOverlay(true)
-                }}
+                onClick={onAddTeam}
                 zIndex={5}
             >
                 <Typography color={Colors.textOnPrimary}>Add Team</Typography>
             </FloatingIconButton>
             <TeamOverlay
-                covered
                 onClose={handleDiscard}
                 onSave={saveDrawer}
                 show={showAddNew}
                 data={editTeam}
-                isOverlay={isOverlay}
-                setIsOverlay={setIsOverlay}
             />
         </>
     )

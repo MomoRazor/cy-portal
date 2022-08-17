@@ -2,7 +2,7 @@ import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { CYPage, getCommunity, ICommunity, ViewCommunityId } from '../../src'
-import { mockCommunity } from '../../src/mock'
+// import { mockCommunity } from '../../src/mock'
 
 const View = () => {
     const router = useRouter()
@@ -16,11 +16,7 @@ const View = () => {
     }, [router.isReady])
 
     const getCommunityData = async () => {
-        if (router.query.id) {
-            setCommunityData(await getCommunity(router.query.id.toString()))
-        } else {
-            return
-        }
+        return await getCommunity(router.query._id ? router.query._id.toString() : '')
     }
 
     return isLoading ? (
@@ -35,13 +31,9 @@ const View = () => {
             loadExtraDetail={getCommunityData}
             setExtraData={setCommunityData}
             adminOnly
-            // loginRequired
+            loginRequired
         >
-            {/* TODO remove mock Data */}
-            <ViewCommunityId
-                community={communityData || mockCommunity}
-                setCommunity={setCommunityData}
-            />
+            <ViewCommunityId community={communityData} setCommunity={setCommunityData} />
         </CYPage>
     )
 }

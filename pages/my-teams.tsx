@@ -6,7 +6,7 @@ const ViewMyTeamsPage = () => (
         title="My Teams"
         breadCrumb={[{ display: 'Home', id: '/profile' }, { display: 'My Teams' }]}
         adminOnly
-        // loginRequired
+        loginRequired
     >
         <ViewTeams myTeams />
     </CYPage>
