@@ -23,7 +23,6 @@ import { SidebarPage } from './SidebarPage'
 interface UserRow extends IUser {
     actions: ReactNode
     communityMember: ReactNode
-    communityGuide: ReactNode
     teamMember: ReactNode
     admin: ReactNode
 }
@@ -34,10 +33,10 @@ export const ViewUsers = () => {
 
     const [isOverlay, setIsOverlay] = useState(false)
 
-    const parseData = (data: IUser[]) => {
+    const parseData = (args: { data: IUser[] }) => {
         let array: UserRow[] = []
 
-        data.map((data) => {
+        args.data.map((data) => {
             return array.push({
                 ...data,
                 communityMember: (
@@ -47,17 +46,9 @@ export const ViewUsers = () => {
                         </Typography>
                     </Linker>
                 ),
-                communityGuide:
-                    data.communityGuideOf?.map((community) => (
-                        <Linker key={community.id} to={`/communities/${community.id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {community.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
                 teamMember:
                     data.teamMemberOf?.map((team) => (
-                        <Linker key={team.id} to={`/teams/${team.id}/`}>
+                        <Linker key={team._id} to={`/teams/${team._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {team.name || ''}
                             </Typography>
@@ -78,7 +69,7 @@ export const ViewUsers = () => {
     const actionsRow = useCallback(
         (data: IUser) => (
             <Container direction={Direction.row} padding="0">
-                <Linker to={`/users/${data.id}/`} width="auto">
+                <Linker to={`/users/${data._id}/`} width="auto">
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
@@ -123,11 +114,9 @@ export const ViewUsers = () => {
                             apiCall={getUsers}
                             parseRows={parseData}
                             headers={[
-                                { id: 'name', title: 'Name' },
-                                { id: 'surname', title: 'Surname' },
+                                { id: 'displayName', title: 'Display Name' },
                                 { id: 'email', title: 'Email' },
                                 { id: 'communityMember', title: 'Community' },
-                                { id: 'communityGuide', title: 'Guide Of' },
                                 { id: 'teamMember', title: 'Team' },
                                 { id: 'admin', title: 'Is an Admin' },
                                 { id: 'actions', title: 'Actions' }

@@ -31,37 +31,29 @@ export const UserOverlay = (props: IUserOverlay) => {
 
     const [createButtonLoad, setCreateButtonLoad] = useState(false)
 
-    const [name, setName] = useState('')
-    const [errorName, setErrorName] = useState('')
-    const [surname, setSurname] = useState('')
-    const [errorSurname, setErrorSurname] = useState('')
+    const [displayName, setDisplayName] = useState('')
+    const [errorDisplayName, setErrorDisplayName] = useState('')
     const [email, setEmail] = useState('')
     const [errorEmail, setErrorEmail] = useState('')
 
     useEffect(() => {
         setErrorEmail('')
-        setErrorName('')
-        setErrorSurname('')
+        setErrorDisplayName('')
 
-        setName(props.data?.name || '')
-        setSurname(props.data?.surname || '')
+        setDisplayName(props.data?.displayName || '')
         setEmail(props.data?.email || '')
     }, [props.data, props.show])
 
     const closingUserOverlay = () => {
         if (!props.data) {
-            if (name !== '' || email !== '' || surname !== '') {
+            if (displayName !== '' || email !== '') {
                 setShowConfirm(true)
             } else {
                 props.onClose()
                 props.setIsOverlay && props.setIsOverlay(false)
             }
         } else {
-            if (
-                name !== props.data.name ||
-                email !== props.data.email ||
-                surname !== props.data.surname
-            ) {
+            if (displayName !== props.data.displayName || email !== props.data.email) {
                 setShowConfirm(true)
             } else {
                 props.onClose()
@@ -71,65 +63,54 @@ export const UserOverlay = (props: IUserOverlay) => {
     }
 
     const handleUserSave = async () => {
-        if (props.isOverlay) {
-            setCreateButtonLoad(true)
-            let error = false
+        setCreateButtonLoad(true)
+        let error = false
 
-            if (name === '') {
-                error = true
-                setErrorName('This is required')
-            } else {
-                setErrorName('')
-            }
+        if (displayName === '') {
+            error = true
+            setErrorDisplayName('This is required')
+        } else {
+            setErrorDisplayName('')
+        }
 
-            if (surname === '') {
-                error = true
-                setErrorSurname('This is required')
-            } else {
-                setErrorSurname('')
-            }
+        if (email === '') {
+            error = true
+            setErrorEmail('This is required')
+        } else {
+            setErrorEmail('')
+        }
 
-            if (email === '') {
-                error = true
-                setErrorEmail('This is required')
-            } else {
-                setErrorEmail('')
-            }
+        if (!error) {
+            try {
+                let result: any
 
-            if (!error) {
-                try {
-                    let result: any
-
-                    if (props.data) {
-                        const data: Partial<ICreateUser> = {
-                            name,
-                            surname,
-                            email
-                        }
-
-                        result = await updateUser(props.data?.id, data)
-                    } else {
-                        let data: ICreateUser = {
-                            name,
-                            surname,
-                            email
-                        }
-
-                        result = await createUser(data)
+                if (props.data) {
+                    const data: Partial<ICreateUser> = {
+                        displayName,
+                        email
                     }
 
-                    displaySnackbar(
-                        props.data ? 'User Edited Successfully' : 'User Created Successfully',
-                        SnackbarType.success,
-                        addData
-                    )
-                    props.onSave(result)
-                } catch (e) {
-                    displaySnackbar('Failed to save User', SnackbarType.error, addData)
+                    result = await updateUser(props.data?._id, data)
+                } else {
+                    let data: ICreateUser = {
+                        displayName,
+                        email
+                    }
+
+                    result = await createUser(data)
                 }
+
+                displaySnackbar(
+                    props.data ? 'User Edited Successfully' : 'User Created Successfully',
+                    SnackbarType.success,
+                    addData
+                )
+                props.onSave(result)
+            } catch (e) {
+                displaySnackbar('Failed to save User', SnackbarType.error, addData)
             }
-            setCreateButtonLoad(false)
         }
+        setCreateButtonLoad(false)
     }
 
     useEnterSubmit(handleUserSave)
@@ -159,15 +140,12 @@ export const UserOverlay = (props: IUserOverlay) => {
                     }}
                 >
                     <UserFormSection
-                        name={name}
-                        setName={setName}
-                        errorName={errorName}
+                        displayName={displayName}
+                        setDisplayName={setDisplayName}
+                        errorDisplayName={errorDisplayName}
                         email={email}
                         setEmail={setEmail}
                         errorEmail={errorEmail}
-                        surname={surname}
-                        setSurname={setSurname}
-                        errorSurname={errorSurname}
                     />
                 </PanelForm>
             </Overlay>

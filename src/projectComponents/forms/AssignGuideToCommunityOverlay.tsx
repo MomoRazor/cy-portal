@@ -49,7 +49,7 @@ export const AssignGuideToCommunityOverlay = (props: IAssignGuideToCommunityOver
             try {
                 if (!Array.isArray(user)) {
                     setLoad(true)
-                    await assignUserToCommunityAsGuide(user.id || '', props.community?.id || '')
+                    await assignUserToCommunityAsGuide(user.id || '', props.community?._id || '')
 
                     props.onSave && props.onSave()
                     displaySnackbar('User Assigned', SnackbarType.success, addData)

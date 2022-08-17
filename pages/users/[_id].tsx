@@ -16,33 +16,24 @@ const View = () => {
     }, [router.isReady])
 
     const getUserData = async () => {
-        if (router.query.id) {
-            setUserData(await getUser(router.query.id.toString()))
-        } else {
-            return
-        }
+        return await getUser(router.query._id ? router.query._id.toString() : '')
     }
 
     return isLoading ? (
         <LoadingPage />
     ) : (
         <CYPage
-            title={userData?.name}
-            breadCrumb={[{ display: 'Home', id: '/profile' }, { display: userData?.name || '' }]}
+            title={userData?.displayName}
+            breadCrumb={[
+                { display: 'Home', id: '/profile' },
+                { display: userData?.displayName || '' }
+            ]}
             loadExtraDetail={getUserData}
             setExtraData={setUserData}
             adminOnly
-            //TODO Enable
-            // loginRequired
+            loginRequired
         >
-            {/* TODO remove mock Data */}
-            <ViewUserId
-                user={
-                    userData
-                    // || mockUser
-                }
-                setUser={setUserData}
-            />
+            <ViewUserId user={userData} setUser={setUserData} />
         </CYPage>
     )
 }

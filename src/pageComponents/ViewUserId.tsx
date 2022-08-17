@@ -20,6 +20,7 @@ import { SidebarPage } from './SidebarPage'
 import { UserOverlay, ViewUserData } from '../projectComponents'
 
 export interface IViewUserId {
+    profile?: boolean
     user?: IUser
     setUser: (data: IUser) => void
 }
@@ -27,6 +28,8 @@ export interface IViewUserId {
 export const ViewUserId = (props: IViewUserId) => {
     const router = useRouter()
     const [showEditUser, setEditUser] = useState(false)
+
+    const { login } = useContext(AuthContext)
 
     // const [showAssignCommunity, setShowAssignCommunity] = useState(false)
     // const [showGuidesCommunities, setShowGuidesCommunities] = useState(false)
@@ -53,7 +56,7 @@ export const ViewUserId = (props: IViewUserId) => {
                 shallow: true
             })
         } else {
-            router.push(`/users/${props.user?.id}?section=` + section?.link, undefined, {
+            router.push(`/users/${props.user?._id}?section=` + section?.link, undefined, {
                 shallow: true
             })
         }
@@ -66,6 +69,10 @@ export const ViewUserId = (props: IViewUserId) => {
     const saveDrawer = (data?: IUser) => {
         if (data) {
             props.setUser(data)
+        }
+
+        if (props.profile) {
+            login && login(data)
         }
         setEditUser(false)
     }
@@ -99,7 +106,7 @@ export const ViewUserId = (props: IViewUserId) => {
     const getFloatingButtons = useCallback(() => {
         const buttons: IFloatingIconButton[] = []
 
-        if (props.user?.id === auth.user.id || auth.user.isAdmin) {
+        if (props.user?._id === auth.user._id || auth.user.isAdmin) {
             buttons.push({
                 width: 'auto',
                 onClick: () => {
@@ -109,13 +116,13 @@ export const ViewUserId = (props: IViewUserId) => {
             })
         }
 
-        if (auth.user.isAdmin) {
+        if (auth.user.isAdmin && auth.user._id !== props.user?._id) {
             if (props.user?.isAdmin) {
                 buttons.push({
                     width: 'auto',
                     onClick: async () => {
                         setAdminUnassignLoading(true)
-                        await unsetUserAdmin(props.user?.id || '')
+                        await unsetUserAdmin(props.user?._id || '')
                         setAdminUnassignLoading(false)
                     },
                     loading: adminUnassignLoading,
@@ -126,7 +133,7 @@ export const ViewUserId = (props: IViewUserId) => {
                     width: 'auto',
                     onClick: async () => {
                         setAdminAssignLoading(true)
-                        await setUserAdmin(props.user?.id || '')
+                        await setUserAdmin(props.user?._id || '')
                         setAdminAssignLoading(false)
                     },
                     loading: adminAssignLoading,
@@ -163,9 +170,9 @@ export const ViewUserId = (props: IViewUserId) => {
     }, [
         adminAssignLoading,
         adminUnassignLoading,
-        auth.user.id,
+        auth.user._id,
         auth.user.isAdmin,
-        props.user?.id,
+        props.user?._id,
         props.user?.isAdmin
     ])
 
@@ -181,9 +188,9 @@ export const ViewUserId = (props: IViewUserId) => {
                             additionalData={getAdditionalData()}
                             checkActive={checkActive}
                             navFunc={navFunc}
-                            title={props.user.name + ' ' + props.user.surname}
+                            title={props.user.displayName}
                             subtitle={props.user.isAdmin ? 'Administrator' : ''}
-                            description={`ID: ${props.user.id}`}
+                            description={`ID: ${props.user._id}`}
                             sections={getSections(props.user)}
                         />
                     )}

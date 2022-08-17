@@ -16,11 +16,7 @@ const View = () => {
     }, [router.isReady])
 
     const getCommunityData = async () => {
-        if (router.query.id) {
-            setCommunityData(await getCommunity(router.query.id.toString()))
-        } else {
-            return
-        }
+        return await getCommunity(router.query._id ? router.query._id.toString() : '')
     }
 
     return isLoading ? (
@@ -35,17 +31,9 @@ const View = () => {
             loadExtraDetail={getCommunityData}
             setExtraData={setCommunityData}
             adminOnly
-            //TODO Enable
-            // loginRequired
+            loginRequired
         >
-            {/* TODO remove mock Data */}
-            <ViewCommunityId
-                community={
-                    communityData
-                    // || mockCommunity
-                }
-                setCommunity={setCommunityData}
-            />
+            <ViewCommunityId community={communityData} setCommunity={setCommunityData} />
         </CYPage>
     )
 }

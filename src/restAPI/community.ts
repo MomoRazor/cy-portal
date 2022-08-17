@@ -2,7 +2,7 @@
 import { axios11 } from './config'
 
 export interface ICommunity extends ICreateCommunity {
-    id: string
+    _id: string
 }
 
 export interface ICreateCommunity {
@@ -11,7 +11,7 @@ export interface ICreateCommunity {
 
 export const getCommunities = async () => {
     const result = await axios11.get<{ data: ICommunity[] }>(`/communities`)
-    return result.data.data
+    return result.data
 
     //TODO remove
     // return mockCommunityList
@@ -19,7 +19,7 @@ export const getCommunities = async () => {
 
 export const getGuideCommunities = async (userId: string) => {
     const result = await axios11.get<{ data: ICommunity[] }>(`/communities/guide/${userId}`)
-    return result.data.data
+    return result.data
 
     //TODO remove
     // return mockCommunityList
@@ -27,7 +27,7 @@ export const getGuideCommunities = async (userId: string) => {
 
 export const getCommunity = async (id: string) => {
     const result = await axios11.get<{ data: ICommunity }>(`/communities/${id}`)
-    return result.data.data
+    return result.data
 
     //TODO remove
     // return mockCommunity
@@ -36,13 +36,13 @@ export const getCommunity = async (id: string) => {
 export const createCommunity = async (createCommunity: ICreateCommunity) => {
     const result = await axios11.post<{ data: ICommunity }>(`/communities`, createCommunity)
 
-    return result.data.data
+    return result.data
 }
 
 export const updateCommunity = async (id: string, updateCommunity: Partial<ICreateCommunity>) => {
     const result = await axios11.post<{ data: ICommunity }>(`/communities/${id}`, updateCommunity)
 
-    return result.data.data
+    return result.data
 }
 
 export const assignUserToCommunityAsMember = async (userId: string, communityId: string) => {
@@ -50,7 +50,7 @@ export const assignUserToCommunityAsMember = async (userId: string, communityId:
         `/assign/${userId}/community/${communityId}/member`
     )
 
-    return result.data.data
+    return result.data
 }
 
 export const unassignUserFromCommunityAsMember = async (userId: string, communityId: string) => {
@@ -58,7 +58,7 @@ export const unassignUserFromCommunityAsMember = async (userId: string, communit
         `/unassign/${userId}/community/${communityId}/member`
     )
 
-    return result.data.data
+    return result.data
 }
 
 export const assignUserToCommunityAsGuide = async (userId: string, communityId: string) => {
@@ -66,7 +66,7 @@ export const assignUserToCommunityAsGuide = async (userId: string, communityId: 
         `/assign/${userId}/community/${communityId}/guide`
     )
 
-    return result.data.data
+    return result.data
 }
 
 export const unassignUserFromCommunityAsGuide = async (userId: string, communityId: string) => {
@@ -74,5 +74,5 @@ export const unassignUserFromCommunityAsGuide = async (userId: string, community
         `/unassign/${userId}/community/${communityId}/guide`
     )
 
-    return result.data.data
+    return result.data
 }

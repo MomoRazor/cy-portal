@@ -50,8 +50,8 @@ export const ViewCommunityMembers = ({
             return array.push({
                 ...data,
                 communityGuide:
-                    data.communityGuideOf?.map((community) => (
-                        <Linker key={community.id} to={`/communities/${community.id}/`}>
+                    data.communitiesGuideOf?.map((community) => (
+                        <Linker key={community._id} to={`/communities/${community._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {community.name || ''}
                             </Typography>
@@ -59,7 +59,7 @@ export const ViewCommunityMembers = ({
                     )) || [],
                 teamMember:
                     data.teamMemberOf?.map((team) => (
-                        <Linker key={team.id} to={`/teams/${team.id}/`}>
+                        <Linker key={team._id} to={`/teams/${team._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {team.name || ''}
                             </Typography>
@@ -79,9 +79,9 @@ export const ViewCommunityMembers = ({
 
     const actionsRow = useCallback(
         (data: IUser) =>
-            auth.user.isAdmin || auth.user.id === data.id ? (
+            auth.user.isAdmin || auth.user._id === data._id ? (
                 <Container direction={Direction.row} padding="0">
-                    <Linker to={`/users/${data.id}/`} width="auto">
+                    <Linker to={`/users/${data._id}/`} width="auto">
                         <IconButton>
                             <BiShowAlt />
                         </IconButton>
@@ -98,7 +98,10 @@ export const ViewCommunityMembers = ({
                     {auth.user.isAdmin ? (
                         <IconButton
                             onClick={async () => {
-                                await unassignUserFromCommunityAsMember(data.id, props.community.id)
+                                await unassignUserFromCommunityAsMember(
+                                    data._id,
+                                    props.community._id
+                                )
                             }}
                         >
                             <BiEditAlt />
@@ -110,12 +113,19 @@ export const ViewCommunityMembers = ({
             ) : (
                 <></>
             ),
-        [auth.user.id, auth.user.isAdmin, props.community.id, setEditUser, setIsOverlay, setShowNew]
+        [
+            auth.user._id,
+            auth.user.isAdmin,
+            props.community._id,
+            setEditUser,
+            setIsOverlay,
+            setShowNew
+        ]
     )
 
     const apiCall = useCallback(async () => {
-        return await getUserMembersOfCommunity(props.community.id)
-    }, [props.community.id])
+        return await getUserMembersOfCommunity(props.community._id)
+    }, [props.community._id])
 
     const headers = useMemo(
         () =>

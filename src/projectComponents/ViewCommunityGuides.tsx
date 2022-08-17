@@ -57,7 +57,7 @@ export const ViewCommunityGuides = ({
                 ),
                 teamMember:
                     data.teamMemberOf?.map((team) => (
-                        <Linker key={team.id} to={`/teams/${team.id}/`}>
+                        <Linker key={team._id} to={`/teams/${team._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {team.name || ''}
                             </Typography>
@@ -77,9 +77,9 @@ export const ViewCommunityGuides = ({
 
     const actionsRow = useCallback(
         (data: IUser) =>
-            auth.user.isAdmin || auth.user.id === data.id ? (
+            auth.user.isAdmin || auth.user._id === data._id ? (
                 <Container direction={Direction.row} padding="0">
-                    <Linker to={`/users/${data.id}/`} width="auto">
+                    <Linker to={`/users/${data._id}/`} width="auto">
                         <IconButton>
                             <BiShowAlt />
                         </IconButton>
@@ -96,7 +96,10 @@ export const ViewCommunityGuides = ({
                     {auth.user.isAdmin ? (
                         <IconButton
                             onClick={async () => {
-                                await unassignUserFromCommunityAsGuide(data.id, props.community.id)
+                                await unassignUserFromCommunityAsGuide(
+                                    data._id,
+                                    props.community._id
+                                )
                             }}
                         >
                             <BiEditAlt />
@@ -108,12 +111,19 @@ export const ViewCommunityGuides = ({
             ) : (
                 <></>
             ),
-        [auth.user.id, auth.user.isAdmin, props.community.id, setEditUser, setIsOverlay, setShowNew]
+        [
+            auth.user._id,
+            auth.user.isAdmin,
+            props.community._id,
+            setEditUser,
+            setIsOverlay,
+            setShowNew
+        ]
     )
 
     const apiCall = useCallback(async () => {
-        return await getUserGuidesOfCommunity(props.community.id)
-    }, [props.community.id])
+        return await getUserGuidesOfCommunity(props.community._id)
+    }, [props.community._id])
 
     const headers = useMemo(
         () =>

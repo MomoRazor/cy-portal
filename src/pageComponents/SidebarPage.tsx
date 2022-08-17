@@ -49,7 +49,7 @@ export const SidebarPage = (props: ISidebarPage) => {
 
     const getName = useCallback(() => {
         if (auth.user) {
-            return auth.user.name
+            return auth.user.displayName
         }
     }, [auth.user])
 
@@ -64,7 +64,7 @@ export const SidebarPage = (props: ISidebarPage) => {
             })
         }
 
-        if (auth.user?.communityGuideOf) {
+        if (auth.user?.communitiesGuideOf) {
             options.push({
                 name: 'View Guiding Community',
                 icon: <AiOutlineHome />,

@@ -49,7 +49,7 @@ export const AssignUserToTeamOverlay = (props: IAssignUserToTeamOverlay) => {
             try {
                 if (!Array.isArray(user)) {
                     setLoad(true)
-                    await assignUserToTeam(user.id || '', props.team?.id || '')
+                    await assignUserToTeam(user.id || '', props.team?._id || '')
 
                     props.onSave && props.onSave()
                     displaySnackbar('User Assigned', SnackbarType.success, addData)

@@ -20,8 +20,6 @@ export interface ITeamOverlay {
     data?: ITeam
     onClose: EmptyFunctionHandler
     onSave: (newData?: ITeam) => void
-    isOverlay?: boolean
-    setIsOverlay?: (newOverlay: boolean) => void
 }
 
 export const TeamOverlay = (props: ITeamOverlay) => {
@@ -46,60 +44,56 @@ export const TeamOverlay = (props: ITeamOverlay) => {
                 setShowConfirm(true)
             } else {
                 props.onClose()
-                props.setIsOverlay && props.setIsOverlay(false)
             }
         } else {
             if (name !== props.data.name) {
                 setShowConfirm(true)
             } else {
                 props.onClose()
-                props.setIsOverlay && props.setIsOverlay(false)
             }
         }
     }
 
     const handleUserSave = async () => {
-        if (props.isOverlay) {
-            setCreateButtonLoad(true)
-            let error = false
+        setCreateButtonLoad(true)
+        let error = false
 
-            if (name === '') {
-                error = true
-                setErrorName('This is required')
-            } else {
-                setErrorName('')
-            }
+        if (name === '') {
+            error = true
+            setErrorName('This is required')
+        } else {
+            setErrorName('')
+        }
 
-            if (!error) {
-                try {
-                    let result: any
+        if (!error) {
+            try {
+                let result: any
 
-                    if (props.data) {
-                        const data: Partial<ICreateTeam> = {
-                            name
-                        }
-
-                        result = await updateTeam(props.data?.id, data)
-                    } else {
-                        let data: ICreateTeam = {
-                            name
-                        }
-
-                        result = await createTeam(data)
+                if (props.data) {
+                    const data: Partial<ICreateTeam> = {
+                        name
                     }
 
-                    displaySnackbar(
-                        props.data ? 'Team Edited Successfully' : 'Team Created Successfully',
-                        SnackbarType.success,
-                        addData
-                    )
-                    props.onSave(result)
-                } catch (e) {
-                    displaySnackbar('Failed to save Team', SnackbarType.error, addData)
+                    result = await updateTeam(props.data?._id, data)
+                } else {
+                    let data: ICreateTeam = {
+                        name
+                    }
+
+                    result = await createTeam(data)
                 }
+
+                displaySnackbar(
+                    props.data ? 'Team Edited Successfully' : 'Team Created Successfully',
+                    SnackbarType.success,
+                    addData
+                )
+                props.onSave(result)
+            } catch (e) {
+                displaySnackbar('Failed to save Team', SnackbarType.error, addData)
             }
-            setCreateButtonLoad(false)
         }
+        setCreateButtonLoad(false)
     }
 
     useEnterSubmit(handleUserSave)

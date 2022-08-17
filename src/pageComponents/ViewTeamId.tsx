@@ -58,7 +58,7 @@ export const ViewTeamId = (props: IViewTeamId) => {
                 shallow: true
             })
         } else {
-            router.push(`/teams/${props.team?.id}?section=` + section?.link, undefined, {
+            router.push(`/teams/${props.team?._id}?section=` + section?.link, undefined, {
                 shallow: true
             })
         }
@@ -171,7 +171,7 @@ export const ViewTeamId = (props: IViewTeamId) => {
                             checkActive={checkActive}
                             navFunc={navFunc}
                             title={props.team.name}
-                            description={`ID: ${props.team.id}`}
+                            description={`ID: ${props.team._id}`}
                             sections={getSections(props.team)}
                         />
                     )}

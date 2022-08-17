@@ -20,8 +20,6 @@ export interface ICommunityOverlay {
     data?: ICommunity
     onClose: EmptyFunctionHandler
     onSave: (newData?: ICommunity) => void
-    isOverlay?: boolean
-    setIsOverlay?: (newOverlay: boolean) => void
 }
 
 export const CommunityOverlay = (props: ICommunityOverlay) => {
@@ -46,62 +44,56 @@ export const CommunityOverlay = (props: ICommunityOverlay) => {
                 setShowConfirm(true)
             } else {
                 props.onClose()
-                props.setIsOverlay && props.setIsOverlay(false)
             }
         } else {
             if (name !== props.data.name) {
                 setShowConfirm(true)
             } else {
                 props.onClose()
-                props.setIsOverlay && props.setIsOverlay(false)
             }
         }
     }
 
     const handleUserSave = async () => {
-        if (props.isOverlay) {
-            setCreateButtonLoad(true)
-            let error = false
+        setCreateButtonLoad(true)
+        let error = false
 
-            if (name === '') {
-                error = true
-                setErrorName('This is required')
-            } else {
-                setErrorName('')
-            }
+        if (name === '') {
+            error = true
+            setErrorName('This is required')
+        } else {
+            setErrorName('')
+        }
 
-            if (!error) {
-                try {
-                    let result: any
+        if (!error) {
+            try {
+                let result: any
 
-                    if (props.data) {
-                        const data: Partial<ICreateCommunity> = {
-                            name
-                        }
-
-                        result = await updateCommunity(props.data?.id, data)
-                    } else {
-                        let data: ICreateCommunity = {
-                            name
-                        }
-
-                        result = await createCommunity(data)
+                if (props.data) {
+                    const data: Partial<ICreateCommunity> = {
+                        name
                     }
 
-                    displaySnackbar(
-                        props.data
-                            ? 'Community Edited Successfully'
-                            : 'Community Created Successfully',
-                        SnackbarType.success,
-                        addData
-                    )
-                    props.onSave(result)
-                } catch (e) {
-                    displaySnackbar('Failed to save Community', SnackbarType.error, addData)
+                    result = await updateCommunity(props.data?._id, data)
+                } else {
+                    let data: ICreateCommunity = {
+                        name
+                    }
+
+                    result = await createCommunity(data)
                 }
+
+                displaySnackbar(
+                    props.data ? 'Community Edited Successfully' : 'Community Created Successfully',
+                    SnackbarType.success,
+                    addData
+                )
+                props.onSave(result)
+            } catch (e) {
+                displaySnackbar('Failed to save Community', SnackbarType.error, addData)
             }
-            setCreateButtonLoad(false)
         }
+        setCreateButtonLoad(false)
     }
 
     useEnterSubmit(handleUserSave)

@@ -53,8 +53,8 @@ export const ViewTeamMembers = ({
                     </Linker>
                 ),
                 communityGuide:
-                    data.communityGuideOf?.map((community) => (
-                        <Linker key={community.id} to={`/communities/${community.id}/`}>
+                    data.communitiesGuideOf?.map((community) => (
+                        <Linker key={community._id} to={`/communities/${community._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {community.name || ''}
                             </Typography>
@@ -74,9 +74,9 @@ export const ViewTeamMembers = ({
 
     const actionsRow = useCallback(
         (data: IUser) =>
-            auth.user.isAdmin || auth.user.id === data.id ? (
+            auth.user.isAdmin || auth.user._id === data._id ? (
                 <Container direction={Direction.row} padding="0">
-                    <Linker to={`/users/${data.id}/`} width="auto">
+                    <Linker to={`/users/${data._id}/`} width="auto">
                         <IconButton>
                             <BiShowAlt />
                         </IconButton>
@@ -93,7 +93,7 @@ export const ViewTeamMembers = ({
                     {auth.user.isAdmin ? (
                         <IconButton
                             onClick={async () => {
-                                await unassignUserFromTeam(data.id, props.team.id)
+                                await unassignUserFromTeam(data._id, props.team._id)
                             }}
                         >
                             <BiEditAlt />
@@ -105,12 +105,12 @@ export const ViewTeamMembers = ({
             ) : (
                 <></>
             ),
-        [auth.user.id, auth.user.isAdmin, props.team.id, setEditUser, setIsOverlay, setShowNew]
+        [auth.user._id, auth.user.isAdmin, props.team._id, setEditUser, setIsOverlay, setShowNew]
     )
 
     const apiCall = useCallback(async () => {
-        return await getUserMembersOfTeam(props.team.id)
-    }, [props.team.id])
+        return await getUserMembersOfTeam(props.team._id)
+    }, [props.team._id])
 
     return (
         <Container padding="0">
