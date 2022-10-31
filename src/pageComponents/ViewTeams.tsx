@@ -50,7 +50,7 @@ export const ViewTeams = (props: IViewTeams) => {
     const actionsRow = useCallback(
         (data: ITeam) => (
             <Container direction={Direction.row} padding="0">
-                <Linker to={`/teams/${data._id}/`} width="auto">
+                <Linker href={`/teams/${data._id}/`} hocLink>
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>

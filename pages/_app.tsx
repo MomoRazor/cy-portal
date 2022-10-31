@@ -4,7 +4,6 @@ import {
     AppProvider,
     Browser,
     browserChecker,
-    LinkerLibs,
     LoadingPage,
     NEXTGlobalStyle
 } from '@sector-eleven-ltd/se-react-toolkit'
@@ -17,7 +16,6 @@ const MyApp = ({ Component, pageProps, browserType }: AppProps & { browserType: 
         <PersistGate loading={<LoadingPage />} persistor={persistor}>
             <AppProvider
                 nav={{
-                    linkerLib: LinkerLibs.next,
                     browser: browserType
                 }}
                 theme={themeConfig}

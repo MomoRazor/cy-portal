@@ -51,7 +51,7 @@ export const ViewCommunityMembers = ({
                 ...data,
                 communityGuide:
                     data.communitiesGuideOf?.map((community) => (
-                        <Linker key={community._id} to={`/communities/${community._id}/`}>
+                        <Linker key={community._id} href={`/communities/${community._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {community.name || ''}
                             </Typography>
@@ -59,7 +59,7 @@ export const ViewCommunityMembers = ({
                     )) || [],
                 teamMember:
                     data.teamMemberOf?.map((team) => (
-                        <Linker key={team._id} to={`/teams/${team._id}/`}>
+                        <Linker key={team._id} href={`/teams/${team._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {team.name || ''}
                             </Typography>
@@ -81,7 +81,7 @@ export const ViewCommunityMembers = ({
         (data: IUser) =>
             auth.user.isAdmin || auth.user._id === data._id ? (
                 <Container direction={Direction.row} padding="0">
-                    <Linker to={`/users/${data._id}/`} width="auto">
+                    <Linker href={`/users/${data._id}/`} hocLink>
                         <IconButton>
                             <BiShowAlt />
                         </IconButton>

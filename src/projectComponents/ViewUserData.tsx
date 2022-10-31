@@ -67,8 +67,8 @@ export const ViewUserData = (props: IViewUserData) => {
                             label="Member Of"
                             data={
                                 <Linker
-                                    to={`/communities/${props.user.communityMemberOf._id}/`}
-                                    width="auto"
+                                    href={`/communities/${props.user.communityMemberOf._id}/`}
+                                    hocLink
                                 >
                                     <Typography
                                         color={Colors.primary}
@@ -88,8 +88,8 @@ export const ViewUserData = (props: IViewUserData) => {
                             data={props.user.communitiesGuideOf.map((community) => (
                                 <Linker
                                     key={community._id}
-                                    to={`/communities/${community._id}/`}
-                                    width="auto"
+                                    href={`/communities/${community._id}/`}
+                                    hocLink
                                 >
                                     <Typography
                                         color={Colors.primary}
@@ -107,7 +107,7 @@ export const ViewUserData = (props: IViewUserData) => {
                         <TitledRow
                             label="Team Member Of"
                             data={props.user.teamMemberOf.map((team) => (
-                                <Linker key={team._id} to={`/teams/${team._id}/`} width="auto">
+                                <Linker key={team._id} href={`/teams/${team._id}/`} hocLink>
                                     <Typography
                                         color={Colors.primary}
                                         pointerEvents={PointerEvents.none}

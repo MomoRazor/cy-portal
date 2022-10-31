@@ -49,7 +49,7 @@ export const ViewCommunities = (props: IViewCommunities) => {
     const actionsRow = useCallback(
         (data: ICommunity) => (
             <Container direction={Direction.row} padding="0">
-                <Linker to={`/communities/${data._id}/`} width="auto">
+                <Linker href={`/communities/${data._id}/`} hocLink>
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
