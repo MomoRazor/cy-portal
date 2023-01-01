@@ -1,14 +1,6 @@
-import {
-    APICallResult,
-    AuthContext,
-    AuthPage,
-    ExtraDataHandler,
-    ForbiddenPage,
-    IUrlData,
-    SetExtraDataHandler
-} from '@sector-eleven-ltd/se-react-toolkit'
+import { AuthPage, ForbiddenPage, IUrlData } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import { ReactNode, useCallback, useContext } from 'react'
+import { ReactNode, useCallback } from 'react'
 import { firebaseConfig, hydrateDate } from '../auth'
 import { getAuth } from 'firebase/auth'
 
@@ -16,14 +8,11 @@ export interface ICYPage {
     loginRequired?: boolean
     breadCrumb?: IUrlData[]
     title?: string
-    loadExtraDetail?: ExtraDataHandler
-    setExtraData?: SetExtraDataHandler
     adminOnly?: boolean
     children: ReactNode
 }
 
-export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
-    const { login, user } = useContext(AuthContext)
+export const CYPage = (props: ICYPage) => {
     const router = useRouter()
 
     const handleRenderSelection = () => {
