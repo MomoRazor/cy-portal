@@ -1,12 +1,10 @@
-import { AuthContext, LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
+import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CYPage, getCommunity, ICommunity, ViewCommunityId } from '../src'
-// import { mockCommunity } from '../src/mock'
 
 const View = () => {
     const router = useRouter()
-    const auth = useContext(AuthContext)
     const [communityData, setCommunityData] = useState<ICommunity>()
     const [isLoading, setIsLoading] = useState(true)
 

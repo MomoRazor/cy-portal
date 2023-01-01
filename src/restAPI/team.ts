@@ -1,58 +1,51 @@
-// import { mockTeam, mockTeamList } from '../mock'
 import { axios11 } from './config'
 
-export interface ITeam extends ICreateTeam {
+export interface Team {
     _id: string
-}
-
-export interface ICreateTeam {
     name: string
-}
-
-export const getTeams = async () => {
-    const result = await axios11.get<{ data: ITeam[] }>(`/teams`)
-    return result.data
-
-    //TODO remove
-    // return mockTeamList
-}
-
-export const getUserTeams = async (userId: string) => {
-    const result = await axios11.get<{ data: ITeam[] }>(`/teams/member/${userId}`)
-    return result.data
-
-    //TODO remove
-    // return mockTeamList
+    memberIds: string[]
 }
 
 export const getTeam = async (id: string) => {
-    const result = await axios11.get<{ data: ITeam }>(`/teams/${id}`)
-    return result.data
-
-    //TODO remove
-    // return mockTeam
-}
-
-export const createTeam = async (createTeam: ICreateTeam) => {
-    const result = await axios11.post<{ data: ITeam }>(`/teams`, createTeam)
-
+    const result = await axios11.post<{ data: Team[] }>(`/core/get/teams`, { id })
     return result.data
 }
 
-export const updateTeam = async (id: string, updateTeam: Partial<ICreateTeam>) => {
-    const result = await axios11.post<{ data: ITeam }>(`/teams/${id}`, updateTeam)
+//TODO Change Argument
+export const getTeamTable = async (id: string) => {
+    const result = await axios11.post<{ data: Team }>(`/core/get/teams/table`, { id })
+    return result.data
+}
+
+//TODO Change Argument
+export const getTeamAutocomplete = async (id: string) => {
+    const result = await axios11.post<{ data: Team }>(`/core/get/teams/autocomplete`, { id })
+    return result.data
+}
+
+export const createTeam = async (team: Team) => {
+    const result = await axios11.post<{ data: Team }>(`/core/create/teams`, team)
+
+    return result.data
+}
+
+export const updateTeam = async (id: string, team: Partial<Team>) => {
+    const result = await axios11.post<{ data: Team }>(`/core/update/teams`, {
+        id,
+        ...team
+    })
 
     return result.data
 }
 
 export const assignUserToTeam = async (userId: string, teamId: string) => {
-    const result = await axios11.post<{ data: ITeam }>(`/assign/${userId}/team/${teamId}`)
+    const result = await axios11.post<{ data: Team }>(`/core/assign/${userId}/team/${teamId}`)
 
     return result.data
 }
 
 export const unassignUserFromTeam = async (userId: string, teamId: string) => {
-    const result = await axios11.post<{ data: ITeam }>(`/unassign/${userId}/team/${teamId}`)
+    const result = await axios11.post<{ data: Team }>(`/core/unassign/${userId}/team/${teamId}`)
 
     return result.data
 }
