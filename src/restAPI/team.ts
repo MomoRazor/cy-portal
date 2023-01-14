@@ -1,3 +1,4 @@
+import { IDataContextInput } from '@sector-eleven-ltd/se-react-toolkit'
 import { axios11 } from './config'
 
 export interface Team {
@@ -12,15 +13,17 @@ export const getTeam = async (id: string) => {
 }
 
 //TODO Change Argument
-export const getTeamTable = async (id: string) => {
-    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/table`, { id })
-    return result.data
+export const getTeamTable = async (filter: IDataContextInput) => {
+    console.log(filter)
+    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/table`)
+    return result.data.data
 }
 
 //TODO Change Argument
-export const getTeamAutocomplete = async (id: string) => {
-    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/autocomplete`, { id })
-    return result.data
+export const getTeamAutocomplete = async (filter: IDataContextInput) => {
+    console.log(filter)
+    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/autocomplete`)
+    return result.data.data
 }
 
 export const createTeam = async (team: Team) => {

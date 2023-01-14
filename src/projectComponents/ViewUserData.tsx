@@ -14,10 +14,10 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useContext } from 'react'
 import { BiInfoCircle } from 'react-icons/bi'
-import { IUser } from '../restAPI'
+import { User } from '../restAPI'
 
 export interface IViewUserData {
-    user: IUser
+    user: User
 }
 
 export const ViewUserData = (props: IViewUserData) => {
@@ -62,30 +62,31 @@ export const ViewUserData = (props: IViewUserData) => {
                 mainAxis={Alignment.spaceBetween}
             >
                 <Container width={size.mobile ? '100%' : '50%'} padding="0">
-                    {props.user.communityMemberOf ? (
+                    {props.user.communityMemberOf && props.user.communityMemberOf.length > 0 ? (
                         <TitledRow
                             label="Member Of"
-                            data={
+                            data={props.user.communityMemberOf.map((community) => (
                                 <Linker
-                                    href={`/communities/${props.user.communityMemberOf._id}/`}
+                                    href={`/communities/${community._id}/`}
                                     hocLink
+                                    key={community._id}
                                 >
                                     <Typography
                                         color={Colors.primary}
                                         pointerEvents={PointerEvents.none}
                                     >
-                                        {props.user.communityMemberOf.name}
+                                        {community.name}
                                     </Typography>
                                 </Linker>
-                            }
+                            ))}
                         />
                     ) : (
                         <></>
                     )}
-                    {props.user.communitiesGuideOf ? (
+                    {props.user.communityGuideOf && props.user.communityGuideOf.length > 0 ? (
                         <TitledRow
                             label="Guide Of"
-                            data={props.user.communitiesGuideOf.map((community) => (
+                            data={props.user.communityGuideOf.map((community) => (
                                 <Linker
                                     key={community._id}
                                     href={`/communities/${community._id}/`}

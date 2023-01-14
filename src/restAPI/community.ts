@@ -1,3 +1,4 @@
+import { IDataContextInput } from '@sector-eleven-ltd/se-react-toolkit'
 import { axios11 } from './config'
 
 export interface Community {
@@ -12,22 +13,19 @@ export const getCommunity = async (id: string) => {
 }
 
 //TODO Change Argument
-export const getCommunityTable = async (id: string) => {
-    const result = await axios11.post<{ data: Community }>(`/cam-youths/get/communities/table`, {
-        id
-    })
-    return result.data
+export const getCommunityTable = async (filter: IDataContextInput) => {
+    console.log(filter)
+    const result = await axios11.post<{ data: Community }>(`/cam-youths/get/communities/table`)
+    return result.data.data
 }
 
 //TODO Change Argument
-export const getCommunityAutocomplete = async (id: string) => {
+export const getCommunityAutocomplete = async (filter: IDataContextInput) => {
+    console.log(filter)
     const result = await axios11.post<{ data: Community }>(
-        `/cam-youths/get/communities/autocomplete`,
-        {
-            id
-        }
+        `/cam-youths/get/communities/autocomplete`
     )
-    return result.data
+    return result.data.data
 }
 
 export const createCommunity = async (community: Community) => {

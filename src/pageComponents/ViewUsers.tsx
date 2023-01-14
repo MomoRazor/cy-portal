@@ -7,7 +7,6 @@ import {
     FloatingPosH,
     IconButton,
     Linker,
-    PillContainer,
     PointerEvents,
     Spacer,
     Table,
@@ -17,35 +16,36 @@ import {
 import { ReactNode, useCallback, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
 import { UserOverlay } from '../projectComponents'
-import { getUsers, IUser } from '../restAPI'
+import { User, getUserTable } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 
-interface UserRow extends IUser {
+interface UserRow extends User {
     actions: ReactNode
     communityMember: ReactNode
+    communityGuide: ReactNode
     teamMember: ReactNode
-    admin: ReactNode
+    roles: string
 }
 
 export const ViewUsers = () => {
     const [showAddNew, setShowNew] = useState(false)
-    const [editUser, setEditUser] = useState<IUser>()
+    const [editUser, setEditUser] = useState<User>()
 
     const [isOverlay, setIsOverlay] = useState(false)
 
-    const parseData = (args: { data: IUser[] }) => {
+    const parseData = (result: { data: User[]; total: number }) => {
         let array: UserRow[] = []
 
-        args.data.map((data) => {
+        result.data.map((data) => {
             return array.push({
                 ...data,
-                communityMember: (
-                    <Linker href={`/communities/${data.communityMemberOfId}/`}>
+                communityMember: data.communityMemberOf?.map((community) => (
+                    <Linker key={community._id} href={`/communities/${community._id}/`}>
                         <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                            {data.communityMemberOf?.name || ''}
+                            {community.name || ''}
                         </Typography>
                     </Linker>
-                ),
+                )) || <></>,
                 teamMember:
                     data.teamMemberOf?.map((team) => (
                         <Linker key={team._id} href={`/teams/${team._id}/`}>
@@ -54,12 +54,15 @@ export const ViewUsers = () => {
                             </Typography>
                         </Linker>
                     )) || [],
-                admin: (
-                    <PillContainer
-                        text={data.isAdmin ? 'Yes' : 'No'}
-                        color={data.isAdmin ? Colors.success : Colors.error}
-                    />
-                ),
+                communityGuide:
+                    data.communityGuideOf?.map((community) => (
+                        <Linker key={community._id} href={`/communities/${community._id}/`}>
+                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
+                                {community.name || ''}
+                            </Typography>
+                        </Linker>
+                    )) || [],
+                roles: data.roleNames.join(', '),
                 actions: actionsRow(data)
             })
         })
@@ -67,7 +70,7 @@ export const ViewUsers = () => {
     }
 
     const actionsRow = useCallback(
-        (data: IUser) => (
+        (data: User) => (
             <Container direction={Direction.row} padding="0">
                 <Linker href={`/users/${data._id}/`} hocLink>
                     <IconButton>
@@ -111,7 +114,7 @@ export const ViewUsers = () => {
 
                     <Card>
                         <Table
-                            apiCall={getUsers}
+                            apiCall={getUserTable}
                             parseRows={parseData}
                             headers={[
                                 { id: 'displayName', title: 'Display Name' },

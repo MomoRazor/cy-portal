@@ -58,7 +58,7 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
                 const result = await hydrateData(user)
 
                 if (result.data) {
-                    login && login(result.data)
+                    login && login(result.data.data)
                     if (pages && checkPages(pages, window.location.origin, router.pathname)) {
                         setForbidden(false)
                     } else {

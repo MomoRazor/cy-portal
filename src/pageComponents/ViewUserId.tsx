@@ -8,21 +8,20 @@ import {
     IAdditionalData,
     IFloatingIconButton,
     ISideMenuSection,
-    PillContainer,
     QuadSpinner,
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
-import { IUser, setUserAdmin, unsetUserAdmin } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 import { UserOverlay, ViewUserData } from '../projectComponents'
+import { User } from '../restAPI'
 
 export interface IViewUserId {
     profile?: boolean
-    user?: IUser
-    setUser: (data: IUser) => void
+    user?: User
+    setUser: (data: User) => void
 }
 
 export const ViewUserId = (props: IViewUserId) => {
@@ -30,15 +29,6 @@ export const ViewUserId = (props: IViewUserId) => {
     const [showEditUser, setEditUser] = useState(false)
 
     const { login } = useContext(AuthContext)
-
-    // const [showAssignCommunity, setShowAssignCommunity] = useState(false)
-    // const [showGuidesCommunities, setShowGuidesCommunities] = useState(false)
-    // const [showAssignTeams, setShowAssignTeams] = useState(false)
-
-    const auth = useContext(AuthContext)
-
-    const [adminUnassignLoading, setAdminUnassignLoading] = useState(false)
-    const [adminAssignLoading, setAdminAssignLoading] = useState(false)
 
     const checkActive = (section: ISideMenuSection) => {
         if (router.query.section == section.link) {
@@ -66,7 +56,7 @@ export const ViewUserId = (props: IViewUserId) => {
         setEditUser(false)
     }
 
-    const saveDrawer = (data?: IUser) => {
+    const saveDrawer = (data?: User) => {
         if (data) {
             props.setUser(data)
         }
@@ -80,20 +70,15 @@ export const ViewUserId = (props: IViewUserId) => {
     const getAdditionalData = () => {
         const additionalData: IAdditionalData[] = [
             {
-                title: 'Is an Admin',
-                data: (
-                    <PillContainer
-                        text={props.user?.isAdmin ? 'Yes' : 'No'}
-                        color={props.user?.isAdmin ? Colors.success : Colors.error}
-                    />
-                )
+                title: 'Roles',
+                data: <Typography>{props.user?.roleNames.join(', ')}</Typography>
             }
         ]
 
         return additionalData
     }
 
-    const getSections = (user: IUser) => {
+    const getSections = (user: User) => {
         //TODO add community/guiding/team sections
         return [
             {
@@ -106,7 +91,7 @@ export const ViewUserId = (props: IViewUserId) => {
     const getFloatingButtons = useCallback(() => {
         const buttons: IFloatingIconButton[] = []
 
-        if (props.user?._id === auth.user._id || auth.user.isAdmin) {
+        if (!props.profile) {
             buttons.push({
                 width: 'auto',
                 onClick: () => {
@@ -116,65 +101,8 @@ export const ViewUserId = (props: IViewUserId) => {
             })
         }
 
-        if (auth.user.isAdmin && auth.user._id !== props.user?._id) {
-            if (props.user?.isAdmin) {
-                buttons.push({
-                    width: 'auto',
-                    onClick: async () => {
-                        setAdminUnassignLoading(true)
-                        await unsetUserAdmin(props.user?._id || '')
-                        setAdminUnassignLoading(false)
-                    },
-                    loading: adminUnassignLoading,
-                    children: <Typography color={Colors.textOnPrimary}>Unset as Admin</Typography>
-                })
-            } else {
-                buttons.push({
-                    width: 'auto',
-                    onClick: async () => {
-                        setAdminAssignLoading(true)
-                        await setUserAdmin(props.user?._id || '')
-                        setAdminAssignLoading(false)
-                    },
-                    loading: adminAssignLoading,
-                    children: <Typography color={Colors.textOnPrimary}>Set as Admin</Typography>
-                })
-            }
-
-            // buttons.push({
-            //     width: 'auto',
-            //     onClick: async () => {
-            //         // setShowAssignCommunity(true)
-            //     },
-            //     children: <Typography color={Colors.textOnPrimary}>Community Membership</Typography>
-            // })
-
-            // buttons.push({
-            //     width: 'auto',
-            //     onClick: async () => {
-            //         // setShowGuidesCommunities(true)
-            //     },
-            //     children: <Typography color={Colors.textOnPrimary}>Community Guide</Typography>
-            // })
-
-            // buttons.push({
-            //     width: 'auto',
-            //     onClick: async () => {
-            //         // setShowAssignTeams(true)
-            //     },
-            //     children: <Typography color={Colors.textOnPrimary}>Team Membership</Typography>
-            // })
-        }
-
         return buttons
-    }, [
-        adminAssignLoading,
-        adminUnassignLoading,
-        auth.user._id,
-        auth.user.isAdmin,
-        props.user?._id,
-        props.user?.isAdmin
-    ])
+    }, [props.profile])
 
     return (
         <>
@@ -189,7 +117,6 @@ export const ViewUserId = (props: IViewUserId) => {
                             checkActive={checkActive}
                             navFunc={navFunc}
                             title={props.user.displayName}
-                            subtitle={props.user.isAdmin ? 'Administrator' : ''}
                             description={`ID: ${props.user._id}`}
                             sections={getSections(props.user)}
                         />

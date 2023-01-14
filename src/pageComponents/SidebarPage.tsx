@@ -56,6 +56,12 @@ export const SidebarPage = (props: ISidebarPage) => {
         }
     }, [auth.user])
 
+    const getRoles = useCallback(() => {
+        if (auth.user) {
+            return auth.user.roleNames.join(', ')
+        }
+    }, [auth.user])
+
     const getOptions = () => {
         let options = []
 
@@ -132,7 +138,7 @@ export const SidebarPage = (props: ISidebarPage) => {
                         <Spacer width="10px" />
                         <FullScreenButton />
                         <Spacer width="15px" />
-                        <ProfileBox name={getName()} options={getOptions()} />
+                        <ProfileBox name={getName()} options={getOptions()} subText={getRoles()} />
                     </Container>
                 }
             >

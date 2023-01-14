@@ -1,3 +1,4 @@
+import { IDataContextInput } from '@sector-eleven-ltd/se-react-toolkit'
 import { Community } from './community'
 import { axios11 } from './config'
 import { Team } from './team'
@@ -10,9 +11,9 @@ export interface User {
     roleNames: string[]
     phoneNumber: string
     blocked: boolean
-    guidingCommunities?: Community[]
-    memberCommunity?: Community
-    memberTeam?: Team
+    communityGuideOf?: Community[]
+    communityMemberOf?: Community[]
+    teamMemberOf?: Team[]
 }
 
 export const loginUser = async () => {
@@ -27,15 +28,16 @@ export const getUser = async (id: string) => {
 }
 
 //TODO Change Argument
-export const getUserTable = async (id: string) => {
-    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/table`, { id })
-    return result.data
+export const getUserTable = async (filter: IDataContextInput) => {
+    console.log(filter)
+    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/table`)
+    return result.data.data
 }
 
 //TODO Change Argument
-export const getUserAutocomplete = async (id: string) => {
-    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/autocomplete`, { id })
-    return result.data
+export const getUserAutocomplete = async (filter: IDataContextInput) => {
+    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/autocomplete`, filter)
+    return result.data.data
 }
 
 export const createUser = async (user: User) => {

@@ -1,3 +1,4 @@
+import { IDataContextInput } from '@sector-eleven-ltd/se-react-toolkit'
 import { axios11 } from './config'
 
 export interface Role {
@@ -6,7 +7,8 @@ export interface Role {
 }
 
 //TODO Change Argument
-export const getRoleAutocomplete = async (id: string) => {
-    const result = await axios11.post<{ data: Role }>(`/auth/get/roles/autocomplete`, { id })
+export const getRoleAutocomplete = async (filter: IDataContextInput) => {
+    console.log(filter)
+    const result = await axios11.post<{ data: Role }>(`/auth/get/roles/autocomplete`)
     return result.data
 }

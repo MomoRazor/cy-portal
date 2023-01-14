@@ -16,10 +16,10 @@ import {
 import { ReactNode, useCallback, useContext, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
 import { TeamOverlay } from '../projectComponents'
-import { getTeams, getUserTeams, ITeam } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
+import { Team, getTeamTable } from '../restAPI'
 
-interface TeamRow extends ITeam {
+interface TeamRow extends Team {
     actions: ReactNode
 }
 
@@ -31,11 +31,11 @@ export const ViewTeams = (props: IViewTeams) => {
     const auth = useContext(AuthContext)
 
     const [showAddNew, setShowNew] = useState(false)
-    const [editTeam, setEditTeam] = useState<ITeam>()
+    const [editTeam, setEditTeam] = useState<Team>()
 
     const [dirty, setDirty] = useState(false)
 
-    const parseData = (args: { data: ITeam[] }) => {
+    const parseData = (args: { data: Team[] }) => {
         let array: TeamRow[] = []
 
         args.data.map((data) => {
@@ -48,7 +48,7 @@ export const ViewTeams = (props: IViewTeams) => {
     }
 
     const actionsRow = useCallback(
-        (data: ITeam) => (
+        (data: Team) => (
             <Container direction={Direction.row} padding="0">
                 <Linker href={`/teams/${data._id}/`} hocLink>
                     <IconButton>
@@ -96,7 +96,16 @@ export const ViewTeams = (props: IViewTeams) => {
                         <Table
                             dirty={dirty}
                             setDirty={setDirty}
-                            apiCall={props.myTeams ? () => getUserTeams(auth.user._id) : getTeams}
+                            apiCall={
+                                props.myTeams
+                                    ? () =>
+                                          getTeamTable({
+                                              filter: {
+                                                  memberId: auth.user._id
+                                              }
+                                          })
+                                    : getTeamTable
+                            }
                             parseRows={parseData}
                             headers={[
                                 { id: 'name', title: 'Name' },

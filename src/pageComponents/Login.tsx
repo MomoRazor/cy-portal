@@ -39,10 +39,8 @@ export const Login = () => {
             const firebaseUser = await signInWithEmailAndPassword(firebaseAuth, email, password)
             const result = await hydrateData(firebaseUser.user)
 
-            console.log('res', result)
-
             if (result.result === APICallResult.success) {
-                auth.login && auth.login(result.data)
+                auth.login && auth.login(result.data.data)
                 router.push('/' + loggedInPage)
             } else if (result.result === APICallResult.denied) {
                 displaySnackbar('User not found!', SnackbarType.error, addData)
