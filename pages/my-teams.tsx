@@ -1,4 +1,3 @@
-import React from 'react'
 import { CYPage, ViewTeams } from '../src'
 
 const ViewMyTeamsPage = () => (

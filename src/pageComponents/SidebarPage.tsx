@@ -5,6 +5,7 @@ import {
     Container,
     Direction,
     FullScreenButton,
+    INavSection,
     ProfileBox,
     Sidebar,
     Spacer,
@@ -12,11 +13,12 @@ import {
     Topbar
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import { ReactNode, useCallback, useContext, useMemo } from 'react'
+import { ReactNode, useCallback, useContext } from 'react'
 import { AiOutlineUser, AiOutlineLogout, AiOutlineHome } from 'react-icons/ai'
-import { sidebarNavBuilder, UserTypes } from '../nav'
 import Image from 'next/image'
 import logo from '../../public/logo_color_600px-no-bg.png'
+import { checkPages, sidebarNav } from '../nav'
+import { FirestoreContext } from '../projectComponents'
 
 export interface ISidebarPage {
     children?: ReactNode
@@ -24,6 +26,7 @@ export interface ISidebarPage {
 
 export const SidebarPage = (props: ISidebarPage) => {
     const auth = useContext(AuthContext)
+    const { pages } = useContext(FirestoreContext)
 
     const router = useRouter()
 
@@ -96,28 +99,22 @@ export const SidebarPage = (props: ISidebarPage) => {
         return options
     }
 
-    const permissionCheck = (permissionRequired: UserTypes[]) => {
-        if (permissionRequired.includes(UserTypes.admin)) {
-            if (auth.user?.isAdmin) {
-                return true
+    const getAccess = useCallback(
+        (sections: INavSection) => {
+            if (sections && pages) {
+                return checkPages(pages, window.location.origin, sections.link || '')
             } else {
                 return false
             }
-        }
-        return true
-    }
-
-    const nav = useMemo(() => sidebarNavBuilder(auth.user), [auth.user])
+        },
+        [pages]
+    )
 
     return (
         <Sidebar
-            nav={nav}
-            permissionCheck={permissionCheck}
-            logo={
-                <Container width="80%">
-                    <Image src={logo} alt="Logo" />
-                </Container>
-            }
+            nav={sidebarNav}
+            permissionCheck={getAccess}
+            logo={<Image src={logo} alt="Logo" width="120" />}
         >
             <Topbar
                 showBreadCrumb

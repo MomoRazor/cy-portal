@@ -15,56 +15,37 @@ export interface User {
     memberTeam?: Team
 }
 
-export const loginUser = async (uid: string) => {
-    const result = await axios11.post<{ data: User }>(`/core/login`, { uid })
+export const loginUser = async () => {
+    const result = await axios11.post<{ data: User }>(`/cam-youths/login`)
 
     return result.data
 }
 
 export const getUser = async (id: string) => {
-    const result = await axios11.post<{ data: User }>(`/core/get/users`, { id })
+    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users`, { id })
     return result.data
 }
 
 //TODO Change Argument
 export const getUserTable = async (id: string) => {
-    const result = await axios11.post<{ data: User }>(`/core/get/users/table`, { id })
+    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/table`, { id })
     return result.data
 }
 
 //TODO Change Argument
 export const getUserAutocomplete = async (id: string) => {
-    const result = await axios11.post<{ data: User }>(`/core/get/users/autocomplete`, { id })
-    return result.data
-}
-
-export const getMembersOfTeam = async (teamId: string) => {
-    const result = await axios11.post<{ data: User[] }>(`/core/get/teams/members`, { teamId })
-    return result.data
-}
-
-export const getMembersOfCommunity = async (communityId: string) => {
-    const result = await axios11.post<{ data: User[] }>(`/core/get/communities/members`, {
-        communityId
-    })
-    return result.data
-}
-
-export const getGuidesOfCommunity = async (communityId: string) => {
-    const result = await axios11.post<{ data: User[] }>(`/core/get/communities/guides`, {
-        communityId
-    })
+    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/autocomplete`, { id })
     return result.data
 }
 
 export const createUser = async (user: User) => {
-    const result = await axios11.post<{ data: User }>(`/core/create/users`, user)
+    const result = await axios11.post<{ data: User }>(`/cam-youths/create/users`, user)
 
     return result.data
 }
 
 export const updateUser = async (id: string, updateUser: Partial<User>) => {
-    const result = await axios11.post<{ data: User }>(`/core/update/users`, {
+    const result = await axios11.post<{ data: User }>(`/cam-youths/update/users`, {
         id,
         ...updateUser
     })

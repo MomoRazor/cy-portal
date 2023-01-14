@@ -1,76 +1,113 @@
-import { INavType } from '@sector-eleven-ltd/se-react-toolkit'
 import { CgUser, CgCommunity, CgList } from 'react-icons/cg'
 import { AiOutlineTeam } from 'react-icons/ai'
-import React from 'react'
-import { IUser } from './restAPI'
+import { INavType } from '@sector-eleven-ltd/se-react-toolkit'
 
-export enum UserTypes {
-    admin = 'administrator',
-    member = 'member'
+export interface IPagePermission {
+    [name: string]: string[]
 }
 
-export const sidebarNavBuilder = (user: IUser) => {
-    const sidebarNav: INavType[] = [
-        {
-            title: 'Profile',
-            link: '/profile',
-            icon: <CgUser size={20} />
-        },
-        {
-            title: 'User Management',
-            permission: [UserTypes.admin]
-        },
-        {
-            title: 'Users',
-            link: '/users',
-            icon: <CgList size={20} />,
-            permission: [UserTypes.admin]
-        },
-        {
-            title: 'Community Management'
-        },
-        {
-            title: 'Communities',
-            link: '/communities',
-            icon: <CgCommunity size={20} />,
-            permission: [UserTypes.admin]
+export const checkPages = (userPages: string[], domain: string, endpoint: string) => {
+    const cleanedEndpoint = endpoint.split('?')[0]
+    if (userPages.includes(`*:*`) || userPages.includes(`${domain}:*`)) {
+        return true
+    } else {
+        for (let i = 0; i < userPages.length; i++) {
+            if (userPages[i] === `${domain}:${cleanedEndpoint}`) {
+                return true
+            } else {
+                const splitPageA = userPages[i].split('/').filter((page) => page)
+                const splitPageB = `${domain}:${cleanedEndpoint}`.split('/').filter((page) => page)
+
+                const max =
+                    splitPageA.length > splitPageB.length ? splitPageA.length : splitPageB.length
+
+                let failed = false
+                for (let j = 0; j < max; j++) {
+                    if (splitPageA[j] === '*') {
+                        return true
+                    } else if (
+                        !splitPageA[j] ||
+                        (splitPageA[j][0] !== ':' && splitPageA[j] !== splitPageB[j])
+                    ) {
+                        failed = true
+                        break
+                    }
+                }
+
+                if (!failed) {
+                    return true
+                }
+            }
         }
-    ]
-
-    if (user.communityMemberOf) {
-        sidebarNav.push({
-            title: 'My Community',
-            link: '/my-community',
-            icon: <CgCommunity size={20} />
-        })
     }
 
-    if (user.communitiesGuideOf && user.communitiesGuideOf.length > 0) {
-        sidebarNav.push({
-            title: 'Guiding Communities',
-            link: '/guide-communities',
-            icon: <CgCommunity size={20} />
-        })
-    }
-
-    sidebarNav.push({
-        title: 'Team Management'
-    })
-
-    sidebarNav.push({
-        title: 'Teams',
-        link: '/teams',
-        icon: <AiOutlineTeam size={20} />,
-        permission: [UserTypes.admin]
-    })
-
-    if (user.teamMemberOf && user.teamMemberOf.length > 0) {
-        sidebarNav.push({
-            title: 'My Teams',
-            link: '/my-teams',
-            icon: <AiOutlineTeam size={20} />
-        })
-    }
-
-    return sidebarNav
+    return false
 }
+
+export const sidebarNav: INavType[] = [
+    {
+        title: 'Home',
+        sections: [
+            {
+                title: 'Profile',
+                link: '/profile',
+                icon: <CgUser size={20} />
+            },
+            {
+                title: 'My Community',
+                link: '/my-community',
+                icon: <CgCommunity size={20} />
+            },
+            {
+                title: 'Guiding Communities',
+                link: '/guide-communities',
+                icon: <CgCommunity size={20} />
+            },
+            {
+                title: 'My Teams',
+                link: '/my-teams',
+                icon: <AiOutlineTeam size={20} />
+            }
+        ]
+    },
+    {
+        title: 'Event Management',
+        sections: [
+            {
+                title: 'Calendar',
+                link: '/calendar',
+                icon: <CgList size={20} />
+            },
+            {
+                title: 'Events',
+                link: '/events',
+                icon: <CgList size={20} />
+            }
+        ]
+    },
+    {
+        title: 'User Management',
+        sections: [
+            {
+                title: 'Users',
+                link: '/users',
+                icon: <CgList size={20} />
+            }
+        ]
+    },
+    {
+        title: 'Group Management',
+        sections: [
+            {
+                title: 'Communities',
+                link: '/communities',
+                icon: <CgCommunity size={20} />
+            },
+            {
+                title: 'Teams',
+                link: '/teams',
+                icon: <AiOutlineTeam size={20} />
+            }
+        ]
+    }
+]

@@ -1,12 +1,12 @@
 import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { CYPage, getUser, IUser, ViewUserId } from '../../src'
+import { CYPage, getUser, User, ViewUserId } from '../../src'
 // import { mockUser } from '../../src/mock'
 
 const View = () => {
     const router = useRouter()
-    const [userData, setUserData] = useState<IUser>()
+    const [userData, setUserData] = useState<User>()
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
@@ -30,7 +30,6 @@ const View = () => {
             ]}
             loadExtraDetail={getUserData}
             setExtraData={setUserData}
-            adminOnly
             loginRequired
         >
             <ViewUserId user={userData} setUser={setUserData} />

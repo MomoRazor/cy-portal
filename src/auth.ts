@@ -1,7 +1,7 @@
 import { APICallResult, IFirebaseConfig } from '@sector-eleven-ltd/se-react-toolkit'
 import getConfig from 'next/config'
 import { User } from 'firebase/auth'
-import { getUser } from './restAPI'
+import { loginUser } from './restAPI'
 
 const { publicRuntimeConfig } = getConfig()
 
@@ -23,14 +23,14 @@ export const firebaseConfig: IFirebaseConfig = {
     measurementId: measurementId
 }
 
-export const hydrateDate = async (
+export const hydrateData = async (
     user: User | null
 ): Promise<{ result: APICallResult; data?: any }> => {
     if (user) {
         try {
             let data = null
 
-            data = await getUser(user.uid)
+            data = await loginUser()
 
             if (data) {
                 return {

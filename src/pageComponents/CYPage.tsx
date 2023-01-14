@@ -1,58 +1,124 @@
-import { AuthPage, ForbiddenPage, IUrlData } from '@sector-eleven-ltd/se-react-toolkit'
+import {
+    APICallResult,
+    APICallReturn,
+    AuthContext,
+    AuthPageV2,
+    Colors,
+    ExtraDataHandler,
+    IUrlData,
+    LoadingPage,
+    SetExtraDataHandler
+} from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
-import { ReactNode, useCallback } from 'react'
-import { firebaseConfig, hydrateDate } from '../auth'
+import { ReactNode, useCallback, useContext, useState } from 'react'
+import { hydrateData } from '../auth'
 import { getAuth } from 'firebase/auth'
+import { FirestoreContext, FirebaseContext } from '../projectComponents'
+import { camLogout } from '../utils'
+import { RBACForbiddenPage } from './RBACForbiddenPage'
+import { checkPages } from '../nav'
 
 export interface ICYPage {
     loginRequired?: boolean
     breadCrumb?: IUrlData[]
     title?: string
-    adminOnly?: boolean
+    loadExtraDetail?: ExtraDataHandler
+    setExtraData?: SetExtraDataHandler
     children: ReactNode
 }
 
-export const CYPage = (props: ICYPage) => {
+export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
+    const { login, logout } = useContext(AuthContext)
+    const { pages } = useContext(FirestoreContext)
+    const { status } = useContext(FirebaseContext)
     const router = useRouter()
 
-    const handleRenderSelection = () => {
-        if (props.adminOnly) {
-            if (user?.isAdmin) {
-                return props.children
-            } else {
-                return <ForbiddenPage />
-            }
-        } else {
-            return props.children
-        }
-    }
+    const [loading, setLoading] = useState(true)
+    const [forbidden, setForbidden] = useState(false)
+
+    const handleRenderSelection = () =>
+        props.loginRequired ? (
+            loading ? (
+                <LoadingPage />
+            ) : forbidden ? (
+                <RBACForbiddenPage logout={logoutFunc} allowBack lineColor={Colors.primary} />
+            ) : (
+                props.children
+            )
+        ) : (
+            props.children
+        )
 
     const apiCall = useCallback(async () => {
         const firebaseAuth = getAuth()
         const user = firebaseAuth.currentUser
 
-        const result = await hydrateDate(user)
+        if (user) {
+            try {
+                const result = await hydrateData(user)
 
-        if (result.result === APICallResult.success) {
-            login && login(result.data)
+                if (result.data) {
+                    login && login(result.data)
+                    if (pages && checkPages(pages, window.location.origin, router.pathname)) {
+                        setForbidden(false)
+                    } else {
+                        setForbidden(true)
+                    }
+
+                    setLoading(false)
+
+                    const end: APICallReturn = {
+                        result: APICallResult.success
+                    }
+                    return end
+                } else {
+                    const end: APICallReturn = {
+                        result: APICallResult.denied
+                    }
+
+                    return end
+                }
+            } catch (e) {
+                const end: APICallReturn = {
+                    result: APICallResult.error
+                }
+                return end
+            }
+        } else {
+            const end: APICallReturn = {
+                result: APICallResult.denied
+            }
+
+            return end
         }
+    }, [login, pages, router.pathname])
 
-        return result
-    }, [login])
+    const loadExtraData = useCallback(async () => {
+        if (loadExtraDetail) {
+            const response = await loadExtraDetail()
+            return response.data
+        }
+    }, [loadExtraDetail])
+
+    const logoutFunc = () => {
+        if (logout) {
+            camLogout(router, logout)
+        } else {
+            console.error('No logout found')
+        }
+    }
 
     return (
-        <AuthPage
-            logout={async () => {
-                router.push('/logout')
-            }}
+        <AuthPageV2
+            logout={logoutFunc}
             title={props.title}
             loginRequired={props.loginRequired}
             renderSelection={handleRenderSelection}
             apiCall={apiCall}
-            firebaseConfig={firebaseConfig}
             breadCrumb={props.breadCrumb}
-            loadExtraData={loadExtraDetail}
+            loadExtraData={loadExtraData}
             setExtraData={props.setExtraData}
+            loginStatus={status}
         />
     )
 }

@@ -7,32 +7,40 @@ export interface Community {
 }
 
 export const getCommunity = async (id: string) => {
-    const result = await axios11.post<{ data: Community[] }>(`/core/get/communities`, { id })
+    const result = await axios11.post<{ data: Community[] }>(`/cam-youths/get/communities`, { id })
     return result.data
 }
 
 //TODO Change Argument
 export const getCommunityTable = async (id: string) => {
-    const result = await axios11.post<{ data: Community }>(`/core/get/communities/table`, { id })
-    return result.data
-}
-
-//TODO Change Argument
-export const getCommunityAutocomplete = async (id: string) => {
-    const result = await axios11.post<{ data: Community }>(`/core/get/communities/autocomplete`, {
+    const result = await axios11.post<{ data: Community }>(`/cam-youths/get/communities/table`, {
         id
     })
     return result.data
 }
 
+//TODO Change Argument
+export const getCommunityAutocomplete = async (id: string) => {
+    const result = await axios11.post<{ data: Community }>(
+        `/cam-youths/get/communities/autocomplete`,
+        {
+            id
+        }
+    )
+    return result.data
+}
+
 export const createCommunity = async (community: Community) => {
-    const result = await axios11.post<{ data: Community }>(`/core/create/communities`, community)
+    const result = await axios11.post<{ data: Community }>(
+        `/cam-youths/create/communities`,
+        community
+    )
 
     return result.data
 }
 
 export const updateCommunity = async (id: string, community: Partial<Community>) => {
-    const result = await axios11.post<{ data: Community }>(`/core/update/communities`, {
+    const result = await axios11.post<{ data: Community }>(`/cam-youths/update/communities`, {
         id,
         ...community
     })
@@ -42,7 +50,7 @@ export const updateCommunity = async (id: string, community: Partial<Community>)
 
 export const assignUserToCommunityAsMember = async (userId: string, communityId: string) => {
     const result = await axios11.post<{ data: Community }>(
-        `/core/assign/member/${userId}/community/${communityId}`
+        `/cam-youths/assign/member/${userId}/community/${communityId}`
     )
 
     return result.data
@@ -50,7 +58,7 @@ export const assignUserToCommunityAsMember = async (userId: string, communityId:
 
 export const unassignUserFromCommunityAsMember = async (userId: string, communityId: string) => {
     const result = await axios11.post<{ data: Community }>(
-        `/core/unassign/member/${userId}/community/${communityId}`
+        `/cam-youths/unassign/member/${userId}/community/${communityId}`
     )
 
     return result.data
@@ -58,7 +66,7 @@ export const unassignUserFromCommunityAsMember = async (userId: string, communit
 
 export const assignUserToCommunityAsGuide = async (userId: string, communityId: string) => {
     const result = await axios11.post<{ data: Community }>(
-        `/core/assign/guide/${userId}/community/${communityId}`
+        `/cam-youths/assign/guide/${userId}/community/${communityId}`
     )
 
     return result.data
@@ -66,7 +74,7 @@ export const assignUserToCommunityAsGuide = async (userId: string, communityId: 
 
 export const unassignUserFromCommunityAsGuide = async (userId: string, communityId: string) => {
     const result = await axios11.post<{ data: Community }>(
-        `/core/unassign/guide/${userId}/community/${communityId}`
+        `/cam-youths/unassign/guide/${userId}/community/${communityId}`
     )
 
     return result.data

@@ -1,4 +1,3 @@
-import React from 'react'
 import { CYPage, ViewCommunities } from '../../src'
 
 const ViewCommunitiesPage = () => (

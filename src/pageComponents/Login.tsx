@@ -12,7 +12,7 @@ import {
 import darkLogo from '../../public/logo_color_600px-no-bg.png'
 import Image from 'next/image'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import { hydrateDate } from '../auth'
+import { hydrateData } from '../auth'
 
 export const Login = () => {
     const { addData } = useContext(SnackbarContext)
@@ -37,7 +37,9 @@ export const Login = () => {
 
         try {
             const firebaseUser = await signInWithEmailAndPassword(firebaseAuth, email, password)
-            const result = await hydrateDate(firebaseUser.user)
+            const result = await hydrateData(firebaseUser.user)
+
+            console.log('res', result)
 
             if (result.result === APICallResult.success) {
                 auth.login && auth.login(result.data)
@@ -56,7 +58,7 @@ export const Login = () => {
     return (
         <LoginPage
             title="Welcome to the CAM Youths Portal"
-            image={<Image src={darkLogo} alt="Login Logo" />}
+            image={<Image src={darkLogo} alt="Login Logo" height={200} />}
             onSignIn={handleEmailSignIn}
             forgotPassword={() => router.push('/forgotPassword')}
             onAutoLogin={() => router.push('/' + loggedInPage)}

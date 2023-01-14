@@ -1,4 +1,3 @@
-import React from 'react'
 import { CYPage, Login } from '../src'
 
 const Index = () => (

@@ -1,11 +1,11 @@
 import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { CYPage, getCommunity, ICommunity, ViewCommunityId } from '../src'
+import { CYPage, getCommunity, Community, ViewCommunityId } from '../src'
 
 const View = () => {
     const router = useRouter()
-    const [communityData, setCommunityData] = useState<ICommunity>()
+    const [communityData, setCommunityData] = useState<Community>()
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
