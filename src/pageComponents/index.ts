@@ -1,6 +1,5 @@
 export * from './CYPage'
 export * from './Login'
-export * from './Logout'
 export * from './ForgotPassword'
 export * from './ViewUsers'
 export * from './ViewUserId'

@@ -37,7 +37,8 @@ export const Login = () => {
 
         try {
             const firebaseUser = await signInWithEmailAndPassword(firebaseAuth, email, password)
-            const result = await hydrateData(firebaseUser.user)
+            console.log('test', firebaseUser)
+            const result = await hydrateData()
 
             if (result.result === APICallResult.success) {
                 auth.login && auth.login(result.data.data)

@@ -1,6 +1,5 @@
 import { APICallResult, IFirebaseConfig } from '@sector-eleven-ltd/se-react-toolkit'
 import getConfig from 'next/config'
-import { User } from 'firebase/auth'
 import { loginUser } from './restAPI'
 
 const { publicRuntimeConfig } = getConfig()
@@ -23,34 +22,26 @@ export const firebaseConfig: IFirebaseConfig = {
     measurementId: measurementId
 }
 
-export const hydrateData = async (
-    user: User | null
-): Promise<{ result: APICallResult; data?: any }> => {
-    if (user) {
-        try {
-            let data = null
+export const hydrateData = async (): Promise<{ result: APICallResult; data?: any }> => {
+    try {
+        let data = null
 
-            data = await loginUser()
+        data = await loginUser()
 
-            if (data) {
-                return {
-                    result: APICallResult.success,
-                    data
-                }
-            } else {
-                return {
-                    result: APICallResult.denied
-                }
-            }
-        } catch (e) {
-            console.error(e)
+        if (data) {
             return {
-                result: APICallResult.error
+                result: APICallResult.success,
+                data
+            }
+        } else {
+            return {
+                result: APICallResult.denied
             }
         }
-    } else {
+    } catch (e) {
+        console.error(e)
         return {
-            result: APICallResult.denied
+            result: APICallResult.error
         }
     }
 }

@@ -55,7 +55,7 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
 
         if (user) {
             try {
-                const result = await hydrateData(user)
+                const result = await hydrateData()
 
                 if (result.data) {
                     login && login(result.data.data)
@@ -100,9 +100,9 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
         }
     }, [loadExtraDetail])
 
-    const logoutFunc = () => {
+    const logoutFunc = async () => {
         if (logout) {
-            camLogout(router, logout)
+            await camLogout(router, logout)
         } else {
             console.error('No logout found')
         }

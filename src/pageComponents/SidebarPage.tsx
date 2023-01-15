@@ -19,6 +19,7 @@ import Image from 'next/image'
 import logo from '../../public/logo_color_600px-no-bg.png'
 import { checkPages, sidebarNav } from '../nav'
 import { FirestoreContext } from '../projectComponents'
+import { camLogout } from '../utils'
 
 export interface ISidebarPage {
     children?: ReactNode
@@ -35,7 +36,9 @@ export const SidebarPage = (props: ISidebarPage) => {
     }
 
     const handleLogOutClick = async () => {
-        router.push('/logout')
+        if (auth.logout) {
+            await camLogout(router, auth.logout)
+        }
     }
 
     const handleCommunityClick = () => {
