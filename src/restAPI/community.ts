@@ -14,16 +14,18 @@ export const getCommunity = async (id: string) => {
 
 //TODO Change Argument
 export const getCommunityTable = async (filter: IDataContextInput) => {
-    console.log(filter)
-    const result = await axios11.post<{ data: Community }>(`/cam-youths/get/communities/table`)
+    const result = await axios11.post<{ data: Community }>(
+        `/cam-youths/get/communities/table`,
+        filter
+    )
     return result.data.data
 }
 
 //TODO Change Argument
 export const getCommunityAutocomplete = async (filter: IDataContextInput) => {
-    console.log(filter)
     const result = await axios11.post<{ data: Community }>(
-        `/cam-youths/get/communities/autocomplete`
+        `/cam-youths/get/communities/autocomplete`,
+        filter
     )
     return result.data.data
 }

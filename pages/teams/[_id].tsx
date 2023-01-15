@@ -1,12 +1,11 @@
 import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { CYPage, getTeam, ITeam, ViewTeamId } from '../../src'
-// import { mockTeam } from '../../src/mock'
+import { CYPage, getTeam, Team, ViewTeamId } from '../../src'
 
 const View = () => {
     const router = useRouter()
-    const [teamData, setTeamData] = useState<ITeam>()
+    const [teamData, setTeamData] = useState<Team>()
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
@@ -24,10 +23,13 @@ const View = () => {
     ) : (
         <CYPage
             title={teamData?.name}
-            breadCrumb={[{ display: 'Home', id: '/profile' }, { display: teamData?.name || '' }]}
+            breadCrumb={[
+                { display: 'Home', id: '/profile' },
+                { display: 'Team', id: '/teams' },
+                { display: teamData?.name || '' }
+            ]}
             loadExtraDetail={getTeamData}
             setExtraData={setTeamData}
-            adminOnly
             loginRequired
         >
             <ViewTeamId team={teamData} setTeam={setTeamData} />

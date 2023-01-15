@@ -13,7 +13,7 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
-import { ITeam, IUser } from '../restAPI'
+import { Team, User } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 import {
     AssignUserToTeamOverlay,
@@ -24,8 +24,8 @@ import {
 } from '../projectComponents'
 
 export interface IViewTeamId {
-    team?: ITeam
-    setTeam: (data: ITeam) => void
+    team?: Team
+    setTeam: (data: Team) => void
 }
 
 export const ViewTeamId = (props: IViewTeamId) => {
@@ -37,7 +37,7 @@ export const ViewTeamId = (props: IViewTeamId) => {
 
     const [showAddNew, setShowNew] = useState(false)
     const [showAssignUsers, setShowAssignUsers] = useState(false)
-    const [editUser, setEditUser] = useState<IUser>()
+    const [editUser, setEditUser] = useState<User>()
 
     const [dirtyTable, setDirtyTable] = useState(false)
     const [isOverlay, setIsOverlay] = useState(false)
@@ -68,7 +68,7 @@ export const ViewTeamId = (props: IViewTeamId) => {
         setEditTeam(false)
     }
 
-    const saveDrawer = (data?: ITeam) => {
+    const saveDrawer = (data?: Team) => {
         if (data) {
             props.setTeam(data)
         }
@@ -97,7 +97,7 @@ export const ViewTeamId = (props: IViewTeamId) => {
         setDirtyTable(true)
     }
 
-    const getSections = (team: ITeam) => {
+    const getSections = (team: Team) => {
         return [
             {
                 link: 'View',

@@ -121,7 +121,7 @@ export const ViewUsers = () => {
                                 { id: 'email', title: 'Email' },
                                 { id: 'communityMember', title: 'Community' },
                                 { id: 'teamMember', title: 'Team' },
-                                { id: 'admin', title: 'Is an Admin' },
+                                { id: 'roles', title: 'Roles' },
                                 { id: 'actions', title: 'Actions' }
                             ]}
                             keyName="id"

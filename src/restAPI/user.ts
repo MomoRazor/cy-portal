@@ -29,8 +29,7 @@ export const getUser = async (id: string) => {
 
 //TODO Change Argument
 export const getUserTable = async (filter: IDataContextInput) => {
-    console.log(filter)
-    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/table`)
+    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/table`, filter)
     return result.data.data
 }
 

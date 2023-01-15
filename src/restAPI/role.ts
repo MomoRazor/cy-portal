@@ -8,7 +8,6 @@ export interface Role {
 
 //TODO Change Argument
 export const getRoleAutocomplete = async (filter: IDataContextInput) => {
-    console.log(filter)
-    const result = await axios11.post<{ data: Role }>(`/auth/get/roles/autocomplete`)
+    const result = await axios11.post<{ data: Role }>(`/auth/get/roles/autocomplete`, filter)
     return result.data
 }

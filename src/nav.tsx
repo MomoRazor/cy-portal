@@ -46,7 +46,7 @@ export const checkPages = (userPages: string[], domain: string, endpoint: string
 
 export const sidebarNav: INavType[] = [
     {
-        title: 'Home',
+        title: 'My Information',
         sections: [
             {
                 title: 'Profile',

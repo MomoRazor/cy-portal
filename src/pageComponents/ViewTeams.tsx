@@ -101,7 +101,7 @@ export const ViewTeams = (props: IViewTeams) => {
                                     ? () =>
                                           getTeamTable({
                                               filter: {
-                                                  memberId: auth.user._id
+                                                  memberIds: auth.user._id
                                               }
                                           })
                                     : getTeamTable

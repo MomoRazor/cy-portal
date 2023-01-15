@@ -14,15 +14,13 @@ export const getTeam = async (id: string) => {
 
 //TODO Change Argument
 export const getTeamTable = async (filter: IDataContextInput) => {
-    console.log(filter)
-    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/table`)
+    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/table`, filter)
     return result.data.data
 }
 
 //TODO Change Argument
 export const getTeamAutocomplete = async (filter: IDataContextInput) => {
-    console.log(filter)
-    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/autocomplete`)
+    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/autocomplete`, filter)
     return result.data.data
 }
 

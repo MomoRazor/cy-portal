@@ -16,25 +16,26 @@ import {
 import { ReactNode, useCallback, useContext, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
 import { CommunityOverlay } from '../projectComponents'
-import { getCommunities, getGuideCommunities, ICommunity } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
+import { Community, getCommunityTable } from '../restAPI'
 
-interface CommunityRow extends ICommunity {
+interface CommunityRow extends Community {
     actions: ReactNode
 }
 
 export interface IViewCommunities {
-    guidingCommunity?: boolean
+    guidingCommunities?: boolean
+    myCommunities?: boolean
 }
 
 export const ViewCommunities = (props: IViewCommunities) => {
     const auth = useContext(AuthContext)
 
     const [showAddNew, setShowNew] = useState(false)
-    const [editCommunity, setEditCommunity] = useState<ICommunity>()
+    const [editCommunity, setEditCommunity] = useState<Community>()
     const [dirty, setDirty] = useState(false)
 
-    const parseData = (args: { data: ICommunity[] }) => {
+    const parseData = (args: { data: Community[] }) => {
         let array: CommunityRow[] = []
 
         args.data.map((data) => {
@@ -47,7 +48,7 @@ export const ViewCommunities = (props: IViewCommunities) => {
     }
 
     const actionsRow = useCallback(
-        (data: ICommunity) => (
+        (data: Community) => (
             <Container direction={Direction.row} padding="0">
                 <Linker href={`/communities/${data._id}/`} hocLink>
                     <IconButton>
@@ -83,7 +84,11 @@ export const ViewCommunities = (props: IViewCommunities) => {
             <SidebarPage>
                 <Container width="100%">
                     <Typography variant={TextVariants.h4} color={Colors.title}>
-                        {props.guidingCommunity ? 'Guiding Communities' : 'Communities'}
+                        {props.guidingCommunities
+                            ? 'Guiding Communities'
+                            : props.myCommunities
+                            ? 'My Communities'
+                            : 'Communities'}
                     </Typography>
                     <Spacer height="20px" />
 
@@ -92,9 +97,21 @@ export const ViewCommunities = (props: IViewCommunities) => {
                             dirty={dirty}
                             setDirty={setDirty}
                             apiCall={
-                                props.guidingCommunity
-                                    ? () => getGuideCommunities(auth.user._id)
-                                    : getCommunities
+                                props.myCommunities
+                                    ? () =>
+                                          getCommunityTable({
+                                              filter: {
+                                                  memberIds: auth.user._id
+                                              }
+                                          })
+                                    : props.guidingCommunities
+                                    ? () =>
+                                          getCommunityTable({
+                                              filter: {
+                                                  guide: auth.user._id
+                                              }
+                                          })
+                                    : getCommunityTable
                             }
                             parseRows={parseData}
                             headers={[

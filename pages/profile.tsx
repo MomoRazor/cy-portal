@@ -18,7 +18,7 @@ const View = () => {
     return isLoading ? (
         <LoadingPage />
     ) : (
-        <CYPage title="Profile" breadCrumb={[{ display: 'Profile' }]} loginRequired>
+        <CYPage title="Home" breadCrumb={[{ display: 'Home' }]} loginRequired>
             <ViewUserId user={userData} setUser={setUserData} profile />
         </CYPage>
     )

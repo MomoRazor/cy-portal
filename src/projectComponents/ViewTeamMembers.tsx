@@ -5,7 +5,6 @@ import {
     Direction,
     IconButton,
     Linker,
-    PillContainer,
     PointerEvents,
     Spacer,
     Table,
@@ -14,22 +13,22 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback, useContext } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import { getUserMembersOfTeam, ITeam, IUser, unassignUserFromTeam } from '../restAPI'
+import { getUserTable, Team, User, unassignUserFromTeam } from '../restAPI'
 
 export interface IViewTeamMembers {
-    team: ITeam
+    team: Team
     dirtyTable: boolean
     setDirtyTable: (newDirty: boolean) => void
     setShowNew: (newShow: boolean) => void
-    setEditUser: (newUser: IUser) => void
+    setEditUser: (newUser: User) => void
     setIsOverlay: (newOverlay: boolean) => void
 }
 
-interface UserRow extends IUser {
+interface UserRow extends User {
     actions: ReactNode
     communityGuide: ReactNode
     communityMember: ReactNode
-    admin: ReactNode
+    roles: ReactNode
 }
 
 export const ViewTeamMembers = ({
@@ -39,33 +38,28 @@ export const ViewTeamMembers = ({
     ...props
 }: IViewTeamMembers) => {
     const auth = useContext(AuthContext)
-    const parseData = (data: IUser[]) => {
+    const parseData = (result: { data: User[] }) => {
         let array: UserRow[] = []
 
-        data.map((data) => {
+        result.data.map((data) => {
             return array.push({
                 ...data,
-                communityMember: (
-                    <Linker href={`/communities/${data.communityMemberOfId}/`}>
+                communityMember: data.communityMemberOf?.map((communtiy) => (
+                    <Linker href={`/communities/${communtiy._id}/`} key={communtiy._id}>
                         <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                            {data.communityMemberOf?.name || ''}
+                            {communtiy.name || ''}
                         </Typography>
                     </Linker>
-                ),
+                )),
                 communityGuide:
-                    data.communitiesGuideOf?.map((community) => (
+                    data.communityGuideOf?.map((community) => (
                         <Linker key={community._id} href={`/communities/${community._id}/`}>
                             <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                                 {community.name || ''}
                             </Typography>
                         </Linker>
                     )) || [],
-                admin: (
-                    <PillContainer
-                        text={data.isAdmin ? 'Yes' : 'No'}
-                        color={data.isAdmin ? Colors.success : Colors.error}
-                    />
-                ),
+                roles: <Typography>{data.roleNames.join(', ')}</Typography>,
                 actions: actionsRow(data)
             })
         })
@@ -73,7 +67,7 @@ export const ViewTeamMembers = ({
     }
 
     const actionsRow = useCallback(
-        (data: IUser) =>
+        (data: User) =>
             auth.user.isAdmin || auth.user._id === data._id ? (
                 <Container direction={Direction.row} padding="0">
                     <Linker href={`/users/${data._id}/`} hocLink>
@@ -109,8 +103,14 @@ export const ViewTeamMembers = ({
     )
 
     const apiCall = useCallback(async () => {
-        return await getUserMembersOfTeam(props.team._id)
-    }, [props.team._id])
+        return await getUserTable({
+            filter: {
+                _id: {
+                    $in: props.team.memberIds
+                }
+            }
+        })
+    }, [props.team.memberIds])
 
     return (
         <Container padding="0">
@@ -123,12 +123,11 @@ export const ViewTeamMembers = ({
                 apiCall={apiCall}
                 parseRows={parseData}
                 headers={[
-                    { id: 'name', title: 'Name' },
-                    { id: 'surname', title: 'Surname' },
+                    { id: 'displayName', title: 'Full Name' },
                     { id: 'email', title: 'Email' },
                     { id: 'communityMember', title: 'Community' },
                     { id: 'communityGuide', title: 'Guide Of' },
-                    { id: 'admin', title: 'Is an Admin' },
+                    { id: 'roles', title: 'Roles' },
                     { id: 'actions', title: 'Actions' }
                 ]}
                 keyName="id"
