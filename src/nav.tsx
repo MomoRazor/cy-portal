@@ -55,7 +55,7 @@ export const sidebarNav: INavType[] = [
             },
             {
                 title: 'My Community',
-                link: '/my-community',
+                link: '/my-communities',
                 icon: <CgCommunity size={20} />
             },
             {

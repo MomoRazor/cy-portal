@@ -1,38 +1,32 @@
 import {
-    AuthContext,
     Colors,
     Container,
     Direction,
     IconButton,
-    Linker,
-    PillContainer,
     PointerEvents,
     Spacer,
     Table,
     TextVariants,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import { ReactNode, useCallback, useContext, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import {
-    getUserGuidesOfCommunity,
-    ICommunity,
-    IUser,
-    unassignUserFromCommunityAsGuide
-} from '../restAPI'
+import { Community, User, getUserTable, unassignUserFromCommunityAsGuide } from '../restAPI'
+import { RbacLinker } from './RBACLinker'
 
 export interface IViewCommunityGuides {
-    community: ICommunity
+    community: Community
     setShowNew: (newShow: boolean) => void
-    setEditUser: (newUser: IUser) => void
+    setEditUser: (newUser: User) => void
     setIsOverlay: (newOverlay: boolean) => void
+    myCommunity?: boolean
 }
 
-interface UserRow extends IUser {
+interface UserRow extends User {
     actions: ReactNode
     communityMember: ReactNode
     teamMember: ReactNode
-    admin: ReactNode
+    roles: string
 }
 
 export const ViewCommunityGuides = ({
@@ -41,34 +35,27 @@ export const ViewCommunityGuides = ({
     setIsOverlay,
     ...props
 }: IViewCommunityGuides) => {
-    const auth = useContext(AuthContext)
-    const parseData = (data: IUser[]) => {
+    const parseData = (data: User[]) => {
         let array: UserRow[] = []
 
         data.map((data) => {
             return array.push({
                 ...data,
-                communityMember: (
-                    <Linker href={`/communities/${data.communityMemberOfId}/`}>
+                communityMember: data.communityMemberOf?.map((community) => (
+                    <RbacLinker key={community._id} href={`/communities/${community._id}/`}>
                         <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                            {data.communityMemberOf?.name || ''}
+                            {community.name || ''}
                         </Typography>
-                    </Linker>
-                ),
-                teamMember:
-                    data.teamMemberOf?.map((team) => (
-                        <Linker key={team._id} href={`/teams/${team._id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {team.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
-                admin: (
-                    <PillContainer
-                        text={data.isAdmin ? 'Yes' : 'No'}
-                        color={data.isAdmin ? Colors.success : Colors.error}
-                    />
-                ),
+                    </RbacLinker>
+                )) || <></>,
+                teamMember: data.teamMemberOf?.map((team) => (
+                    <RbacLinker key={team._id} href={`/teams/${team._id}/`}>
+                        <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
+                            {team.name || ''}
+                        </Typography>
+                    </RbacLinker>
+                )) || <></>,
+                roles: data.roleNames.join(', '),
                 actions: actionsRow(data)
             })
         })
@@ -76,14 +63,14 @@ export const ViewCommunityGuides = ({
     }
 
     const actionsRow = useCallback(
-        (data: IUser) =>
-            auth.user.isAdmin || auth.user._id === data._id ? (
+        (data: User) =>
+            !props.myCommunity ? (
                 <Container direction={Direction.row} padding="0">
-                    <Linker href={`/users/${data._id}/`} hocLink>
+                    <RbacLinker href={`/users/${data._id}/`} hocLink>
                         <IconButton>
                             <BiShowAlt />
                         </IconButton>
-                    </Linker>
+                    </RbacLinker>
                     <IconButton
                         onClick={() => {
                             setEditUser(data)
@@ -93,55 +80,41 @@ export const ViewCommunityGuides = ({
                     >
                         <BiEditAlt />
                     </IconButton>
-                    {auth.user.isAdmin ? (
-                        <IconButton
-                            onClick={async () => {
-                                await unassignUserFromCommunityAsGuide(
-                                    data._id,
-                                    props.community._id
-                                )
-                            }}
-                        >
-                            <BiEditAlt />
-                        </IconButton>
-                    ) : (
-                        <></>
-                    )}
+                    <IconButton
+                        onClick={async () => {
+                            await unassignUserFromCommunityAsGuide(data._id, props.community._id)
+                        }}
+                    >
+                        <BiEditAlt />
+                    </IconButton>
                 </Container>
             ) : (
                 <></>
             ),
-        [
-            auth.user._id,
-            auth.user.isAdmin,
-            props.community._id,
-            setEditUser,
-            setIsOverlay,
-            setShowNew
-        ]
+        [props.community._id, props.myCommunity, setEditUser, setIsOverlay, setShowNew]
     )
 
     const apiCall = useCallback(async () => {
-        return await getUserGuidesOfCommunity(props.community._id)
-    }, [props.community._id])
+        return await getUserTable({
+            filter: {
+                _id: {
+                    $in: props.community.guideIds
+                }
+            }
+        })
+    }, [props.community.guideIds])
 
     const headers = useMemo(
-        () =>
-            auth.user.isAdmin
-                ? [
-                      { id: 'name', title: 'Name' },
-                      { id: 'surname', title: 'Surname' },
-                      { id: 'email', title: 'Email' },
-                      { id: 'communityMember', title: 'Community' },
-                      { id: 'teamMember', title: 'Team' },
-                      { id: 'admin', title: 'Is an Admin' },
-                      { id: 'actions', title: 'Actions' }
-                  ]
-                : [
-                      { id: 'name', title: 'Name' },
-                      { id: 'surname', title: 'Surname' }
-                  ],
-        [auth.user.isAdmin]
+        () => [
+            { id: 'name', title: 'Name' },
+            { id: 'surname', title: 'Surname' },
+            { id: 'email', title: 'Email' },
+            { id: 'communityMember', title: 'Community' },
+            { id: 'teamMember', title: 'Team' },
+            { id: 'admin', title: 'Is an Admin' },
+            { id: 'actions', title: 'Actions' }
+        ],
+        []
     )
 
     return (

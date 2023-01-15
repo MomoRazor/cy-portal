@@ -39,14 +39,14 @@ export const getUserAutocomplete = async (filter: IDataContextInput) => {
     return result.data.data
 }
 
-export const createUser = async (user: User) => {
-    const result = await axios11.post<{ data: User }>(`/cam-youths/create/users`, user)
+export const createUser = async (user: Partial<User>) => {
+    const result = await axios11.post<{ data: User }>(`/auth/create/users`, user)
 
     return result.data
 }
 
 export const updateUser = async (id: string, updateUser: Partial<User>) => {
-    const result = await axios11.post<{ data: User }>(`/cam-youths/update/users`, {
+    const result = await axios11.post<{ data: User }>(`/auth/update/users`, {
         id,
         ...updateUser
     })

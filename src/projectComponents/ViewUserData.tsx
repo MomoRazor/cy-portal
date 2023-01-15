@@ -4,7 +4,6 @@ import {
     Container,
     Direction,
     Icon,
-    Linker,
     PointerEvents,
     SizeContext,
     Spacer,
@@ -15,6 +14,7 @@ import {
 import { useContext } from 'react'
 import { BiInfoCircle } from 'react-icons/bi'
 import { User } from '../restAPI'
+import { RbacLinker } from './RBACLinker'
 
 export interface IViewUserData {
     user: User
@@ -66,7 +66,7 @@ export const ViewUserData = (props: IViewUserData) => {
                         <TitledRow
                             label="Member Of"
                             data={props.user.communityMemberOf.map((community) => (
-                                <Linker
+                                <RbacLinker
                                     href={`/communities/${community._id}/`}
                                     hocLink
                                     key={community._id}
@@ -77,7 +77,7 @@ export const ViewUserData = (props: IViewUserData) => {
                                     >
                                         {community.name}
                                     </Typography>
-                                </Linker>
+                                </RbacLinker>
                             ))}
                         />
                     ) : (
@@ -87,7 +87,7 @@ export const ViewUserData = (props: IViewUserData) => {
                         <TitledRow
                             label="Guide Of"
                             data={props.user.communityGuideOf.map((community) => (
-                                <Linker
+                                <RbacLinker
                                     key={community._id}
                                     href={`/communities/${community._id}/`}
                                     hocLink
@@ -98,7 +98,7 @@ export const ViewUserData = (props: IViewUserData) => {
                                     >
                                         {community.name}
                                     </Typography>
-                                </Linker>
+                                </RbacLinker>
                             ))}
                         />
                     ) : (
@@ -108,14 +108,14 @@ export const ViewUserData = (props: IViewUserData) => {
                         <TitledRow
                             label="Team Member Of"
                             data={props.user.teamMemberOf.map((team) => (
-                                <Linker key={team._id} href={`/teams/${team._id}/`} hocLink>
+                                <RbacLinker key={team._id} href={`/teams/${team._id}/`} hocLink>
                                     <Typography
                                         color={Colors.primary}
                                         pointerEvents={PointerEvents.none}
                                     >
                                         {team.name}
                                     </Typography>
-                                </Linker>
+                                </RbacLinker>
                             ))}
                         />
                     ) : (

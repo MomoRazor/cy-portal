@@ -7,7 +7,6 @@ import {
     FloatingIconButton,
     FloatingPosH,
     IconButton,
-    Linker,
     Spacer,
     Table,
     TextVariants,
@@ -15,7 +14,7 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback, useContext, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import { TeamOverlay } from '../projectComponents'
+import { RbacLinker, TeamOverlay } from '../projectComponents'
 import { SidebarPage } from './SidebarPage'
 import { Team, getTeamTable } from '../restAPI'
 
@@ -50,11 +49,11 @@ export const ViewTeams = (props: IViewTeams) => {
     const actionsRow = useCallback(
         (data: Team) => (
             <Container direction={Direction.row} padding="0">
-                <Linker href={`/teams/${data._id}/`} hocLink>
+                <RbacLinker href={`/teams/${data._id}/`} hocLink>
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
-                </Linker>
+                </RbacLinker>
                 <IconButton
                     onClick={() => {
                         setEditTeam(data)

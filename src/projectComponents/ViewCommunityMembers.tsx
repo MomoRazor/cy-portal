@@ -1,38 +1,32 @@
 import {
-    AuthContext,
     Colors,
     Container,
     Direction,
     IconButton,
-    Linker,
-    PillContainer,
     PointerEvents,
     Spacer,
     Table,
     TextVariants,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import { ReactNode, useCallback, useContext, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import {
-    getUserMembersOfCommunity,
-    ICommunity,
-    IUser,
-    unassignUserFromCommunityAsMember
-} from '../restAPI'
+import { Community, User, getUserTable, unassignUserFromCommunityAsMember } from '../restAPI'
+import { RbacLinker } from './RBACLinker'
 
 export interface IViewCommunityMembers {
-    community: ICommunity
+    community: Community
     setShowNew: (newShow: boolean) => void
-    setEditUser: (newUser: IUser) => void
+    setEditUser: (newUser: User) => void
     setIsOverlay: (newOverlay: boolean) => void
+    myCommunity?: boolean
 }
 
-interface UserRow extends IUser {
+interface UserRow extends User {
     actions: ReactNode
     communityGuide: ReactNode
     teamMember: ReactNode
-    admin: ReactNode
+    roles: string
 }
 
 export const ViewCommunityMembers = ({
@@ -41,36 +35,27 @@ export const ViewCommunityMembers = ({
     setIsOverlay,
     ...props
 }: IViewCommunityMembers) => {
-    const auth = useContext(AuthContext)
-
-    const parseData = (data: IUser[]) => {
+    const parseData = (data: User[]) => {
         let array: UserRow[] = []
 
         data.map((data) => {
             return array.push({
                 ...data,
-                communityGuide:
-                    data.communitiesGuideOf?.map((community) => (
-                        <Linker key={community._id} href={`/communities/${community._id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {community.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
-                teamMember:
-                    data.teamMemberOf?.map((team) => (
-                        <Linker key={team._id} href={`/teams/${team._id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {team.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
-                admin: (
-                    <PillContainer
-                        text={data.isAdmin ? 'Yes' : 'No'}
-                        color={data.isAdmin ? Colors.success : Colors.error}
-                    />
-                ),
+                communityGuide: data.communityGuideOf?.map((community) => (
+                    <RbacLinker key={community._id} href={`/communities/${community._id}/`}>
+                        <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
+                            {community.name || ''}
+                        </Typography>
+                    </RbacLinker>
+                )) || <></>,
+                teamMember: data.teamMemberOf?.map((team) => (
+                    <RbacLinker key={team._id} href={`/teams/${team._id}/`}>
+                        <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
+                            {team.name || ''}
+                        </Typography>
+                    </RbacLinker>
+                )) || <></>,
+                roles: data.roleNames.join(', '),
                 actions: actionsRow(data)
             })
         })
@@ -78,14 +63,14 @@ export const ViewCommunityMembers = ({
     }
 
     const actionsRow = useCallback(
-        (data: IUser) =>
-            auth.user.isAdmin || auth.user._id === data._id ? (
+        (data: User) =>
+            !props.myCommunity ? (
                 <Container direction={Direction.row} padding="0">
-                    <Linker href={`/users/${data._id}/`} hocLink>
+                    <RbacLinker href={`/users/${data._id}/`} hocLink>
                         <IconButton>
                             <BiShowAlt />
                         </IconButton>
-                    </Linker>
+                    </RbacLinker>
                     <IconButton
                         onClick={() => {
                             setEditUser(data)
@@ -95,54 +80,41 @@ export const ViewCommunityMembers = ({
                     >
                         <BiEditAlt />
                     </IconButton>
-                    {auth.user.isAdmin ? (
-                        <IconButton
-                            onClick={async () => {
-                                await unassignUserFromCommunityAsMember(
-                                    data._id,
-                                    props.community._id
-                                )
-                            }}
-                        >
-                            <BiEditAlt />
-                        </IconButton>
-                    ) : (
-                        <></>
-                    )}
+
+                    <IconButton
+                        onClick={async () => {
+                            await unassignUserFromCommunityAsMember(data._id, props.community._id)
+                        }}
+                    >
+                        <BiEditAlt />
+                    </IconButton>
                 </Container>
             ) : (
                 <></>
             ),
-        [
-            auth.user._id,
-            auth.user.isAdmin,
-            props.community._id,
-            setEditUser,
-            setIsOverlay,
-            setShowNew
-        ]
+        [props.community._id, props.myCommunity, setEditUser, setIsOverlay, setShowNew]
     )
 
     const apiCall = useCallback(async () => {
-        return await getUserMembersOfCommunity(props.community._id)
-    }, [props.community._id])
+        return await getUserTable({
+            filter: {
+                _id: {
+                    $in: props.community.memberIds
+                }
+            }
+        })
+    }, [props.community.memberIds])
 
     const headers = useMemo(
-        () =>
-            auth.user.isAdmin
-                ? [
-                      { id: 'name', title: 'Name' },
-                      { id: 'surname', title: 'Surname' },
-                      { id: 'email', title: 'Email' },
-                      { id: 'teamMember', title: 'Team' },
-                      { id: 'admin', title: 'Is an Admin' },
-                      { id: 'actions', title: 'Actions' }
-                  ]
-                : [
-                      { id: 'name', title: 'Name' },
-                      { id: 'surname', title: 'Surname' }
-                  ],
-        [auth.user.isAdmin]
+        () => [
+            { id: 'name', title: 'Name' },
+            { id: 'surname', title: 'Surname' },
+            { id: 'email', title: 'Email' },
+            { id: 'teamMember', title: 'Teams' },
+            { id: 'roles', title: 'Roles' },
+            { id: 'actions', title: 'Actions' }
+        ],
+        []
     )
 
     return (

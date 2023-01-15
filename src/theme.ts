@@ -9,6 +9,6 @@ const customThemes = themes
 // customThemes[1].colors.secondary = '#9F9F9F';
 
 export const themeConfig: IThemeProvider = {
-    appTitle: 'CY Portal',
+    appTitle: 'CAM Youths Portal',
     overrideSetup: customThemes
 }

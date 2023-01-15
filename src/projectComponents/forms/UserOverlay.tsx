@@ -12,14 +12,14 @@ import {
     useEnterSubmit
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useContext, useEffect, useState } from 'react'
-import { createUser, ICreateUser, IUser, updateUser } from '../../restAPI'
+import { createUser, User, updateUser } from '../../restAPI'
 import { UserFormSection } from './UserFormSection'
 
 export interface IUserOverlay {
     show: boolean
-    data?: IUser
+    data?: User
     onClose: EmptyFunctionHandler
-    onSave: (newData?: IUser) => void
+    onSave: (newData?: User) => void
     isOverlay?: boolean
     setIsOverlay?: (newOverlay: boolean) => void
 }
@@ -85,14 +85,14 @@ export const UserOverlay = (props: IUserOverlay) => {
                 let result: any
 
                 if (props.data) {
-                    const data: Partial<ICreateUser> = {
+                    const data: Partial<User> = {
                         displayName,
                         email
                     }
 
                     result = await updateUser(props.data?._id, data)
                 } else {
-                    let data: ICreateUser = {
+                    let data: Partial<User> = {
                         displayName,
                         email
                     }

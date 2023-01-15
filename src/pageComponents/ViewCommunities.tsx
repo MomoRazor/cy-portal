@@ -7,7 +7,6 @@ import {
     FloatingIconButton,
     FloatingPosH,
     IconButton,
-    Linker,
     Spacer,
     Table,
     TextVariants,
@@ -15,7 +14,7 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback, useContext, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import { CommunityOverlay } from '../projectComponents'
+import { CommunityOverlay, RbacLinker } from '../projectComponents'
 import { SidebarPage } from './SidebarPage'
 import { Community, getCommunityTable } from '../restAPI'
 
@@ -50,11 +49,11 @@ export const ViewCommunities = (props: IViewCommunities) => {
     const actionsRow = useCallback(
         (data: Community) => (
             <Container direction={Direction.row} padding="0">
-                <Linker href={`/communities/${data._id}/`} hocLink>
+                <RbacLinker href={`/communities/${data._id}/`} hocLink>
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
-                </Linker>
+                </RbacLinker>
                 <IconButton
                     onClick={() => {
                         setEditCommunity(data)

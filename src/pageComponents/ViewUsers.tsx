@@ -6,7 +6,6 @@ import {
     FloatingIconButton,
     FloatingPosH,
     IconButton,
-    Linker,
     PointerEvents,
     Spacer,
     Table,
@@ -15,7 +14,7 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback, useState } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
-import { UserOverlay } from '../projectComponents'
+import { RbacLinker, UserOverlay } from '../projectComponents'
 import { User, getUserTable } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 
@@ -33,6 +32,8 @@ export const ViewUsers = () => {
 
     const [isOverlay, setIsOverlay] = useState(false)
 
+    const [userDirty, setUserDirty] = useState(false)
+
     const parseData = (result: { data: User[]; total: number }) => {
         let array: UserRow[] = []
 
@@ -40,28 +41,26 @@ export const ViewUsers = () => {
             return array.push({
                 ...data,
                 communityMember: data.communityMemberOf?.map((community) => (
-                    <Linker key={community._id} href={`/communities/${community._id}/`}>
+                    <RbacLinker key={community._id} href={`/communities/${community._id}/`}>
                         <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                             {community.name || ''}
                         </Typography>
-                    </Linker>
+                    </RbacLinker>
                 )) || <></>,
-                teamMember:
-                    data.teamMemberOf?.map((team) => (
-                        <Linker key={team._id} href={`/teams/${team._id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {team.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
-                communityGuide:
-                    data.communityGuideOf?.map((community) => (
-                        <Linker key={community._id} href={`/communities/${community._id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {community.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
+                teamMember: data.teamMemberOf?.map((team) => (
+                    <RbacLinker key={team._id} href={`/teams/${team._id}/`}>
+                        <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
+                            {team.name || ''}
+                        </Typography>
+                    </RbacLinker>
+                )) || <></>,
+                communityGuide: data.communityGuideOf?.map((community) => (
+                    <RbacLinker key={community._id} href={`/communities/${community._id}/`}>
+                        <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
+                            {community.name || ''}
+                        </Typography>
+                    </RbacLinker>
+                )) || <></>,
                 roles: data.roleNames.join(', '),
                 actions: actionsRow(data)
             })
@@ -72,11 +71,11 @@ export const ViewUsers = () => {
     const actionsRow = useCallback(
         (data: User) => (
             <Container direction={Direction.row} padding="0">
-                <Linker href={`/users/${data._id}/`} hocLink>
+                <RbacLinker href={`/users/${data._id}/`} hocLink>
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
-                </Linker>
+                </RbacLinker>
                 <IconButton
                     onClick={() => {
                         setEditUser(data)
@@ -101,6 +100,7 @@ export const ViewUsers = () => {
         setEditUser(undefined)
         setShowNew(false)
         setIsOverlay(false)
+        setUserDirty(true)
     }
 
     return (
@@ -126,6 +126,8 @@ export const ViewUsers = () => {
                             ]}
                             keyName="id"
                             pagination={false}
+                            dirty={userDirty}
+                            setDirty={setUserDirty}
                         />
                     </Card>
                 </Container>

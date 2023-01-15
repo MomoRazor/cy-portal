@@ -11,7 +11,7 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
-import { ICommunity, IUser } from '../restAPI'
+import { Community, User } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 import {
     CommunityOverlay,
@@ -22,8 +22,8 @@ import {
 } from '../projectComponents'
 
 export interface IViewCommunityId {
-    community?: ICommunity
-    setCommunity: (data: ICommunity) => void
+    community?: Community
+    setCommunity: (data: Community) => void
 }
 
 export const ViewCommunityId = (props: IViewCommunityId) => {
@@ -34,7 +34,7 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
     const [showEditCommunity, setEditCommunity] = useState(false)
 
     const [showAddNew, setShowNew] = useState(false)
-    const [editUser, setEditUser] = useState<IUser>()
+    const [editUser, setEditUser] = useState<User>()
 
     const [isOverlay, setIsOverlay] = useState(false)
 
@@ -49,8 +49,8 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
     }
 
     const navFunc = (section?: ISideMenuSection) => {
-        if (window.location.href.includes('my-community')) {
-            router.push(`/my-community?section=` + section?.link, undefined, {
+        if (window.location.href.includes('my-communities')) {
+            router.push(`/my-communities?section=` + section?.link, undefined, {
                 shallow: true
             })
         } else {
@@ -68,7 +68,7 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
         setEditCommunity(false)
     }
 
-    const saveDrawer = (data?: ICommunity) => {
+    const saveDrawer = (data?: Community) => {
         if (data) {
             props.setCommunity(data)
         }
@@ -87,7 +87,7 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
         setIsOverlay(false)
     }
 
-    const getSections = (community: ICommunity) => {
+    const getSections = (community: Community) => {
         return [
             {
                 link: 'View',

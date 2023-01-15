@@ -12,13 +12,12 @@ export const getTeam = async (id: string) => {
     return result.data
 }
 
-//TODO Change Argument
 export const getTeamTable = async (filter: IDataContextInput) => {
+    console.log('filter', filter)
     const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/table`, filter)
     return result.data.data
 }
 
-//TODO Change Argument
 export const getTeamAutocomplete = async (filter: IDataContextInput) => {
     const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/autocomplete`, filter)
     return result.data.data

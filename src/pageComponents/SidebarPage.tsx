@@ -39,7 +39,7 @@ export const SidebarPage = (props: ISidebarPage) => {
     }
 
     const handleCommunityClick = () => {
-        router.push('/my-community')
+        router.push('/my-communities')
     }
 
     const handleGuideCommunityClick = () => {

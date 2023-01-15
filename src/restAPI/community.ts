@@ -5,6 +5,7 @@ export interface Community {
     _id: string
     name: string
     memberIds: string[]
+    guideIds: string[]
 }
 
 export const getCommunity = async (id: string) => {

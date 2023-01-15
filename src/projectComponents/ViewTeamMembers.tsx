@@ -1,19 +1,18 @@
 import {
-    AuthContext,
     Colors,
     Container,
     Direction,
     IconButton,
-    Linker,
     PointerEvents,
     Spacer,
     Table,
     TextVariants,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import { ReactNode, useCallback, useContext } from 'react'
+import { ReactNode, useCallback } from 'react'
 import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
 import { getUserTable, Team, User, unassignUserFromTeam } from '../restAPI'
+import { RbacLinker } from './RBACLinker'
 
 export interface IViewTeamMembers {
     team: Team
@@ -22,6 +21,7 @@ export interface IViewTeamMembers {
     setShowNew: (newShow: boolean) => void
     setEditUser: (newUser: User) => void
     setIsOverlay: (newOverlay: boolean) => void
+    myTeam?: boolean
 }
 
 interface UserRow extends User {
@@ -37,7 +37,6 @@ export const ViewTeamMembers = ({
     setIsOverlay,
     ...props
 }: IViewTeamMembers) => {
-    const auth = useContext(AuthContext)
     const parseData = (result: { data: User[] }) => {
         let array: UserRow[] = []
 
@@ -45,20 +44,19 @@ export const ViewTeamMembers = ({
             return array.push({
                 ...data,
                 communityMember: data.communityMemberOf?.map((communtiy) => (
-                    <Linker href={`/communities/${communtiy._id}/`} key={communtiy._id}>
+                    <RbacLinker href={`/communities/${communtiy._id}/`} key={communtiy._id}>
                         <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
                             {communtiy.name || ''}
                         </Typography>
-                    </Linker>
+                    </RbacLinker>
                 )),
-                communityGuide:
-                    data.communityGuideOf?.map((community) => (
-                        <Linker key={community._id} href={`/communities/${community._id}/`}>
-                            <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
-                                {community.name || ''}
-                            </Typography>
-                        </Linker>
-                    )) || [],
+                communityGuide: data.communityGuideOf?.map((community) => (
+                    <RbacLinker key={community._id} href={`/communities/${community._id}/`}>
+                        <Typography color={Colors.primary} pointerEvents={PointerEvents.none}>
+                            {community.name || ''}
+                        </Typography>
+                    </RbacLinker>
+                )) || <></>,
                 roles: <Typography>{data.roleNames.join(', ')}</Typography>,
                 actions: actionsRow(data)
             })
@@ -68,13 +66,13 @@ export const ViewTeamMembers = ({
 
     const actionsRow = useCallback(
         (data: User) =>
-            auth.user.isAdmin || auth.user._id === data._id ? (
+            !props.myTeam ? (
                 <Container direction={Direction.row} padding="0">
-                    <Linker href={`/users/${data._id}/`} hocLink>
+                    <RbacLinker href={`/users/${data._id}/`} hocLink>
                         <IconButton>
                             <BiShowAlt />
                         </IconButton>
-                    </Linker>
+                    </RbacLinker>
                     <IconButton
                         onClick={() => {
                             setEditUser(data)
@@ -84,22 +82,18 @@ export const ViewTeamMembers = ({
                     >
                         <BiEditAlt />
                     </IconButton>
-                    {auth.user.isAdmin ? (
-                        <IconButton
-                            onClick={async () => {
-                                await unassignUserFromTeam(data._id, props.team._id)
-                            }}
-                        >
-                            <BiEditAlt />
-                        </IconButton>
-                    ) : (
-                        <></>
-                    )}
+                    <IconButton
+                        onClick={async () => {
+                            await unassignUserFromTeam(data._id, props.team._id)
+                        }}
+                    >
+                        <BiEditAlt />
+                    </IconButton>
                 </Container>
             ) : (
                 <></>
             ),
-        [auth.user._id, auth.user.isAdmin, props.team._id, setEditUser, setIsOverlay, setShowNew]
+        [props.myTeam, props.team._id, setEditUser, setIsOverlay, setShowNew]
     )
 
     const apiCall = useCallback(async () => {

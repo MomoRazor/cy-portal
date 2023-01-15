@@ -54,7 +54,7 @@ export const FirebaseProvider = (props: IFirebaseProvider) => {
                 } else {
                     setStatus(`LOGGED_IN`)
 
-                    const user = await loginUser(authUser.uid)
+                    const user = await loginUser()
 
                     setUser(user.data)
                 }

@@ -12,10 +12,10 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useContext } from 'react'
 import { BiInfoCircle } from 'react-icons/bi'
-import { ICommunity } from '../restAPI'
+import { Community } from '../restAPI'
 
 export interface IViewCommunityData {
-    community: ICommunity
+    community: Community
 }
 
 export const ViewCommunityData = (props: IViewCommunityData) => {
