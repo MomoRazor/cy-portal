@@ -13,7 +13,6 @@ export const getTeam = async (id: string) => {
 }
 
 export const getTeamTable = async (filter: IDataContextInput) => {
-    console.log('filter', filter)
     const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/table`, filter)
     return result.data.data
 }
@@ -23,7 +22,7 @@ export const getTeamAutocomplete = async (filter: IDataContextInput) => {
     return result.data.data
 }
 
-export const createTeam = async (team: Team) => {
+export const createTeam = async (team: Partial<Team>) => {
     const result = await axios11.post<{ data: Team }>(`/cam-youths/create/teams`, team)
 
     return result.data

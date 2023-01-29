@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import { useContext } from 'react'
 import {
-    APICallResult,
     AuthContext,
     displaySnackbar,
     LoginPage,
@@ -12,7 +11,7 @@ import {
 import darkLogo from '../../public/logo_color_600px-no-bg.png'
 import Image from 'next/image'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import { hydrateData } from '../auth'
+import { loginUser } from '../restAPI'
 
 export const Login = () => {
     const { addData } = useContext(SnackbarContext)
@@ -37,16 +36,16 @@ export const Login = () => {
 
         try {
             const firebaseUser = await signInWithEmailAndPassword(firebaseAuth, email, password)
-            console.log('test', firebaseUser)
-            const result = await hydrateData()
 
-            if (result.result === APICallResult.success) {
-                auth.login && auth.login(result.data.data)
-                router.push('/' + loggedInPage)
-            } else if (result.result === APICallResult.denied) {
-                displaySnackbar('User not found!', SnackbarType.error, addData)
-            } else if (result.result === APICallResult.error) {
-                displaySnackbar('Error Loading User!', SnackbarType.error, addData)
+            if (firebaseUser.user) {
+                const result = await loginUser()
+
+                if (result.data) {
+                    auth.login && auth.login(result.data)
+                    router.push('/' + loggedInPage)
+                } else {
+                    displaySnackbar('Error Loading User!', SnackbarType.error, addData)
+                }
             }
         } catch (e) {
             console.error(e)

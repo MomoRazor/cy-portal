@@ -1,5 +1,4 @@
 import {
-    AuthContext,
     Colors,
     Container,
     FloatingIconButton,
@@ -9,7 +8,7 @@ import {
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Community, User } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
@@ -29,9 +28,8 @@ export interface IViewCommunityId {
 export const ViewCommunityId = (props: IViewCommunityId) => {
     const router = useRouter()
 
-    const auth = useContext(AuthContext)
-
     const [showEditCommunity, setEditCommunity] = useState(false)
+    const [showAssignGuide, setShowAssignGuide] = useState(false)
 
     const [showAddNew, setShowNew] = useState(false)
     const [editUser, setEditUser] = useState<User>()
@@ -136,22 +134,18 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                     )}
                 </Container>
             </SidebarPage>
-            {auth.user.isAdmin ? (
-                <FloatingIconButton
-                    horizontalPos={FloatingPosH.right}
-                    width="auto"
-                    right="40px"
-                    bottom="30px"
-                    onClick={() => {
-                        setEditCommunity(true)
-                    }}
-                    zIndex={5}
-                >
-                    <Typography color={Colors.textOnPrimary}>Edit Community</Typography>
-                </FloatingIconButton>
-            ) : (
-                <></>
-            )}
+            <FloatingIconButton
+                horizontalPos={FloatingPosH.right}
+                width="auto"
+                right="40px"
+                bottom="30px"
+                onClick={() => {
+                    setEditCommunity(true)
+                }}
+                zIndex={5}
+            >
+                <Typography color={Colors.textOnPrimary}>Edit Community</Typography>
+            </FloatingIconButton>
             <CommunityOverlay
                 onClose={handleDiscard}
                 onSave={saveDrawer}

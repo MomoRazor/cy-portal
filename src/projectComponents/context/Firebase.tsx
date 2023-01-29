@@ -1,10 +1,9 @@
 import { Firestore, getFirestore } from '@firebase/firestore'
 import { LoadingPage } from '@sector-eleven-ltd/se-react-toolkit'
-import { Auth, getAuth } from 'firebase/auth'
+import { Auth, User, getAuth } from 'firebase/auth'
 import { createContext, useEffect, useState } from 'react'
 import { initializeApp } from 'firebase/app'
 import { firebaseConfig } from '../../auth'
-import { User, loginUser } from '../../restAPI'
 
 type AuthStatus = `PENDING` | `LOGGED_IN` | `LOGGED_OUT`
 
@@ -13,14 +12,11 @@ interface IFirebaseContext<User> {
     db?: Firestore
 
     user?: User
-    setUser?: (newLoginInfo: User) => void
     status: AuthStatus
-    setStatus?: (newLoginInfo: AuthStatus) => void
 }
 
 const defaultFirebaseContext: IFirebaseContext<User> = {
-    status: `PENDING`,
-    setStatus: () => {}
+    status: `PENDING`
 }
 
 export const FirebaseContext = createContext<IFirebaseContext<User>>(defaultFirebaseContext)
@@ -54,9 +50,7 @@ export const FirebaseProvider = (props: IFirebaseProvider) => {
                 } else {
                     setStatus(`LOGGED_IN`)
 
-                    const user = await loginUser()
-
-                    setUser(user.data)
+                    setUser(authUser)
                 }
             })
             return subscriber
@@ -64,9 +58,7 @@ export const FirebaseProvider = (props: IFirebaseProvider) => {
     }, [auth, db])
 
     return (
-        <FirebaseContext.Provider
-            value={{ ...defaultFirebaseContext, db, auth, user, setUser, status, setStatus }}
-        >
+        <FirebaseContext.Provider value={{ ...defaultFirebaseContext, db, auth, user, status }}>
             {status === 'PENDING' ? <LoadingPage /> : props.children}
         </FirebaseContext.Provider>
     )

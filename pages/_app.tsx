@@ -20,21 +20,21 @@ import {
 const MyApp = ({ Component, pageProps, browserType }: AppProps & { browserType: Browser }) => (
     <Provider store={store}>
         <PersistGate loading={<LoadingPage />} persistor={persistor}>
-            <FirebaseProvider>
-                <FirestoreProvider>
-                    <HistoryProvider>
-                        <AppProvider
-                            nav={{
-                                browser: browserType
-                            }}
-                            theme={themeConfig}
-                        >
-                            <NEXTGlobalStyle fontSize="14px" />
+            <AppProvider
+                nav={{
+                    browser: browserType
+                }}
+                theme={themeConfig}
+            >
+                <FirebaseProvider>
+                    <FirestoreProvider>
+                        <NEXTGlobalStyle fontSize="14px" />
+                        <HistoryProvider>
                             <Component {...pageProps} />
-                        </AppProvider>
-                    </HistoryProvider>
-                </FirestoreProvider>
-            </FirebaseProvider>
+                        </HistoryProvider>
+                    </FirestoreProvider>
+                </FirebaseProvider>
+            </AppProvider>
         </PersistGate>
     </Provider>
 )

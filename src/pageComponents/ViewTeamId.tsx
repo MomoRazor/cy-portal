@@ -1,5 +1,4 @@
 import {
-    AuthContext,
     Colors,
     Container,
     Direction,
@@ -11,7 +10,7 @@ import {
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Team, User } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
@@ -30,8 +29,6 @@ export interface IViewTeamId {
 
 export const ViewTeamId = (props: IViewTeamId) => {
     const router = useRouter()
-
-    const auth = useContext(AuthContext)
 
     const [showEditTeam, setEditTeam] = useState(false)
 
@@ -122,42 +119,40 @@ export const ViewTeamId = (props: IViewTeamId) => {
     const getFloatingButtons = useCallback(() => {
         const buttons: IFloatingIconButton[] = []
 
-        if (auth.user.isAdmin) {
-            buttons.push({
-                width: 'auto',
-                onClick: async () => {
-                    setEditTeam(true)
-                },
-                children: <Typography color={Colors.textOnPrimary}>Edit Team</Typography>
-            })
+        buttons.push({
+            width: 'auto',
+            onClick: async () => {
+                setEditTeam(true)
+            },
+            children: <Typography color={Colors.textOnPrimary}>Edit Team</Typography>
+        })
 
-            // buttons.push({
-            //     width: 'auto',
-            //     onClick: async () => {
-            //         // setShowAssignCommunity(true)
-            //     },
-            //     children: <Typography color={Colors.textOnPrimary}>Community Membership</Typography>
-            // })
+        // buttons.push({
+        //     width: 'auto',
+        //     onClick: async () => {
+        //         // setShowAssignCommunity(true)
+        //     },
+        //     children: <Typography color={Colors.textOnPrimary}>Community Membership</Typography>
+        // })
 
-            // buttons.push({
-            //     width: 'auto',
-            //     onClick: async () => {
-            //         // setShowGuidesCommunities(true)
-            //     },
-            //     children: <Typography color={Colors.textOnPrimary}>Community Guide</Typography>
-            // })
+        // buttons.push({
+        //     width: 'auto',
+        //     onClick: async () => {
+        //         // setShowGuidesCommunities(true)
+        //     },
+        //     children: <Typography color={Colors.textOnPrimary}>Community Guide</Typography>
+        // })
 
-            buttons.push({
-                width: 'auto',
-                onClick: async () => {
-                    setShowAssignUsers(true)
-                },
-                children: <Typography color={Colors.textOnPrimary}>Assign User</Typography>
-            })
-        }
+        buttons.push({
+            width: 'auto',
+            onClick: async () => {
+                setShowAssignUsers(true)
+            },
+            children: <Typography color={Colors.textOnPrimary}>Assign User</Typography>
+        })
 
         return buttons
-    }, [auth.user.isAdmin])
+    }, [])
 
     return (
         <>

@@ -12,14 +12,14 @@ import {
     useEnterSubmit
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useContext, useEffect, useState } from 'react'
-import { createTeam, ICreateTeam, ITeam, updateTeam } from '../../restAPI'
+import { createTeam, Team, updateTeam } from '../../restAPI'
 import { TeamFormSection } from './TeamFormSection'
 
 export interface ITeamOverlay {
     show: boolean
-    data?: ITeam
+    data?: Team
     onClose: EmptyFunctionHandler
-    onSave: (newData?: ITeam) => void
+    onSave: (newData?: Team) => void
 }
 
 export const TeamOverlay = (props: ITeamOverlay) => {
@@ -70,13 +70,13 @@ export const TeamOverlay = (props: ITeamOverlay) => {
                 let result: any
 
                 if (props.data) {
-                    const data: Partial<ICreateTeam> = {
+                    const data: Partial<Team> = {
                         name
                     }
 
                     result = await updateTeam(props.data?._id, data)
                 } else {
-                    let data: ICreateTeam = {
+                    let data: Partial<Team> = {
                         name
                     }
 

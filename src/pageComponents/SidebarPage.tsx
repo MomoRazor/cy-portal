@@ -38,6 +38,8 @@ export const SidebarPage = (props: ISidebarPage) => {
     const handleLogOutClick = async () => {
         if (auth.logout) {
             await camLogout(router, auth.logout)
+        } else {
+            console.error('Could not Logout')
         }
     }
 
@@ -111,12 +113,29 @@ export const SidebarPage = (props: ISidebarPage) => {
     const getAccess = useCallback(
         (sections: INavSection) => {
             if (sections && pages) {
-                return checkPages(pages, window.location.origin, sections.link || '')
+                if (checkPages(pages, window.location.origin, sections.link || '')) {
+                    if (sections.link === '/guide-communities') {
+                        return auth.user.communityGuideOf.length > 0
+                    } else if (sections.link === '/my-communities') {
+                        return auth.user.communityMemberOf.length > 0
+                    } else if (sections.link === '/my-teams') {
+                        return auth.user.teamMemberOf.length > 0
+                    } else {
+                        return true
+                    }
+                } else {
+                    return false
+                }
             } else {
                 return false
             }
         },
-        [pages]
+        [
+            auth.user.communityGuideOf.length,
+            auth.user.communityMemberOf.length,
+            auth.user.teamMemberOf.length,
+            pages
+        ]
     )
 
     return (
@@ -124,6 +143,7 @@ export const SidebarPage = (props: ISidebarPage) => {
             nav={sidebarNav}
             permissionCheck={getAccess}
             logo={<Image src={logo} alt="Logo" width="120" />}
+            forcePermissionCheck
         >
             <Topbar
                 showBreadCrumb

@@ -11,12 +11,12 @@ import {
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useRouter } from 'next/router'
 import { ReactNode, useCallback, useContext, useState } from 'react'
-import { hydrateData } from '../auth'
 import { getAuth } from 'firebase/auth'
 import { FirestoreContext, FirebaseContext } from '../projectComponents'
 import { camLogout } from '../utils'
 import { RBACForbiddenPage } from './RBACForbiddenPage'
 import { checkPages } from '../nav'
+import { loginUser } from '../restAPI'
 
 export interface ICYPage {
     loginRequired?: boolean
@@ -55,10 +55,10 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
 
         if (user) {
             try {
-                const result = await hydrateData()
+                const result = await loginUser()
 
                 if (result.data) {
-                    login && login(result.data.data)
+                    login && login(result.data)
                     if (pages && checkPages(pages, window.location.origin, router.pathname)) {
                         setForbidden(false)
                     } else {
@@ -72,6 +72,7 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
                     }
                     return end
                 } else {
+                    setLoading(false)
                     const end: APICallReturn = {
                         result: APICallResult.denied
                     }
@@ -79,12 +80,14 @@ export const CYPage = ({ loadExtraDetail, ...props }: ICYPage) => {
                     return end
                 }
             } catch (e) {
+                setLoading(false)
                 const end: APICallReturn = {
                     result: APICallResult.error
                 }
                 return end
             }
         } else {
+            setLoading(false)
             const end: APICallReturn = {
                 result: APICallResult.denied
             }

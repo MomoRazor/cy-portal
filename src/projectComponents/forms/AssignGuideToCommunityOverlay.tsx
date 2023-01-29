@@ -18,13 +18,13 @@ import {
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useContext, useState } from 'react'
-import { assignUserToCommunityAsGuide, getUsers, ICommunity } from '../../restAPI'
+import { assignUserToCommunityAsGuide, getUserAutocomplete, Community } from '../../restAPI'
 import { parseUserOptions } from '../../utils'
 
 export interface IAssignGuideToCommunityOverlay {
     show: boolean
     onClose: EmptyFunctionHandler
-    community?: ICommunity
+    community?: Community
     onSave: () => void
 }
 
@@ -96,7 +96,7 @@ export const AssignGuideToCommunityOverlay = (props: IAssignGuideToCommunityOver
                             <Autocomplete
                                 width="100%"
                                 label="Users"
-                                apiCall={getUsers}
+                                apiCall={getUserAutocomplete}
                                 onChange={setUser}
                                 value={user || undefined}
                                 parseOptions={parseUserOptions}
