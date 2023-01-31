@@ -18,14 +18,14 @@ import {
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useContext, useState } from 'react'
-import { assignUserToTeam, getUsers, ITeam } from '../../restAPI'
+import { assignUserToTeam, getUserAutocomplete, Team } from '../../restAPI'
 import { parseUserOptions } from '../../utils'
 
 export interface IAssignUserToTeamOverlay {
     show: boolean
     onClose: EmptyFunctionHandler
-    team?: ITeam
-    onSave: () => void
+    team?: Team
+    onSave: (team?: Team) => void
 }
 
 export const AssignUserToTeamOverlay = (props: IAssignUserToTeamOverlay) => {
@@ -49,9 +49,9 @@ export const AssignUserToTeamOverlay = (props: IAssignUserToTeamOverlay) => {
             try {
                 if (!Array.isArray(user)) {
                     setLoad(true)
-                    await assignUserToTeam(user.id || '', props.team?._id || '')
+                    const result = await assignUserToTeam(user.id || '', props.team?._id || '')
 
-                    props.onSave && props.onSave()
+                    props.onSave && props.onSave(result.data)
                     displaySnackbar('User Assigned', SnackbarType.success, addData)
                     setUser(null)
                     setLoad(false)
@@ -60,6 +60,16 @@ export const AssignUserToTeamOverlay = (props: IAssignUserToTeamOverlay) => {
                 displaySnackbar('Failed to Assign User', SnackbarType.error, addData)
             }
         }
+    }
+
+    const apiCall = async () => {
+        return await getUserAutocomplete({
+            filter: {
+                _id: {
+                    $nin: props.team?.memberIds
+                }
+            }
+        })
     }
 
     return (
@@ -96,7 +106,7 @@ export const AssignUserToTeamOverlay = (props: IAssignUserToTeamOverlay) => {
                             <Autocomplete
                                 width="100%"
                                 label="Users"
-                                apiCall={getUsers}
+                                apiCall={apiCall}
                                 onChange={setUser}
                                 value={user || undefined}
                                 parseOptions={parseUserOptions}

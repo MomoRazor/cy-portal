@@ -104,7 +104,7 @@ export const ViewUserData = (props: IViewUserData) => {
                     ) : (
                         <></>
                     )}
-                    {props.user.teamMemberOf ? (
+                    {props.user.teamMemberOf && props.user.teamMemberOf.length > 0 ? (
                         <TitledRow
                             label="Team Member Of"
                             data={props.user.teamMemberOf.map((team) => (

@@ -31,7 +31,7 @@ export const getCommunityAutocomplete = async (filter: IDataContextInput) => {
     return result.data.data
 }
 
-export const createCommunity = async (community: Community) => {
+export const createCommunity = async (community: Partial<Community>) => {
     const result = await axios11.post<{ data: Community }>(
         `/cam-youths/create/communities`,
         community

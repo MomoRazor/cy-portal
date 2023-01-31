@@ -19,8 +19,8 @@ export const clearLocalData = () => {
     localStorage.clear()
 }
 
-export const parseUserOptions = (options: User[]) => {
-    return options.map((user: User) => ({
+export const parseUserOptions = (options: { data: User[] }) => {
+    return options.data.map((user: User) => ({
         id: user._id || '',
         display: user.displayName
     }))

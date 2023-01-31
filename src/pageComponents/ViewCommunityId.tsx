@@ -1,18 +1,22 @@
 import {
     Colors,
     Container,
-    FloatingIconButton,
+    Direction,
+    FloatingIconButtonList,
     FloatingPosH,
+    IFloatingIconButton,
     ISideMenuSection,
     QuadSpinner,
     SideMenu,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Community, User } from '../restAPI'
 import { SidebarPage } from './SidebarPage'
 import {
+    AssignGuideToCommunityOverlay,
+    AssignUserToCommunityOverlay,
     CommunityOverlay,
     UserOverlay,
     ViewCommunityData,
@@ -30,9 +34,13 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
 
     const [showEditCommunity, setEditCommunity] = useState(false)
     const [showAssignGuide, setShowAssignGuide] = useState(false)
+    const [showAssignMember, setShowAssignMember] = useState(false)
 
     const [showAddNew, setShowNew] = useState(false)
     const [editUser, setEditUser] = useState<User>()
+
+    const [dirtyTableGuide, setDirtyTableGuide] = useState(false)
+    const [dirtyTableMember, setDirtyTableMember] = useState(false)
 
     const [isOverlay, setIsOverlay] = useState(false)
 
@@ -85,6 +93,36 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
         setIsOverlay(false)
     }
 
+    const getFloatingButtons = useCallback(() => {
+        const buttons: IFloatingIconButton[] = []
+
+        buttons.push({
+            width: 'auto',
+            onClick: async () => {
+                setEditCommunity(true)
+            },
+            children: <Typography color={Colors.textOnPrimary}>Edit Community</Typography>
+        })
+
+        buttons.push({
+            width: 'auto',
+            onClick: async () => {
+                setShowAssignGuide(true)
+            },
+            children: <Typography color={Colors.textOnPrimary}>Assign Guide</Typography>
+        })
+
+        buttons.push({
+            width: 'auto',
+            onClick: async () => {
+                setShowAssignMember(true)
+            },
+            children: <Typography color={Colors.textOnPrimary}>Assign Member</Typography>
+        })
+
+        return buttons
+    }, [])
+
     const getSections = (community: Community) => {
         return [
             {
@@ -96,6 +134,9 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                 children: (
                     <ViewCommunityGuides
                         community={community}
+                        dirtyTable={dirtyTableGuide}
+                        setDirtyTable={setDirtyTableGuide}
+                        setCommunity={props.setCommunity}
                         setShowNew={setShowNew}
                         setEditUser={setEditUser}
                         setIsOverlay={setIsOverlay}
@@ -107,6 +148,9 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                 children: (
                     <ViewCommunityMembers
                         community={community}
+                        dirtyTable={dirtyTableMember}
+                        setDirtyTable={setDirtyTableMember}
+                        setCommunity={props.setCommunity}
                         setShowNew={setShowNew}
                         setEditUser={setEditUser}
                         setIsOverlay={setIsOverlay}
@@ -114,6 +158,30 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                 )
             }
         ]
+    }
+
+    const handleDiscardAssignMember = () => {
+        setShowAssignMember(false)
+    }
+
+    const saveDrawerAssignMember = (community?: Community) => {
+        if (community) {
+            props.setCommunity(community)
+        }
+        setShowAssignMember(false)
+        setDirtyTableMember(true)
+    }
+
+    const handleDiscardAssignGuide = () => {
+        setShowAssignGuide(false)
+    }
+
+    const saveDrawerAssignGuide = (community?: Community) => {
+        if (community) {
+            props.setCommunity(community)
+        }
+        setShowAssignGuide(false)
+        setDirtyTableGuide(true)
     }
 
     return (
@@ -134,18 +202,14 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                     )}
                 </Container>
             </SidebarPage>
-            <FloatingIconButton
+            <FloatingIconButtonList
+                direction={Direction.rowReverse}
                 horizontalPos={FloatingPosH.right}
-                width="auto"
                 right="40px"
                 bottom="30px"
-                onClick={() => {
-                    setEditCommunity(true)
-                }}
                 zIndex={5}
-            >
-                <Typography color={Colors.textOnPrimary}>Edit Community</Typography>
-            </FloatingIconButton>
+                buttons={getFloatingButtons()}
+            />
             <CommunityOverlay
                 onClose={handleDiscard}
                 onSave={saveDrawer}
@@ -159,6 +223,18 @@ export const ViewCommunityId = (props: IViewCommunityId) => {
                 data={editUser}
                 isOverlay={isOverlay}
                 setIsOverlay={setIsOverlay}
+            />
+            <AssignUserToCommunityOverlay
+                community={props.community}
+                show={showAssignMember}
+                onSave={saveDrawerAssignMember}
+                onClose={handleDiscardAssignMember}
+            />
+            <AssignGuideToCommunityOverlay
+                community={props.community}
+                show={showAssignGuide}
+                onSave={saveDrawerAssignGuide}
+                onClose={handleDiscardAssignGuide}
             />
         </>
     )

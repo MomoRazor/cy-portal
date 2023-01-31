@@ -10,12 +10,15 @@ import {
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback, useMemo } from 'react'
-import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
+import { BiShowAlt, BiEditAlt, BiX } from 'react-icons/bi'
 import { Community, User, getUserTable, unassignUserFromCommunityAsGuide } from '../restAPI'
 import { RbacLinker } from './RBACLinker'
 
 export interface IViewCommunityGuides {
     community: Community
+    dirtyTable: boolean
+    setDirtyTable: (newDirty: boolean) => void
+    setCommunity: (newCommunity: Community) => void
     setShowNew: (newShow: boolean) => void
     setEditUser: (newUser: User) => void
     setIsOverlay: (newOverlay: boolean) => void
@@ -33,12 +36,13 @@ export const ViewCommunityGuides = ({
     setShowNew,
     setEditUser,
     setIsOverlay,
+    setCommunity,
     ...props
 }: IViewCommunityGuides) => {
-    const parseData = (data: User[]) => {
+    const parseData = (result: { data: User[] }) => {
         let array: UserRow[] = []
 
-        data.map((data) => {
+        result.data.map((data) => {
             return array.push({
                 ...data,
                 communityMember: data.communityMemberOf?.map((community) => (
@@ -82,16 +86,27 @@ export const ViewCommunityGuides = ({
                     </IconButton>
                     <IconButton
                         onClick={async () => {
-                            await unassignUserFromCommunityAsGuide(data._id, props.community._id)
+                            const result = await unassignUserFromCommunityAsGuide(
+                                data._id,
+                                props.community._id
+                            )
+                            setCommunity(result.data)
                         }}
                     >
-                        <BiEditAlt />
+                        <BiX />
                     </IconButton>
                 </Container>
             ) : (
                 <></>
             ),
-        [props.community._id, props.myCommunity, setEditUser, setIsOverlay, setShowNew]
+        [
+            props.community._id,
+            props.myCommunity,
+            setCommunity,
+            setEditUser,
+            setIsOverlay,
+            setShowNew
+        ]
     )
 
     const apiCall = useCallback(async () => {
@@ -106,12 +121,11 @@ export const ViewCommunityGuides = ({
 
     const headers = useMemo(
         () => [
-            { id: 'name', title: 'Name' },
-            { id: 'surname', title: 'Surname' },
+            { id: 'displayName', title: 'Full Name' },
             { id: 'email', title: 'Email' },
             { id: 'communityMember', title: 'Community' },
             { id: 'teamMember', title: 'Team' },
-            { id: 'admin', title: 'Is an Admin' },
+            { id: 'roles', title: 'Roles' },
             { id: 'actions', title: 'Actions' }
         ],
         []
@@ -128,7 +142,9 @@ export const ViewCommunityGuides = ({
                 apiCall={apiCall}
                 parseRows={parseData}
                 headers={headers}
-                keyName="id"
+                keyName="_id"
+                dirty={props.dirtyTable}
+                setDirty={props.setDirtyTable}
                 pagination={false}
             />
         </Container>

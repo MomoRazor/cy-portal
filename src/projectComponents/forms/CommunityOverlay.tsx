@@ -12,14 +12,14 @@ import {
     useEnterSubmit
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useContext, useEffect, useState } from 'react'
-import { createCommunity, ICreateCommunity, ICommunity, updateCommunity } from '../../restAPI'
+import { createCommunity, Community, updateCommunity } from '../../restAPI'
 import { CommunityFormSection } from './CommunityFormSection'
 
 export interface ICommunityOverlay {
     show: boolean
-    data?: ICommunity
+    data?: Community
     onClose: EmptyFunctionHandler
-    onSave: (newData?: ICommunity) => void
+    onSave: (newData?: Community) => void
 }
 
 export const CommunityOverlay = (props: ICommunityOverlay) => {
@@ -70,13 +70,13 @@ export const CommunityOverlay = (props: ICommunityOverlay) => {
                 let result: any
 
                 if (props.data) {
-                    const data: Partial<ICreateCommunity> = {
+                    const data: Partial<Community> = {
                         name
                     }
 
                     result = await updateCommunity(props.data?._id, data)
                 } else {
-                    let data: ICreateCommunity = {
+                    let data: Partial<Community> = {
                         name
                     }
 

@@ -12,7 +12,7 @@ export const axios11 = axios.create({
 
 axios11.interceptors.request.use(async (config) => {
     const header = await requestInterceptor(config, true)
-    return header
+    return header as any
 })
 
 axios11.interceptors.response.use((response) => {

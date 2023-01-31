@@ -16,6 +16,9 @@ import { RbacLinker } from './RBACLinker'
 
 export interface IViewCommunityMembers {
     community: Community
+    dirtyTable: boolean
+    setDirtyTable: (newDirty: boolean) => void
+    setCommunity: (newCommunity: Community) => void
     setShowNew: (newShow: boolean) => void
     setEditUser: (newUser: User) => void
     setIsOverlay: (newOverlay: boolean) => void
@@ -33,12 +36,13 @@ export const ViewCommunityMembers = ({
     setEditUser,
     setShowNew,
     setIsOverlay,
+    setCommunity,
     ...props
 }: IViewCommunityMembers) => {
-    const parseData = (data: User[]) => {
+    const parseData = (result: { data: User[] }) => {
         let array: UserRow[] = []
 
-        data.map((data) => {
+        result.data.map((data) => {
             return array.push({
                 ...data,
                 communityGuide: data.communityGuideOf?.map((community) => (
@@ -83,7 +87,11 @@ export const ViewCommunityMembers = ({
 
                     <IconButton
                         onClick={async () => {
-                            await unassignUserFromCommunityAsMember(data._id, props.community._id)
+                            const result = await unassignUserFromCommunityAsMember(
+                                data._id,
+                                props.community._id
+                            )
+                            setCommunity(result.data)
                         }}
                     >
                         <BiEditAlt />
@@ -92,7 +100,14 @@ export const ViewCommunityMembers = ({
             ) : (
                 <></>
             ),
-        [props.community._id, props.myCommunity, setEditUser, setIsOverlay, setShowNew]
+        [
+            props.community._id,
+            props.myCommunity,
+            setCommunity,
+            setEditUser,
+            setIsOverlay,
+            setShowNew
+        ]
     )
 
     const apiCall = useCallback(async () => {
@@ -107,8 +122,7 @@ export const ViewCommunityMembers = ({
 
     const headers = useMemo(
         () => [
-            { id: 'name', title: 'Name' },
-            { id: 'surname', title: 'Surname' },
+            { id: 'displayName', title: 'Full Name' },
             { id: 'email', title: 'Email' },
             { id: 'teamMember', title: 'Teams' },
             { id: 'roles', title: 'Roles' },
@@ -128,7 +142,9 @@ export const ViewCommunityMembers = ({
                 apiCall={apiCall}
                 parseRows={parseData}
                 headers={headers}
-                keyName="id"
+                keyName="_id"
+                dirty={props.dirtyTable}
+                setDirty={props.setDirtyTable}
                 pagination={false}
             />
         </Container>

@@ -29,13 +29,16 @@ export const getUser = async (id: string) => {
 
 //TODO Change Argument
 export const getUserTable = async (filter: IDataContextInput) => {
-    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/table`, filter)
+    const result = await axios11.post<{ data: User[] }>(`/cam-youths/get/users/table`, filter)
     return result.data.data
 }
 
 //TODO Change Argument
 export const getUserAutocomplete = async (filter: IDataContextInput) => {
-    const result = await axios11.post<{ data: User }>(`/cam-youths/get/users/autocomplete`, filter)
+    const result = await axios11.post<{ data: User[] }>(
+        `/cam-youths/get/users/autocomplete`,
+        filter
+    )
     return result.data.data
 }
 

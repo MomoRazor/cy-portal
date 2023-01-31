@@ -10,12 +10,13 @@ import {
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { ReactNode, useCallback } from 'react'
-import { BiShowAlt, BiEditAlt } from 'react-icons/bi'
+import { BiShowAlt, BiEditAlt, BiX } from 'react-icons/bi'
 import { getUserTable, Team, User, unassignUserFromTeam } from '../restAPI'
 import { RbacLinker } from './RBACLinker'
 
 export interface IViewTeamMembers {
     team: Team
+    setTeam: (newTeam: Team) => void
     dirtyTable: boolean
     setDirtyTable: (newDirty: boolean) => void
     setShowNew: (newShow: boolean) => void
@@ -35,6 +36,7 @@ export const ViewTeamMembers = ({
     setEditUser,
     setShowNew,
     setIsOverlay,
+    setTeam,
     ...props
 }: IViewTeamMembers) => {
     const parseData = (result: { data: User[] }) => {
@@ -69,7 +71,7 @@ export const ViewTeamMembers = ({
             !props.myTeam ? (
                 <Container direction={Direction.row} padding="0">
                     <RbacLinker href={`/users/${data._id}/`} hocLink>
-                        <IconButton>
+                        <IconButton toolTipText="View">
                             <BiShowAlt />
                         </IconButton>
                     </RbacLinker>
@@ -79,31 +81,35 @@ export const ViewTeamMembers = ({
                             setShowNew(true)
                             setIsOverlay(true)
                         }}
+                        toolTipText="Edit"
                     >
                         <BiEditAlt />
                     </IconButton>
                     <IconButton
                         onClick={async () => {
-                            await unassignUserFromTeam(data._id, props.team._id)
+                            const result = await unassignUserFromTeam(data._id, props.team._id)
+                            setTeam(result.data)
                         }}
+                        toolTipText="Unassign"
                     >
-                        <BiEditAlt />
+                        <BiX />
                     </IconButton>
                 </Container>
             ) : (
                 <></>
             ),
-        [props.myTeam, props.team._id, setEditUser, setIsOverlay, setShowNew]
+        [props.myTeam, props.team._id, setEditUser, setIsOverlay, setShowNew, setTeam]
     )
 
     const apiCall = useCallback(async () => {
-        return await getUserTable({
+        const result = await getUserTable({
             filter: {
                 _id: {
                     $in: props.team.memberIds
                 }
             }
         })
+        return result
     }, [props.team.memberIds])
 
     return (
@@ -111,6 +117,7 @@ export const ViewTeamMembers = ({
             <Typography variant={TextVariants.h4} color={Colors.title}>
                 Team Members
             </Typography>
+
             <Spacer height="20px" />
 
             <Table

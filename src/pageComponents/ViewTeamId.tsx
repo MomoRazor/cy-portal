@@ -89,7 +89,10 @@ export const ViewTeamId = (props: IViewTeamId) => {
         setShowAssignUsers(false)
     }
 
-    const saveDrawerAssign = () => {
+    const saveDrawerAssign = (team?: Team) => {
+        if (team) {
+            props.setTeam(team)
+        }
         setShowAssignUsers(false)
         setDirtyTable(true)
     }
@@ -105,6 +108,7 @@ export const ViewTeamId = (props: IViewTeamId) => {
                 children: (
                     <ViewTeamMembers
                         team={team}
+                        setTeam={props.setTeam}
                         dirtyTable={dirtyTable}
                         setDirtyTable={setDirtyTable}
                         setShowNew={setShowNew}
@@ -127,28 +131,12 @@ export const ViewTeamId = (props: IViewTeamId) => {
             children: <Typography color={Colors.textOnPrimary}>Edit Team</Typography>
         })
 
-        // buttons.push({
-        //     width: 'auto',
-        //     onClick: async () => {
-        //         // setShowAssignCommunity(true)
-        //     },
-        //     children: <Typography color={Colors.textOnPrimary}>Community Membership</Typography>
-        // })
-
-        // buttons.push({
-        //     width: 'auto',
-        //     onClick: async () => {
-        //         // setShowGuidesCommunities(true)
-        //     },
-        //     children: <Typography color={Colors.textOnPrimary}>Community Guide</Typography>
-        // })
-
         buttons.push({
             width: 'auto',
             onClick: async () => {
                 setShowAssignUsers(true)
             },
-            children: <Typography color={Colors.textOnPrimary}>Assign User</Typography>
+            children: <Typography color={Colors.textOnPrimary}>Assign Members</Typography>
         })
 
         return buttons
