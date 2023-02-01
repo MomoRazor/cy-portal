@@ -48,7 +48,7 @@ export const SidebarPage = (props: ISidebarPage) => {
     }
 
     const handleGuideCommunityClick = () => {
-        router.push('/guide-community')
+        router.push('/guide-communities')
     }
 
     const handleTeamClinic = () => {
@@ -72,15 +72,15 @@ export const SidebarPage = (props: ISidebarPage) => {
 
         if (auth.user?.communityMemberOf) {
             options.push({
-                name: 'View My Community',
+                name: 'View My Communities',
                 icon: <AiOutlineHome />,
                 onClick: handleCommunityClick
             })
         }
 
-        if (auth.user?.communitiesGuideOf) {
+        if (auth.user?.communityGuideOf) {
             options.push({
-                name: 'View Guiding Community',
+                name: 'View Guiding Communities',
                 icon: <AiOutlineHome />,
                 onClick: handleGuideCommunityClick
             })

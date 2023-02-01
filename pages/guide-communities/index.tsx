@@ -1,4 +1,4 @@
-import { CYPage, ViewCommunities } from '../src'
+import { CYPage, ViewCommunities } from '../../src'
 
 const ViewGuidingCommunitiesPage = () => (
     <CYPage

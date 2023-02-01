@@ -1,4 +1,4 @@
-import { CYPage, ViewTeams } from '../src'
+import { CYPage, ViewTeams } from '../../src'
 
 const ViewMyTeamsPage = () => (
     <CYPage

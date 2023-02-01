@@ -23,6 +23,7 @@ export interface IViewCommunityGuides {
     setEditUser: (newUser: User) => void
     setIsOverlay: (newOverlay: boolean) => void
     myCommunity?: boolean
+    guideCommunity?: boolean
 }
 
 interface UserRow extends User {
@@ -68,7 +69,7 @@ export const ViewCommunityGuides = ({
 
     const actionsRow = useCallback(
         (data: User) =>
-            !props.myCommunity ? (
+            !props.myCommunity && !props.guideCommunity ? (
                 <Container direction={Direction.row} padding="0">
                     <RbacLinker href={`/users/${data._id}/`} hocLink>
                         <IconButton>
@@ -101,6 +102,7 @@ export const ViewCommunityGuides = ({
             ),
         [
             props.community._id,
+            props.guideCommunity,
             props.myCommunity,
             setCommunity,
             setEditUser,
@@ -119,17 +121,21 @@ export const ViewCommunityGuides = ({
         })
     }, [props.community.guideIds])
 
-    const headers = useMemo(
-        () => [
+    const headers = useMemo(() => {
+        const heads = [
             { id: 'displayName', title: 'Full Name' },
             { id: 'email', title: 'Email' },
             { id: 'communityMember', title: 'Community' },
             { id: 'teamMember', title: 'Team' },
-            { id: 'roles', title: 'Roles' },
-            { id: 'actions', title: 'Actions' }
-        ],
-        []
-    )
+            { id: 'roles', title: 'Roles' }
+        ]
+
+        if (!props.myCommunity && !props.guideCommunity) {
+            heads.push({ id: 'actions', title: 'Actions' })
+        }
+
+        return heads
+    }, [props.guideCommunity, props.myCommunity])
 
     return (
         <Container padding="0">
@@ -145,7 +151,6 @@ export const ViewCommunityGuides = ({
                 keyName="_id"
                 dirty={props.dirtyTable}
                 setDirty={props.setDirtyTable}
-                pagination={false}
             />
         </Container>
     )

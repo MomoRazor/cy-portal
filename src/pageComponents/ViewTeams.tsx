@@ -49,22 +49,26 @@ export const ViewTeams = (props: IViewTeams) => {
     const actionsRow = useCallback(
         (data: Team) => (
             <Container direction={Direction.row} padding="0">
-                <RbacLinker href={`/teams/${data._id}/`} hocLink>
+                <RbacLinker href={`/${props.myTeams ? 'my-teams' : 'teams'}/${data._id}/`} hocLink>
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
                 </RbacLinker>
-                <IconButton
-                    onClick={() => {
-                        setEditTeam(data)
-                        setShowNew(true)
-                    }}
-                >
-                    <BiEditAlt />
-                </IconButton>
+                {!props.myTeams ? (
+                    <IconButton
+                        onClick={() => {
+                            setEditTeam(data)
+                            setShowNew(true)
+                        }}
+                    >
+                        <BiEditAlt />
+                    </IconButton>
+                ) : (
+                    <></>
+                )}
             </Container>
         ),
-        []
+        [props.myTeams]
     )
 
     const handleDiscard = () => {
@@ -116,22 +120,28 @@ export const ViewTeams = (props: IViewTeams) => {
                     </Card>
                 </Container>
             </SidebarPage>
-            <FloatingIconButton
-                horizontalPos={FloatingPosH.right}
-                right="40px"
-                bottom="30px"
-                width="auto"
-                onClick={onAddTeam}
-                zIndex={5}
-            >
-                <Typography color={Colors.textOnPrimary}>Add Team</Typography>
-            </FloatingIconButton>
-            <TeamOverlay
-                onClose={handleDiscard}
-                onSave={saveDrawer}
-                show={showAddNew}
-                data={editTeam}
-            />
+            {!props.myTeams ? (
+                <>
+                    <FloatingIconButton
+                        horizontalPos={FloatingPosH.right}
+                        right="40px"
+                        bottom="30px"
+                        width="auto"
+                        onClick={onAddTeam}
+                        zIndex={5}
+                    >
+                        <Typography color={Colors.textOnPrimary}>Add Team</Typography>
+                    </FloatingIconButton>
+                    <TeamOverlay
+                        onClose={handleDiscard}
+                        onSave={saveDrawer}
+                        show={showAddNew}
+                        data={editTeam}
+                    />
+                </>
+            ) : (
+                <></>
+            )}
         </>
     )
 }

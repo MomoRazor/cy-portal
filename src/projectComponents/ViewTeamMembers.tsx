@@ -9,7 +9,7 @@ import {
     TextVariants,
     Typography
 } from '@sector-eleven-ltd/se-react-toolkit'
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { BiShowAlt, BiEditAlt, BiX } from 'react-icons/bi'
 import { getUserTable, Team, User, unassignUserFromTeam } from '../restAPI'
 import { RbacLinker } from './RBACLinker'
@@ -112,6 +112,22 @@ export const ViewTeamMembers = ({
         return result
     }, [props.team.memberIds])
 
+    const headers = useMemo(() => {
+        const heads = [
+            { id: 'displayName', title: 'Full Name' },
+            { id: 'email', title: 'Email' },
+            { id: 'communityMember', title: 'Community' },
+            { id: 'communityGuide', title: 'Guide Of' },
+            { id: 'roles', title: 'Roles' }
+        ]
+
+        if (!props.myTeam) {
+            heads.push({ id: 'actions', title: 'Actions' })
+        }
+
+        return heads
+    }, [props.myTeam])
+
     return (
         <Container padding="0">
             <Typography variant={TextVariants.h4} color={Colors.title}>
@@ -123,18 +139,10 @@ export const ViewTeamMembers = ({
             <Table
                 apiCall={apiCall}
                 parseRows={parseData}
-                headers={[
-                    { id: 'displayName', title: 'Full Name' },
-                    { id: 'email', title: 'Email' },
-                    { id: 'communityMember', title: 'Community' },
-                    { id: 'communityGuide', title: 'Guide Of' },
-                    { id: 'roles', title: 'Roles' },
-                    { id: 'actions', title: 'Actions' }
-                ]}
-                keyName="id"
+                headers={headers}
+                keyName="_id"
                 dirty={props.dirtyTable}
                 setDirty={props.setDirtyTable}
-                pagination={false}
             />
         </Container>
     )

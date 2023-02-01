@@ -25,6 +25,7 @@ import {
 export interface IViewTeamId {
     team?: Team
     setTeam: (data: Team) => void
+    myTeam?: boolean
 }
 
 export const ViewTeamId = (props: IViewTeamId) => {
@@ -50,8 +51,8 @@ export const ViewTeamId = (props: IViewTeamId) => {
     }
 
     const navFunc = (section?: ISideMenuSection) => {
-        if (window.location.href.includes('my-team')) {
-            router.push(`/my-team?section=` + section?.link, undefined, {
+        if (window.location.href.includes('my-teams')) {
+            router.push(`/my-teams/${props.team?._id}?section=` + section?.link, undefined, {
                 shallow: true
             })
         } else {
@@ -114,6 +115,7 @@ export const ViewTeamId = (props: IViewTeamId) => {
                         setShowNew={setShowNew}
                         setEditUser={setEditUser}
                         setIsOverlay={setIsOverlay}
+                        myTeam={props.myTeam}
                     />
                 )
             }
@@ -123,24 +125,26 @@ export const ViewTeamId = (props: IViewTeamId) => {
     const getFloatingButtons = useCallback(() => {
         const buttons: IFloatingIconButton[] = []
 
-        buttons.push({
-            width: 'auto',
-            onClick: async () => {
-                setEditTeam(true)
-            },
-            children: <Typography color={Colors.textOnPrimary}>Edit Team</Typography>
-        })
+        if (!props.myTeam) {
+            buttons.push({
+                width: 'auto',
+                onClick: async () => {
+                    setEditTeam(true)
+                },
+                children: <Typography color={Colors.textOnPrimary}>Edit Team</Typography>
+            })
 
-        buttons.push({
-            width: 'auto',
-            onClick: async () => {
-                setShowAssignUsers(true)
-            },
-            children: <Typography color={Colors.textOnPrimary}>Assign Members</Typography>
-        })
+            buttons.push({
+                width: 'auto',
+                onClick: async () => {
+                    setShowAssignUsers(true)
+                },
+                children: <Typography color={Colors.textOnPrimary}>Assign Members</Typography>
+            })
+        }
 
         return buttons
-    }, [])
+    }, [props.myTeam])
 
     return (
         <>
@@ -161,34 +165,40 @@ export const ViewTeamId = (props: IViewTeamId) => {
                 </Container>
             </SidebarPage>
 
-            <FloatingIconButtonList
-                direction={Direction.rowReverse}
-                horizontalPos={FloatingPosH.right}
-                right="40px"
-                bottom="30px"
-                zIndex={5}
-                buttons={getFloatingButtons()}
-            />
-            <TeamOverlay
-                onClose={handleDiscard}
-                onSave={saveDrawer}
-                show={showEditTeam}
-                data={props.team}
-            />
-            <UserOverlay
-                onClose={handleDiscardUser}
-                onSave={saveDrawerUser}
-                show={showAddNew}
-                data={editUser}
-                isOverlay={isOverlay}
-                setIsOverlay={setIsOverlay}
-            />
-            <AssignUserToTeamOverlay
-                team={props.team}
-                show={showAssignUsers}
-                onSave={saveDrawerAssign}
-                onClose={handleDiscardAssign}
-            />
+            {!props.myTeam ? (
+                <>
+                    <FloatingIconButtonList
+                        direction={Direction.rowReverse}
+                        horizontalPos={FloatingPosH.right}
+                        right="40px"
+                        bottom="30px"
+                        zIndex={5}
+                        buttons={getFloatingButtons()}
+                    />
+                    <TeamOverlay
+                        onClose={handleDiscard}
+                        onSave={saveDrawer}
+                        show={showEditTeam}
+                        data={props.team}
+                    />
+                    <UserOverlay
+                        onClose={handleDiscardUser}
+                        onSave={saveDrawerUser}
+                        show={showAddNew}
+                        data={editUser}
+                        isOverlay={isOverlay}
+                        setIsOverlay={setIsOverlay}
+                    />
+                    <AssignUserToTeamOverlay
+                        team={props.team}
+                        show={showAssignUsers}
+                        onSave={saveDrawerAssign}
+                        onClose={handleDiscardAssign}
+                    />
+                </>
+            ) : (
+                <></>
+            )}
         </>
     )
 }

@@ -49,22 +49,35 @@ export const ViewCommunities = (props: IViewCommunities) => {
     const actionsRow = useCallback(
         (data: Community) => (
             <Container direction={Direction.row} padding="0">
-                <RbacLinker href={`/communities/${data._id}/`} hocLink>
+                <RbacLinker
+                    href={`/${
+                        props.guidingCommunities
+                            ? 'guide-communities'
+                            : props.myCommunities
+                            ? 'my-communities'
+                            : 'communities'
+                    }/${data._id}/`}
+                    hocLink
+                >
                     <IconButton>
                         <BiShowAlt />
                     </IconButton>
                 </RbacLinker>
-                <IconButton
-                    onClick={() => {
-                        setEditCommunity(data)
-                        setShowNew(true)
-                    }}
-                >
-                    <BiEditAlt />
-                </IconButton>
+                {!props.guidingCommunities && !props.myCommunities ? (
+                    <IconButton
+                        onClick={() => {
+                            setEditCommunity(data)
+                            setShowNew(true)
+                        }}
+                    >
+                        <BiEditAlt />
+                    </IconButton>
+                ) : (
+                    <></>
+                )}
             </Container>
         ),
-        []
+        [props.guidingCommunities, props.myCommunities]
     )
 
     const handleDiscard = () => {
@@ -123,24 +136,30 @@ export const ViewCommunities = (props: IViewCommunities) => {
                     </Card>
                 </Container>
             </SidebarPage>
-            <FloatingIconButton
-                horizontalPos={FloatingPosH.right}
-                right="40px"
-                bottom="30px"
-                width="auto"
-                onClick={() => {
-                    setShowNew(true)
-                }}
-                zIndex={5}
-            >
-                <Typography color={Colors.textOnPrimary}>Add Community</Typography>
-            </FloatingIconButton>
-            <CommunityOverlay
-                onClose={handleDiscard}
-                onSave={saveDrawer}
-                show={showAddNew}
-                data={editCommunity}
-            />
+            {!props.guidingCommunities && !props.myCommunities ? (
+                <>
+                    <FloatingIconButton
+                        horizontalPos={FloatingPosH.right}
+                        right="40px"
+                        bottom="30px"
+                        width="auto"
+                        onClick={() => {
+                            setShowNew(true)
+                        }}
+                        zIndex={5}
+                    >
+                        <Typography color={Colors.textOnPrimary}>Add Community</Typography>
+                    </FloatingIconButton>
+                    <CommunityOverlay
+                        onClose={handleDiscard}
+                        onSave={saveDrawer}
+                        show={showAddNew}
+                        data={editCommunity}
+                    />
+                </>
+            ) : (
+                <></>
+            )}
         </>
     )
 }
