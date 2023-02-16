@@ -112,6 +112,7 @@ export const ViewTeams = (props: IViewTeams) => {
                             parseRows={parseData}
                             headers={[
                                 { id: 'name', title: 'Name' },
+                                { id: 'groupEmail', title: 'Group Email' },
                                 { id: 'actions', title: 'Actions' }
                             ]}
                             keyName="id"

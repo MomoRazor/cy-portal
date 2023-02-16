@@ -3,6 +3,7 @@ import {
     ConfirmPopup,
     displaySnackbar,
     EmptyFunctionHandler,
+    IOption,
     Overlay,
     OverlayDirection,
     PanelForm,
@@ -31,22 +32,41 @@ export const TeamOverlay = (props: ITeamOverlay) => {
 
     const [name, setName] = useState('')
     const [errorName, setErrorName] = useState('')
+    const [groupEmail, setGroupEmail] = useState('')
+    const [errorGroupEmail, setErrorGroupEmail] = useState('')
+    const [roleNames, setRoleNames] = useState<IOption[] | IOption | null>(null)
 
     useEffect(() => {
         setErrorName('')
+        setErrorGroupEmail('')
 
         setName(props.data?.name || '')
+        setGroupEmail(props.data?.groupEmail || '')
+        setRoleNames(
+            props.data?.roleNames
+                ? Array.isArray(props.data?.roleNames)
+                    ? props.data?.roleNames.map((name) => ({
+                          id: name,
+                          display: name
+                      }))
+                    : []
+                : []
+        )
     }, [props.data, props.show])
 
     const closingUserOverlay = () => {
         if (!props.data) {
-            if (name !== '') {
+            if (
+                name !== '' ||
+                groupEmail !== '' ||
+                (roleNames && Array.isArray(roleNames) && roleNames.length > 0)
+            ) {
                 setShowConfirm(true)
             } else {
                 props.onClose()
             }
         } else {
-            if (name !== props.data.name) {
+            if (name !== props.data.name || groupEmail !== props.data.groupEmail) {
                 setShowConfirm(true)
             } else {
                 props.onClose()
@@ -65,19 +85,36 @@ export const TeamOverlay = (props: ITeamOverlay) => {
             setErrorName('')
         }
 
+        if (groupEmail === '') {
+            error = true
+            setErrorGroupEmail('This is required')
+        } else {
+            setErrorGroupEmail('')
+        }
+
         if (!error) {
             try {
                 let result: any
 
                 if (props.data) {
                     const data: Partial<Team> = {
-                        name
+                        name,
+                        groupEmail,
+                        roleNames:
+                            roleNames && Array.isArray(roleNames)
+                                ? roleNames.map((roleName) => roleName.id)
+                                : undefined
                     }
 
                     result = await updateTeam(props.data?._id, data)
                 } else {
                     let data: Partial<Team> = {
-                        name
+                        name,
+                        groupEmail,
+                        roleNames:
+                            roleNames && Array.isArray(roleNames)
+                                ? roleNames.map((roleName) => roleName.id)
+                                : undefined
                     }
 
                     result = await createTeam(data)
@@ -122,7 +159,16 @@ export const TeamOverlay = (props: ITeamOverlay) => {
                         primaryButtonLoading: createButtonLoad
                     }}
                 >
-                    <TeamFormSection name={name} setName={setName} errorName={errorName} />
+                    <TeamFormSection
+                        name={name}
+                        setName={setName}
+                        errorName={errorName}
+                        groupEmail={groupEmail}
+                        setGroupEmail={setGroupEmail}
+                        errorGroupEmail={errorGroupEmail}
+                        roleNames={roleNames}
+                        setRoleNames={setRoleNames}
+                    />
                 </PanelForm>
             </Overlay>
 

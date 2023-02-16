@@ -4,6 +4,7 @@ import { axios11 } from './config'
 export interface Community {
     _id: string
     name: string
+    groupEmail: string
     memberIds: string[]
     guideIds: string[]
 }
@@ -13,7 +14,6 @@ export const getCommunity = async (id: string) => {
     return result.data
 }
 
-//TODO Change Argument
 export const getCommunityTable = async (filter: IDataContextInput) => {
     const result = await axios11.post<{ data: Community }>(
         `/cam-youths/get/communities/table`,
@@ -22,11 +22,20 @@ export const getCommunityTable = async (filter: IDataContextInput) => {
     return result.data.data
 }
 
-//TODO Change Argument
-export const getCommunityAutocomplete = async (filter: IDataContextInput) => {
+export const getCommunityAutocomplete = async (fullData: IDataContextInput) => {
+    const { filter, limit, page, sort } = fullData
+
+    const { search, ...restOfFilter } = filter
+
     const result = await axios11.post<{ data: Community }>(
         `/cam-youths/get/communities/autocomplete`,
-        filter
+        {
+            filter: restOfFilter,
+            limit,
+            page,
+            sort,
+            search
+        }
     )
     return result.data.data
 }

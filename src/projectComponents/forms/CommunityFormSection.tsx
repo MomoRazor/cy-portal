@@ -5,6 +5,9 @@ export interface ICommunityFormSection {
     name: string
     setName: (data: string) => void
     errorName: string
+    groupEmail: string
+    setGroupEmail: (data: string) => void
+    errorGroupEmail: string
 }
 
 export const CommunityFormSection = (props: ICommunityFormSection) => (
@@ -15,6 +18,13 @@ export const CommunityFormSection = (props: ICommunityFormSection) => (
             width="100%"
             label="Name"
             error={props.errorName}
+        />
+        <TextField
+            value={props.groupEmail}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => props.setGroupEmail(e.target.value)}
+            width="100%"
+            label="Group Email"
+            error={props.errorGroupEmail}
         />
     </PanelFormSection>
 )

@@ -4,6 +4,8 @@ import { axios11 } from './config'
 export interface Team {
     _id: string
     name: string
+    groupEmail: string
+    roleNames: string[]
     memberIds: string[]
 }
 
@@ -17,8 +19,18 @@ export const getTeamTable = async (filter: IDataContextInput) => {
     return result.data.data
 }
 
-export const getTeamAutocomplete = async (filter: IDataContextInput) => {
-    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/autocomplete`, filter)
+export const getTeamAutocomplete = async (fullData: IDataContextInput) => {
+    const { filter, limit, page, sort } = fullData
+
+    const { search, ...restOfFilter } = filter
+
+    const result = await axios11.post<{ data: Team }>(`/cam-youths/get/teams/autocomplete`, {
+        filter: restOfFilter,
+        limit,
+        page,
+        sort,
+        search
+    })
     return result.data.data
 }
 

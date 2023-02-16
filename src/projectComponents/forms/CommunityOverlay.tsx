@@ -31,22 +31,26 @@ export const CommunityOverlay = (props: ICommunityOverlay) => {
 
     const [name, setName] = useState('')
     const [errorName, setErrorName] = useState('')
+    const [groupEmail, setGroupEmail] = useState('')
+    const [errorGroupEmail, setErrorGroupEmail] = useState('')
 
     useEffect(() => {
         setErrorName('')
+        setErrorGroupEmail('')
 
         setName(props.data?.name || '')
+        setGroupEmail(props.data?.groupEmail || '')
     }, [props.data, props.show])
 
     const closingUserOverlay = () => {
         if (!props.data) {
-            if (name !== '') {
+            if (name !== '' || groupEmail !== '') {
                 setShowConfirm(true)
             } else {
                 props.onClose()
             }
         } else {
-            if (name !== props.data.name) {
+            if (name !== props.data.name || groupEmail !== props.data.groupEmail) {
                 setShowConfirm(true)
             } else {
                 props.onClose()
@@ -65,19 +69,28 @@ export const CommunityOverlay = (props: ICommunityOverlay) => {
             setErrorName('')
         }
 
+        if (groupEmail === '') {
+            error = true
+            setErrorGroupEmail('This is required')
+        } else {
+            setErrorGroupEmail('')
+        }
+
         if (!error) {
             try {
                 let result: any
 
                 if (props.data) {
                     const data: Partial<Community> = {
-                        name
+                        name,
+                        groupEmail
                     }
 
                     result = await updateCommunity(props.data?._id, data)
                 } else {
                     let data: Partial<Community> = {
-                        name
+                        name,
+                        groupEmail
                     }
 
                     result = await createCommunity(data)
@@ -122,7 +135,14 @@ export const CommunityOverlay = (props: ICommunityOverlay) => {
                         primaryButtonLoading: createButtonLoad
                     }}
                 >
-                    <CommunityFormSection name={name} setName={setName} errorName={errorName} />
+                    <CommunityFormSection
+                        name={name}
+                        setName={setName}
+                        errorName={errorName}
+                        groupEmail={groupEmail}
+                        setGroupEmail={setGroupEmail}
+                        errorGroupEmail={errorGroupEmail}
+                    />
                 </PanelForm>
             </Overlay>
 
