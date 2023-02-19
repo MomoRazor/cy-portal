@@ -62,6 +62,23 @@ export const AssignUserToCommunityOverlay = (props: IAssignUserToCommunityOverla
         }
     }
 
+    const apiCall = async () => {
+        return await getUserAutocomplete({
+            filter: {
+                _id: {
+                    $and: [
+                        {
+                            $nin: props.community?.memberIds
+                        },
+                        {
+                            $nin: props.community?.guideIds
+                        }
+                    ]
+                }
+            }
+        })
+    }
+
     return (
         <>
             <Overlay
@@ -96,12 +113,16 @@ export const AssignUserToCommunityOverlay = (props: IAssignUserToCommunityOverla
                             <Autocomplete
                                 width="100%"
                                 label="Users"
-                                apiCall={getUserAutocomplete}
+                                apiCall={apiCall}
                                 onChange={setUser}
                                 value={user || undefined}
                                 parseOptions={parseUserOptions}
                                 emptyFilterString
-                                parseFilter={() => {}}
+                                parseFilter={(query) => {
+                                    return {
+                                        search: query
+                                    }
+                                }}
                                 error={errorUser}
                             />
                         </Container>

@@ -111,7 +111,11 @@ export const AssignUserToTeamOverlay = (props: IAssignUserToTeamOverlay) => {
                                 value={user || undefined}
                                 parseOptions={parseUserOptions}
                                 emptyFilterString
-                                parseFilter={() => {}}
+                                parseFilter={(query) => {
+                                    return {
+                                        search: query
+                                    }
+                                }}
                                 error={errorUser}
                             />
                         </Container>
