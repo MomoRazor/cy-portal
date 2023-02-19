@@ -48,7 +48,10 @@ export const getUserAutocomplete = async (fullData: IDataContextInput) => {
 }
 
 export const createUser = async (user: Partial<User>) => {
-    const result = await axios11.post<{ data: User }>(`/auth/create/users`, user)
+    const result = await axios11.post<{ data: User }>(`/auth/create/users`, {
+        ...user,
+        roleNames: ['Member']
+    })
 
     return result.data
 }
