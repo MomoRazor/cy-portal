@@ -1,5 +1,6 @@
 import {
     AuthContext,
+    ChangePassword,
     Colors,
     Container,
     Direction,
@@ -10,7 +11,11 @@ import {
     ISideMenuSection,
     QuadSpinner,
     SideMenu,
-    Typography
+    SnackbarContext,
+    SnackbarType,
+    Typography,
+    displaySnackbar,
+    parseError
 } from '@sector-eleven-ltd/se-react-toolkit'
 import { useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -28,6 +33,7 @@ export const ViewUserId = (props: IViewUserId) => {
     const router = useRouter()
     const [showEditUser, setEditUser] = useState(false)
 
+    const { addData } = useContext(SnackbarContext)
     const { login } = useContext(AuthContext)
 
     const checkActive = (section: ISideMenuSection) => {
@@ -79,13 +85,31 @@ export const ViewUserId = (props: IViewUserId) => {
     }
 
     const getSections = (user: User) => {
-        //TODO add community/guiding/team sections
-        return [
+        const sections = [
             {
                 link: 'Profile',
                 children: <ViewUserData user={user} />
             }
         ]
+
+        if (props.profile) {
+            sections.push({
+                link: 'Change Password',
+                children: (
+                    <ChangePassword
+                        onError={(e) => {
+                            displaySnackbar(parseError(e), SnackbarType.error, addData)
+                        }}
+                        onSuccess={() => {
+                            displaySnackbar('Password updated', SnackbarType.success, addData)
+                        }}
+                        firebase
+                        email={user.email}
+                    />
+                )
+            })
+        }
+        return sections
     }
 
     const getFloatingButtons = useCallback(() => {
