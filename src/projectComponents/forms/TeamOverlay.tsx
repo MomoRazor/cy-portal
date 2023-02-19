@@ -106,6 +106,8 @@ export const TeamOverlay = (props: ITeamOverlay) => {
                                 : undefined
                     }
 
+                    console.log('data', data)
+
                     result = await updateTeam(props.data?._id, data)
                 } else {
                     let data: Partial<Team> = {
@@ -125,6 +127,7 @@ export const TeamOverlay = (props: ITeamOverlay) => {
                     SnackbarType.success,
                     addData
                 )
+                console.log('res', result)
                 props.onSave(result)
             } catch (e) {
                 displaySnackbar('Failed to save Team', SnackbarType.error, addData)

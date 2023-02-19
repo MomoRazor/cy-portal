@@ -65,16 +65,18 @@ export const AssignGuideToCommunityOverlay = (props: IAssignGuideToCommunityOver
     const apiCall = async () => {
         return await getUserAutocomplete({
             filter: {
-                _id: {
-                    $and: [
-                        {
+                $and: [
+                    {
+                        _id: {
                             $nin: props.community?.memberIds
-                        },
-                        {
+                        }
+                    },
+                    {
+                        _id: {
                             $nin: props.community?.guideIds
                         }
-                    ]
-                }
+                    }
+                ]
             }
         })
     }

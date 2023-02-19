@@ -46,7 +46,7 @@ export const createCommunity = async (community: Partial<Community>) => {
         community
     )
 
-    return result.data
+    return result.data.data
 }
 
 export const updateCommunity = async (id: string, community: Partial<Community>) => {
@@ -55,7 +55,7 @@ export const updateCommunity = async (id: string, community: Partial<Community>)
         ...community
     })
 
-    return result.data
+    return result.data.data
 }
 
 export const assignUserToCommunityAsMember = async (userId: string, communityId: string) => {

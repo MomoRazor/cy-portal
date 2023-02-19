@@ -40,6 +40,12 @@ export const ViewTeamData = (props: IViewTeamData) => {
                 <Container width={size.mobile ? '100%' : '50%'} padding="0">
                     <TitledRow label="Name" data={<Typography>{props.team.name}</Typography>} />
                 </Container>
+                <Container width={size.mobile ? '100%' : '50%'} padding="0">
+                    <TitledRow
+                        label="Roles"
+                        data={<Typography>{props.team.roleNames?.join(', ')}</Typography>}
+                    />
+                </Container>
             </Container>
         </Container>
     )

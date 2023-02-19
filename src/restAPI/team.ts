@@ -37,7 +37,7 @@ export const getTeamAutocomplete = async (fullData: IDataContextInput) => {
 export const createTeam = async (team: Partial<Team>) => {
     const result = await axios11.post<{ data: Team }>(`/cam-youths/create/teams`, team)
 
-    return result.data
+    return result.data.data
 }
 
 export const updateTeam = async (id: string, team: Partial<Team>) => {
@@ -46,7 +46,7 @@ export const updateTeam = async (id: string, team: Partial<Team>) => {
         ...team
     })
 
-    return result.data
+    return result.data.data
 }
 
 export const assignUserToTeam = async (userId: string, teamId: string) => {
